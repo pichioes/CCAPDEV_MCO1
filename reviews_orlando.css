@@ -1,28 +1,39 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #d3a7a1;
+    background-color: #D19DA7;
     color: #4a2c1f;
     text-align: center;
     padding: 20px;
 }
 h1 {
     font-size: 2.5em;
-    color: #4a2c1f;
+    color: #F6ECE9;
 }
+
+h3 {
+    margin: 0 1px 0 0;
+
+}
+
 .store-info {
-    background-color: #f3dbd7;
+    background-color: #fff;
     padding: 20px;
     border-radius: 10px;
     margin: 20px auto;
     width: 80%;
     text-align: left;
 }
-.reviews-container {
+.top-reviews {
+    padding: 20px;
+    border-radius: 10px;
+    margin: 20px auto;
+    width: 80%;
+    text-align: left;
+}
+.top-reviews-container{
     display: flex;
-    justify-content: center;
-    gap: 20px;
-    flex-wrap: wrap;
-    margin-top: 20px;
+    justify-content: left;
+    gap: 50px;
 }
 .review-card {
     background-color: #fff;
@@ -47,7 +58,6 @@ h1 {
     display: flex;
 }
 .other-reviews {
-    background-color: #c69fa5;
     padding: 20px;
     border-radius: 10px;
     margin: 20px auto;
@@ -63,8 +73,49 @@ h1 {
 .other-review-card {
     background-color: #fff;
     border-radius: 10px;
-    padding: 15px;
+    padding: 25px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.review-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+}
+.profile-pic {
+    width: 80px;
+    height: 80px;
+    background-color: #c69fa5;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+.review-info {
+    flex-grow: 1;
+}
+.review-stars {
+    color: #FFD700;
+    font-size: 16px;
+    margin-top: 3px;
+}
+.review-actions {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    display: flex;
+    gap: 10px;
+}
+.review-buttons {
+    gap: 20px;
+}
+.search {
+    width: 200px; 
+    border-radius: 5%;
+    display: flex;
+}
+button {
+   background-color:#F6ECE9;
+   border:#F6ECE9;
+   border-radius: 10%; 
 }
 .manager-response {
     background-color: #f3dbd7;
