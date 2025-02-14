@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Store Review Page</title>
+    <link rel="stylesheet" href="reviews_orlando.css">
+</head>
+<body>
+
+    <h1>Store Review Page</h1>
+    <div class="store-info">
+        <h2>Lay Bare Waxing Salon - Orlando</h2>
+        <p>Ground Floor Orlando Suites, Corner Singalong, Estrada St, Malate, Manila, 1004 Metro Manila</p>
+        <p>Waxing services in Manila</p>
+        <h3>4.5 ⭐ (Reviews)</h3>
+    </div>
+    
+    <div class="reviews-container">
+        <h2>Top Reviews</h2>
+        <div class="review-card">
+            <h2>Best waxing experience!</h2>
+            <p>"Best underarm wax I've ever had! Quick, efficient, and no irritation afterward. Highly recommend for anyone wanting smooth and soft underarms!"</p>
+            <p>- Julianna Charlize</p>
+        </div>
+        <div class="review-card">
+            <h2>Never felt so smooth :)</h2>
+            <p>"So happy with my leg waxing! It was a quick and easy process. My legs are silky smooth, and I'll definitely be coming back for more!"</p>
+            <p>- Gwen Stacy</p>
+        </div>
+    </div>
+    
+    <div class="other-reviews">
+        <h2>Other Reviews</h2>
+        <div class="review-buttons">
+            <button onclick="loadModal()">Post a Review!</button>
+            <div id="reviewModalContainer"></div> 
+            <input type="text" placeholder="Search for a review...">
+            <button>Go</button>
+        </div>
+        
+        <div class="other-reviews-container">
+            <div class="other-review-card">
+                <h3>Julianna Charlize</h3>
+                <p><strong>Best waxing experience!</strong></p>
+                <p>"Best underarm wax I've ever had! Quick, efficient, and no irritation afterward. Highly recommend for anyone wanting smooth underarms!"</p>
+                <div class="manager-response">Manager Response: Thank you for your great review! Hope to see you soon :)</div>
+            </div>
+            <div class="other-review-card">
+                <h3>Gwen Stacy</h3>
+                <p><strong>How have I never tried this place?</strong></p>
+                <p>"So happy with my leg waxing! It was a quick and easy process. My legs are silky smooth, and I'll definitely be coming back for more!"</p>
+            </div>
+            <div class="other-review-card">
+                <h3>Kevin Harder</h3>
+                <p><strong>I love this place!</strong></p>
+                <p>"Absolutely amazing! The full body wax was so comfortable. The staff was professional. Highly recommend this experience!"</p>
+            </div>
+            <div class="other-review-card">
+                <h3>Alyssa Mansueto</h3>
+                <p><strong>Would absolutely come back</strong></p>
+                <p>"I love this place so much! Such a great way for self-care."</p>
+            </div>
+            <div class="other-review-card">
+                <h3>Miguel Reano</h3>
+                <p><strong>How have I never tried this place?</strong></p>
+                <p>"Came in hairy, left spotless!"</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="review_modal.js"></script>
+</body>
+</html>
