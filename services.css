@@ -1,0 +1,60 @@
+/* SERVICES CSS */
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #f3e0dc;
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    color: #5a3627;
+    position: relative;
+}
+h1 {
+    font-size: 3em;
+    color: #5a3627;
+}
+.services-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    width: 80%;
+    z-index: 2;
+}
+.service-card {
+    background-color: #c9a1a1;
+    border-radius: 10px;
+    padding: 15px;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+.service-card img {
+    width: 100%;
+    border-radius: 10px;
+}
+.service-card h2 {
+    margin: 10px 0 5px;
+    color: white;
+}
+.service-card p {
+    font-size: 0.9em;
+}
+.price-time {
+    margin-top: 10px;
+    font-weight: bold;
+}
+.side-text-services {
+    position: absolute;
+    bottom: -80px;
+    left: 0%;
+    font-size: 5em;
+    font-weight: bold;
+    color: rgba(90, 54, 39, 0.3);
+    white-space: nowrap;
+    z-index: 1;
+}
+
+/* END OF SERVICES CSS */

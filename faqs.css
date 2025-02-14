@@ -1,0 +1,53 @@
+/* FAQS CSS */
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #c9a1a1;
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    color: white;
+    position: relative;
+}
+h1 {
+    font-size: 2em;
+}
+.faq-container {
+    width: 60%;
+}
+.faq-item {
+    background-color: #f4e9e4;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    overflow: hidden;
+}
+.faq-question {
+    padding: 15px;
+    cursor: pointer;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: black;
+}
+.faq-answer {
+    padding: 15px;
+    display: none;
+    color: black;
+}
+.faq-item.active .faq-answer {
+    display: block;
+}
+.side-text {
+            position: fixed;
+            right: -130px;
+            top: 50%;
+            transform: translateY(-50%) rotate(270deg);
+            font-size: 5em;
+            font-weight: bold;
+            color: rgba(255, 255, 255, 0.3);
+            white-space: nowrap;
+            z-index: -1;
+        }
+
+/* END OF FAQS */
