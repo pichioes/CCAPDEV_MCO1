@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Services</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f3e0dc;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            color: #5a3627;
+            position: relative;
+        }
+        h1 {
+            font-size: 3em;
+            color: #5a3627;
+        }
+        .services-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            width: 80%;
+        }
+        .service-card {
+            background-color: #c9a1a1;
+            border-radius: 10px;
+            padding: 15px;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .service-card img {
+            width: 100%;
+            border-radius: 10px;
+        }
+        .service-card h2 {
+            margin: 10px 0 5px;
+            color: white;
+        }
+        .service-card p {
+            font-size: 0.9em;
+        }
+        .price-time {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        .side-text {
+            position: absolute;
+            bottom: -20px;
+            left: 5%;
+            font-size: 5em;
+            font-weight: bold;
+            color: rgba(90, 54, 39, 0.3);
+            white-space: nowrap;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+    <h1>Services</h1>
+    <div class="services-container">
+        <div class="service-card">
+            <img src="service1.jpg" alt="Underarm Wax">
+            <h2>Underarm Wax</h2>
+            <p>A session to a multi-step service directed by selected Lay Bare branches to help smoothen the skin through whitening service.</p>
+            <div class="price-time">P380 | Time: 10 Mins</div>
+        </div>
+        <div class="service-card">
+            <img src="service2.jpg" alt="Full Arm Wax">
+            <h2>Full Arm Wax</h2>
+            <p>Hair is waxed from the tips of your fingers to the top of your shoulders.</p>
+            <div class="price-time">P340 | Time: 20 Mins</div>
+        </div>
+        <div class="service-card">
+            <img src="service3.jpg" alt="Full Legs">
+            <h2>Full Legs</h2>
+            <p>Hair is waxed from the tips of your toes to the top of your thighs.</p>
+            <div class="price-time">P650 | Time: 35 Mins</div>
+        </div>
+        <div class="service-card">
+            <img src="service4.jpg" alt="Full Arm Wax">
+            <h2>Full Arm Wax</h2>
+            <p>Hair is waxed from the tips of your fingers to the top of your shoulders.</p>
+            <div class="price-time">P340 | Time: 20 Mins</div>
+        </div>
+        <div class="service-card">
+            <img src="service5.jpg" alt="Full Body Wax">
+            <h2>Full Body Wax</h2>
+            <p>Get the ultimate hair-free body when we remove hair from brow-to-toe.</p>
+            <div class="price-time">P2,150 | Time: 100 Mins</div>
+        </div>
+    </div>
+    <div class="side-text">LayBare</div>
+</body>
+</html>

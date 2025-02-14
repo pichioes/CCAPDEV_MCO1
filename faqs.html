@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQs</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Frequently Asked Questions (FAQs)</h1>
+    <div class="faq-container">
+        <div class="faq-item">
+            <div class="faq-question">Accordion - FAQ 1 <span>&#9650;</span></div>
+            <div class="faq-answer">Answer goes here for FAQ. BLAH BLAH BLAH BLAH.</div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question">Accordion - FAQ 2 <span>&#9650;</span></div>
+            <div class="faq-answer">Answer goes here for FAQ. BLAH BLAH BLAH BLAH.</div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question">Accordion - FAQ 3 <span>&#9650;</span></div>
+            <div class="faq-answer">Answer goes here for FAQ. BLAH BLAH BLAH BLAH YAP YAP YAP YAP.</div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question">Accordion - FAQ 4 <span>&#9650;</span></div>
+            <div class="faq-answer">Answer goes here for FAQ. BLAH BLAH BLAH BLAH.</div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question">Accordion - FAQ 5 <span>&#9650;</span></div>
+            <div class="faq-answer">Answer goes here for FAQ. BLAH BLAH BLAH BLAH YAP YAP YAP YAP.</div>
+        </div>
+    </div>
+    <div class="side-text">LayBare</div>
+    <script>
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const faqItem = question.parentElement;
+                faqItem.classList.toggle('active');
+            });
+        });
+    </script>
+</body>
+</html>
