@@ -1,10 +1,40 @@
 <!-- navbar.html -->
 <nav class="navbar">
     <div class="logo">LayBare</div>
-    <ul class="nav-links">
+    <ul class="menu">
         <li><a href="landingpage.html">Home</a></li>
-        <li><a href="about.html">About</a></li>
+        <li><a href="stores.html">Stores</a></li>
         <li><a href="services.html">Services</a></li>
-        <li><a href="contact.html">Contact</a></li>
+        <li><a href="faqs.html">FAQs</a></li>
+    </ul>
+
+    <ul class="profile-menu">
+        <li>Profile</li>
     </ul>
 </nav>
+
+<style>
+    .navbar{
+        min-height: 10vh;
+        display: flex;
+        justify-content: space-between;
+        box-shadow: 2px 2px 35px 2px;
+        padding: 12px 28px;
+        font-weight: 700;
+        font-size: larger;
+        align-items: center;
+    }
+
+    .navbar .menu, .navbar .profile-menu{
+        display: flex;
+    }
+
+    .navbar ul{
+        list-style: none;
+    }
+
+    .navbar .menu a, .navbar .login-menu li{
+        margin-right: 38px;
+        text-decoration: none;
+    }
+</style>
