@@ -1,0 +1,62 @@
+/* LOGIN CSS */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f4e9e4;
+    font-family: Arial, sans-serif;
+}
+.container {
+    background-color: #c9a1a1;
+    padding: 100px;
+    border-radius: 15px;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+.logo img {
+    width: 100px;
+    border-radius: 10px;
+}
+h2 {
+    color: #fff;
+    font-weight: bold;
+}
+.input-group {
+    margin: 15px 0;
+}
+label {
+    display: block;
+    color: #fff;
+    text-align: left;
+}
+input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-top: 5px;
+}
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+.login-btn {
+    background-color: #f4e9e4;
+}
+.signup-btn {
+    background-color: #b78c8c;
+    color: white;
+}
+button:hover {
+    opacity: 0.8;
+}
