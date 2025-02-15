@@ -36,7 +36,7 @@
     <div class="other-reviews">
         <h1>Other Reviews</h1>
         <div class="review-buttons">
-            <button style="padding:15px; width: 200px; font-weight: bolder; font-size: larger;" onclick="loadModal()">Post a Review!</button>
+            <button style="padding:15px; width: 200px; font-weight: bolder; font-size: larger;" onclick="loadModal2()">Post a Review!</button>
             <div id="reviewModalContainer"></div> 
             <div class="search">
                 <input style="padding:20px; width: 200px;"type="text" placeholder="Search for a review...">
@@ -47,10 +47,16 @@
         <div class="other-reviews-container">
             <div class="other-review-card">
                 <h3>Julianna Charlize</h3>
+                <div class="review-buttons">
+                    <button style="padding: 5px; width: 150px; font-weight: bolder; font-size:small;" onclick="loadModal2()">Edit your Review!</button>
+                    <div id="reviewModalContainer"></div>
+                    <button style="padding: 5px; width: 150px; font-weight: bolder; font-size:small"> Delete your review</button>
+                </div>
                 <p><strong>Best waxing experience!</strong></p>
                 <p>"Best underarm wax I've ever had! Quick, efficient, and no irritation afterward. Highly recommend for anyone wanting smooth underarms!"</p>
                 <div class="manager-response">Manager Response: Thank you for your great review! Hope to see you soon :)</div>
             </div>
+        
             <div class="other-review-card">
                 <div class="review-header">
                     <img src="gwen.png" alt="Profile Picture" class="profile-pic">
@@ -158,9 +164,12 @@
             window.location.href = "view_user.html"; // Replace with the actual target page
         });
     </script>
+
+
     <script src="nav.js"></script>
     <script src="review_modal.js"></script>
     <script src="review_actions.js"></script>
+    <script src="edit_review.js"></script>
 
 </body>
 </html>

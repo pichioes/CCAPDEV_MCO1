@@ -123,3 +123,26 @@ button {
     border-radius: 5px;
     margin-top: 10px;
 }
+
+.review-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+.edit-review-btn, .delete-review-btn {
+    background-color: #c69fa5;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.edit-review-btn:hover {
+    text-decoration: underline;
+}
+
+.delete-review-btn:hover {
+    text-decoration: underline;
+    color: red;
+}
