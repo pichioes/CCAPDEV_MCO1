@@ -8,12 +8,24 @@ h1, h2, h3, p {
     margin: 0;
 }
 .hero {
-    background-position: center;
-    padding: 100px 50px;
+    background-image: url("img/headerwoman.png");
+    background-repeat: no-repeat;
+    background-position: right;
+    background-size: 900px;
+    background-position-x: 150%;
+    padding: 100px 150px;
     text-align: center;
     color: #A1613B;
     display: flex;
     flex-direction: row;
+}
+.hero-text {
+    width: 40%;
+    text-align: left;
+    text;
+}
+.hero img {
+    
 }
 .about {
     display: flex;
@@ -32,10 +44,12 @@ h1, h2, h3, p {
     border-radius: 15px;
     background-color: white;
     text-align: left;
+    gap: 30px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 .about-section.reverse {
     flex-direction: row-reverse;
+    gap: 30px;
 }
 .about-section h1 {
     color: #5a2d28;
