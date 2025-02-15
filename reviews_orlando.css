@@ -18,10 +18,17 @@ h3 {
 .store-info {
     background-color: #fff;
     padding: 20px;
-    border-radius: 10px;
+    border-radius: 20px; /* Rounded corners */
     margin: 20px auto;
-    width: 80%;
+    width: 90%; /* Adjust width */
+    display: flex; /* Arrange items in a row */
+    align-items: center; /* Align items vertically */
+    gap: 30px; /* Space between image and text */
     text-align: left;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Soft shadow */
+}
+.store-text {
+    flex: 1; /* Ensures text fills remaining space */
 }
 .top-reviews {
     padding: 20px;
@@ -146,3 +153,11 @@ button {
     text-decoration: underline;
     color: red;
 }
+
+.store-info img {
+    width: 300px; /* Adjust width */
+    height: auto; /* Maintain aspect ratio */
+    border-radius: 20px; /* Smooth rounded edges */
+    object-fit: cover; /* Prevents stretching */
+}
+
