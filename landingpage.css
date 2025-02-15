@@ -8,12 +8,12 @@ h1, h2, h3, p {
     margin: 0;
 }
 .hero {
-    background-image: url('hero-bg.jpg');
-    background-size: cover;
     background-position: center;
     padding: 100px 50px;
     text-align: center;
-    color: white;
+    color: #A1613B;
+    display: flex;
+    flex-direction: row;
 }
 .about {
     display: flex;
