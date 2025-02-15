@@ -1,31 +1,110 @@
-<footer>
-    <div class="footer-container">
-        <div class="footer-logo">
-            <img src="logo.png" alt="Lay Bare Logo">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Footer Design</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #dab0b6;
+            width: 100%
+        }
+        footer {
+            background-color: #dab0b6;
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            width: 100%;
+            margin-top: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: ;
+            flex-wrap: wrap;
+        }
+        .footer-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            padding: 20px;
+            width: 100%;
+        }
+        .logo-social img {
+            width: 120px;
+        }
+        .social-icons i {
+            margin: 0 5px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        .contact h3 {
+            margin-bottom: 10px;
+        }
+        .footer-links{
+            flex-direction: column;
+            display: flex;
+        }
+        .footer-links a {
+            
+            color: white;
+            text-decoration: none;
+            margin: 5px 0;
+            font-weight: bold;
+            
+        }
+        hr {
+            border: 0;
+            height: 1px;
+            background: white;
+            margin: 20px auto;
+            width: 80%;
+        }
+        .footer-bottom {
+            font-size: 14px;
+            width: 100%;
+        }
+        .footer-bottom a {
+            color: #ececec;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <footer>
+        <div class="footer-container">
+            <div class="logo-social">
+                <img src="img/laybare.png" alt="Lay Bare Logo">
+                <div class="social-icons">
+                    <i class="fab fa-twitter"></i>
+                    <i class="fab fa-facebook"></i>
+                    <i class="fab fa-instagram"></i>
+                    <i class="fab fa-linkedin"></i>
+                    <i class="fab fa-youtube"></i>
+                </div>
+            </div>
+            <div class="contact">
+                <h3>Contact us</h3>
+                <p><i class="fas fa-envelope"></i> contact@company.com</p>
+                <p><i class="fas fa-phone"></i> (414) 687 - 5892</p>
+                <p><i class="fas fa-map-marker-alt"></i> 794 McAllister St, San Francisco, 94102</p>
+            </div>
+            <div class="footer-links">
+                <a href="#">Home</a>
+                <a href="#">Stores</a>
+                <a href="#">Services</a>
+                <a href="#">FAQs</a>
+            </div>
         </div>
-        <div class="footer-social">
-            <a href="#"><img src="facebook-icon.png" alt="Facebook"></a>
-            <a href="#"><img src="twitter-icon.png" alt="Twitter"></a>
-            <a href="#"><img src="instagram-icon.png" alt="Instagram"></a>
-            <a href="#"><img src="linkedin-icon.png" alt="LinkedIn"></a>
-            <a href="#"><img src="youtube-icon.png" alt="YouTube"></a>
+        <hr>
+        <div class="footer-bottom">
+            <p>Copyright &copy; 2022 BRIX Templates</p>
+            <p>All Rights Reserved | <a href="#">Terms and Conditions</a> | <a href="#">Privacy Policy</a></p>
         </div>
-        <div class="footer-contact">
-            <h3>Contact us</h3>
-            <p>✉️ contact@company.com</p>
-            <p>📞 (414) 687 - 5892</p>
-            <p>📍 794 Mcallister St<br>San Francisco, 94102</p>
-        </div>
-        <div class="footer-links">
-            <a href="#">Home</a>
-            <a href="#">Stores</a>
-            <a href="#">Services</a>
-            <a href="#">FAQs</a>
-        </div>
-    </div>
-    <div class="footer-bottom">
-        <p>Copyright © 2022 BRIX Templates</p>
-        <a href="#">Terms and Conditions</a> | 
-        <a href="#">Privacy Policy</a>
-    </div>
-</footer>
+    </footer>
+</body>
+</html>

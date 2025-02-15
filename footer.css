@@ -1,42 +1,36 @@
 footer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: #b78585; /* Matched mauve color */
-    font-family: "Poppins", sans-serif;
-    padding: 40px 20px;
-    color: #4c3f4d; /* Muted grayish-purple */
+    background-color: #c48b94;
+    color: white;
     text-align: center;
+    padding: 30px 20px;
+    font-family: Arial, sans-serif;
 }
 
 .footer-container {
-    width: 100%;
-    max-width: 900px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
 }
 
 .footer-logo img {
-    width: 130px;
-    margin-bottom: 15px;
+    max-width: 120px;
 }
 
 .footer-social {
     display: flex;
-    justify-content: center;
     gap: 15px;
-    margin-bottom: 15px;
 }
 
-.footer-social img {
-    width: 24px;
-}
-
-.footer-contact {
-    margin-bottom: 20px;
+.footer-social a img {
+    width: 20px;
+    height: 20px;
+    filter: brightness(0) invert(1); /* Make icons white */
 }
 
 .footer-contact h3 {
-    font-size: 1.2rem;
-    font-weight: bold;
+    font-size: 1.2em;
+    margin-bottom: 10px;
 }
 
 .footer-contact p {
@@ -46,15 +40,14 @@ footer {
 
 .footer-links {
     display: flex;
-    justify-content: center;
-    gap: 40px;
-    font-weight: 600;
-    margin-top: 15px;
+    gap: 20px;
 }
 
 .footer-links a {
-    color: #4c3f4d;
+    color: white;
+    font-size: 14px;
     text-decoration: none;
+    font-weight: bold;
 }
 
 .footer-links a:hover {
@@ -62,19 +55,13 @@ footer {
 }
 
 .footer-bottom {
-    width: 100%;
-    max-width: 900px;
     margin-top: 20px;
-    padding-top: 10px;
-    border-top: 1px solid #4c3f4d;
     font-size: 14px;
-    color: #5b4b60;
 }
 
 .footer-bottom a {
-    color: #5b4b60;
+    color: #0000ee;
     text-decoration: none;
-    font-weight: bold;
 }
 
 .footer-bottom a:hover {
