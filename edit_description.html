@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Review Modal</title>
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            width: 400px;
+            text-align: center;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* Stars CSS */
+        .star {
+            font-size: 30px;
+            cursor: pointer;
+            color: #ccc; 
+            transition: color 0.3s;
+        }
+
+        .star.active {
+            color: #f4b400; 
+        }
+
+        /* Exit button CSS */
+        .close-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #c69fa5;
+            width: 30px;  
+            height: 30px;
+            border-radius: 50%; /* round border */
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        
+        .close-button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        /* Submit button */
+        .submit-container button {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #c69fa5;
+            background-color: #c69fa5;
+            color: white;
+        }
+
+        /* Text input CSS */
+        .modal select, .modal textarea, .modal input[type="file"] {
+            width: 100%;
+            max-width: 350px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #c69fa5;
+            box-sizing: border-box;
+        }
+
+        /* Transitions CSS */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translate(-50%, -55%); }
+            to { opacity: 1; transform: translate(-50%, -50%); }
+        }
+    </style>
+</head>
+<body>
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModal()"></div>
+    <div class="modal" id="reviewModal">
+        <div class="close-container">
+            <button class="close-button" onclick="closeModal()">&times;</button>
+        </div>
+        <div class="modal-content">
+            <h2>Change Description</h2>
+            <textarea id="reviewText" placeholder="Type your description here..."></textarea>
+           
+            <div class="submit-container">
+                <button id="submitReviewButton">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
