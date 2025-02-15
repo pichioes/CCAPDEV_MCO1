@@ -60,10 +60,11 @@
                         <div class="review-stars">⭐⭐⭐⭐⭐</div>
                     </div>
                     <div class="review-actions">
-                        <button>👍 18</button>
-                        <button>👎 2</button>
+                        <button class="like-btn" onclick="setupReviewActions(this)">👍 <span class="like-count">0</span></button>
+                        <button class="dislike-btn" onclick="setupReviewActions(this)">👎 <span class="dislike-count">0</span></button>
                         <button>⋮</button>
                     </div>
+                    
                 </div>
                 <p style="margin-bottom: 2px;"><strong>How have I never tried this place?</strong></p>
                 <p style="margin-top: 2px; color: grey;">Full Leg</p>
@@ -78,8 +79,8 @@
                         <div class="review-stars">⭐⭐⭐⭐⭐</div>
                     </div>
                     <div class="review-actions">
-                        <button>👍 1</button>
-                        <button>👎 0</button>
+                        <button class="like-btn" onclick="setupReviewActions(this)">👍 <span class="like-count">0</span></button>
+                        <button class="dislike-btn" onclick="setupReviewActions(this)">👎 <span class="dislike-count">0</span></button>
                         <button>⋮</button>
                     </div>
                 </div>
@@ -96,8 +97,8 @@
                         <div class="review-stars">⭐⭐⭐⭐⭐</div>
                     </div>
                     <div class="review-actions">
-                        <button>👍 2</button>
-                        <button>👎 0</button>
+                        <button class="like-btn" onclick="setupReviewActions(this)">👍 <span class="like-count">0</span></button>
+                        <button class="dislike-btn" onclick="setupReviewActions(this)">👎 <span class="dislike-count">0</span></button>
                         <button>⋮</button>
                     </div>
                 </div>
@@ -112,10 +113,10 @@
                         <h3>Miguel Reaño</h3>
                         <p style="margin-top: 2px; font-size: x-small; color: grey;">01-29-2025 4:43 PM</p>
                         <div class="review-stars">⭐⭐⭐⭐⭐</div>
-                    </div>
+                    </div>              
                     <div class="review-actions">
-                        <button>👍 3</button>
-                        <button>👎 0</button>
+                        <button class="like-btn" onclick="setupReviewActions(this)">👍 <span class="like-count">0</span></button>
+                        <button class="dislike-btn" onclick="setupReviewActions(this)">👎 <span class="dislike-count">0</span></button>
                         <button>⋮</button>
                     </div>
                 </div>
@@ -128,5 +129,7 @@
 
     <script src="nav.js"></script>
     <script src="review_modal.js"></script>
+    <script src="review_actions.js"></script>
+
 </body>
 </html>
