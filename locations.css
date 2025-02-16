@@ -10,6 +10,14 @@ h1 {
     font-size: 2.5em;
     color: #4a2c1f;
 }
+
+.search-bar-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    
+}
 .store-locator-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -51,4 +59,14 @@ h1 {
     color: rgba(74, 44, 31, 0.2);
     white-space: nowrap;
     z-index: 1;
+}
+button {
+    background-color:#F6ECE9;
+    border:#F6ECE9;
+    border-radius: 10%; 
+}
+.search{
+    width: 200px; 
+    border-radius: 5%;
+    display: flex;
 }

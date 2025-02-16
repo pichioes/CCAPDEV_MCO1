@@ -11,10 +11,13 @@
 
     <h1>Store Review Page</h1>
     <div class="store-info">
-        <h2>Lay Bare Waxing Salon - Orlando</h2>
-        <p>Ground Floor Orlando Suites, Corner Singalong, Estrada St, Malate, Manila, 1004 Metro Manila</p>
-        <p>Waxing services in Manila</p>
-        <h3>4.5 ⭐ (Reviews)</h3>
+        <img src="img/loc1.png" alt="store photo">
+        <div class="store-text">
+            <h2>Lay Bare Waxing Salon - Orlando</h2>
+            <p>Ground Floor Orlando Suites, Corner Singalong, Estrada St, Malate, Manila, 1004 Metro Manila</p>
+            <p>Waxing services in Manila</p>
+            <h3>4.5 ⭐ (Reviews)</h3>
+        </div>
     </div>
     
     <div class="top-reviews">
@@ -23,7 +26,7 @@
             <div class="review-card">
                 <h2>Best waxing experience!</h2>
                 <p>"Best underarm wax I've ever had! Quick, efficient, and no irritation afterward. Highly recommend for anyone wanting smooth and soft underarms!"</p>
-                <p>- Julianna Charlize</p>
+                <p>- Julianna Lammoglia</p>
             </div>
             <div class="review-card">
                 <h2>Never felt so smooth :)</h2>
@@ -36,7 +39,7 @@
     <div class="other-reviews">
         <h1>Other Reviews</h1>
         <div class="review-buttons">
-            <button style="padding:15px; width: 200px; font-weight: bolder; font-size: larger;" onclick="loadModal()">Post a Review!</button>
+            <button style="padding:15px; width: 200px; font-weight: bolder; font-size: larger;" onclick="loadModal2()">Post a Review!</button>
             <div id="reviewModalContainer"></div> 
             <div class="search">
                 <input style="padding:20px; width: 200px;"type="text" placeholder="Search for a review...">
@@ -47,15 +50,23 @@
         <div class="other-reviews-container">
             <div class="other-review-card">
                 <h3>Julianna Charlize</h3>
+                <div class="review-buttons">
+                    <button style="padding: 5px; width: 150px; font-weight: bolder; font-size:small;" onclick="loadModal2()">Edit your Review!</button>
+                    <div id="reviewModalContainer"></div>
+                    <button style="padding: 5px; width: 150px; font-weight: bolder; font-size:small"> Delete your review</button>
+                </div>
                 <p><strong>Best waxing experience!</strong></p>
                 <p>"Best underarm wax I've ever had! Quick, efficient, and no irritation afterward. Highly recommend for anyone wanting smooth underarms!"</p>
                 <div class="manager-response">Manager Response: Thank you for your great review! Hope to see you soon :)</div>
             </div>
+        
             <div class="other-review-card">
                 <div class="review-header">
                     <img src="gwen.png" alt="Profile Picture" class="profile-pic">
                     <div class="review-info">
-                        <h3>Gwen Stacy</h3>
+                        <h3 id="gwen-button" style="cursor: pointer; color: inherit; text-decoration: none;">
+                            Gwen Stacey
+                        </h3>
                         <p style="margin-top: 2px; font-size: x-small; color: grey;">01-03-2025 2:15 PM</p>
                         <div class="review-stars">⭐⭐⭐⭐⭐</div>
                     </div>
@@ -74,7 +85,9 @@
                 <div class="review-header">
                     <img src="kevin.png" alt="Profile Picture" class="profile-pic">
                     <div class="review-info">
-                        <h3>Kevin Harder</h3>
+                        <h3 id="kev-button" style="cursor: pointer; color: inherit; text-decoration: none;">
+                            Kevin Harder
+                        </h3>
                         <p style="margin-top: 2px; font-size: x-small; color: grey;">01-13-2025 1:34 PM</p>
                         <div class="review-stars">⭐⭐⭐⭐⭐</div>
                     </div>
@@ -92,7 +105,9 @@
                 <div class="review-header">
                     <img src="alyssa.png" alt="Profile Picture" class="profile-pic">
                     <div class="review-info">
-                        <h3>Alyssa Mansueto</h3>
+                        <h4 id="alyssa-button" style="cursor: pointer; color: inherit; text-decoration: none;">
+                            Alyssa Mansueto
+                        </h4>
                         <p style="margin-top: 2px; font-size: x-small; color: grey;">01-20-2025 9:02 AM</p>
                         <div class="review-stars">⭐⭐⭐⭐⭐</div>
                     </div>
@@ -110,7 +125,9 @@
                 <div class="review-header">
                     <img src="migo.png" alt="Profile Picture" class="profile-pic">
                     <div class="review-info">
-                        <h3>Miguel Reaño</h3>
+                        <h3 id="migo-button" style="cursor: pointer; color: inherit; text-decoration: none;">
+                            Miguel Reaño
+                        </h3>
                         <p style="margin-top: 2px; font-size: x-small; color: grey;">01-29-2025 4:43 PM</p>
                         <div class="review-stars">⭐⭐⭐⭐⭐</div>
                     </div>              
@@ -126,10 +143,45 @@
             </div>
         </div>
     </div>
+    <div id="footer-placeholder"></div>
+
+    
+    <script> 
+ // Load footer dynamically
+            fetch("footer.html")
+            .then(response => response.text())
+            .then(data => document.getElementById("footer-placeholder").innerHTML = data);
+
+    </script>
+    <script>
+        document.getElementById("gwen-button").addEventListener("click", function() {
+            window.location.href = "view_user.html"; // Replace with the actual target page
+        });
+    </script>
+
+    <script>
+        document.getElementById("kev-button").addEventListener("click", function() {
+            window.location.href = "view_user.html"; // Replace with the actual target page
+        });
+    </script>
+
+    <script>
+        document.getElementById("alyssa-button").addEventListener("click", function() {
+            window.location.href = "view_user.html"; // Replace with the actual target page
+        });
+    </script>
+
+    <script>
+        document.getElementById("migo-button").addEventListener("click", function() {
+            window.location.href = "view_user.html"; // Replace with the actual target page
+        });
+    </script>
+
 
     <script src="nav.js"></script>
     <script src="review_modal.js"></script>
     <script src="review_actions.js"></script>
+    <script src="edit_review.js"></script>
 
 </body>
 </html>

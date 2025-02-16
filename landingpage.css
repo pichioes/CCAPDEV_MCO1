@@ -86,6 +86,11 @@ h1, h2, h3, p {
     color: #5a4a42;
     font-size: 16px;
 }
+
+.footer-placeholder{
+    margin: 0;
+    padding: 0;
+}
 @media screen and (max-width: 768px) {
     .about, .ingredients-container {
         flex-direction: column;

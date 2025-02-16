@@ -11,13 +11,8 @@
 
     <div class="profile-container">
         <img src="img/pfp1.png" alt="Profile Picture" class="profile-img" id="profilePic">
-        <h2>Julianna Lammoglia</h2>
+        <h2>Gwen Stacey</h2>
         <p class="description">Hi! I love getting waxed at Lay Bare!<br>I leave reviews to help the girlies out :)</p>
-        <div class="button-group">
-            <button class="edit-btn" onclick="loadModal()">Change Picture</button> 
-            <button class="edit-btn" onclick="loadED()">Edit Description</button>
-        </div>
-        <button class="logout-btn" onclick="logout()">Logout</button>
     </div>
     
     <div id="reviewModalContainer"></div>
@@ -25,36 +20,21 @@
     <div class="reviews-container">
         <h3>Recent Reviews</h3>
         <div class="review-card">
-            <h4 id="juls-button" style="cursor: pointer; color: inherit; text-decoration: none;">
-                Julianna Lammoglia
+            <h4 id="gwen-button" style="cursor: pointer; color: inherit; text-decoration: none;">
+                Gwen Stacey
             </h4>
             <p><strong>Underarm Wax</strong></p>
             <p>"Best underarm wax I've ever had! Quick, efficient, and no irritation afterward. Highly recommend for anyone wanting smooth and soft underarms!"</p>
         </div>
     </div>
-    <div id="footer-placeholder"></div>
-
-    <script> 
- // Load footer dynamically
-            fetch("footer.html")
-            .then(response => response.text())
-            .then(data => document.getElementById("footer-placeholder").innerHTML = data);
-
-    </script>
-
-    <script> 
-        function logout() {
-         window.location.href = "login.html"; // Redirects to another HTML file
-        }
-    </script>
-
+    
     <script>
-        document.getElementById("juls-button").addEventListener("click", function() {
+        document.getElementById("gwen-button").addEventListener("click", function() {
             window.location.href = "reviews_orlando.html"; // Replace with the actual target page
         });
     </script>
+
+    
     <script src="nav.js"></script>
-    <script src="change_picture.js"></script>
-    <script src="edit_description.js"></script>
 </body>
 </html>

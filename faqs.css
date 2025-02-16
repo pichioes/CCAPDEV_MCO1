@@ -49,5 +49,10 @@ h1 {
             white-space: nowrap;
             z-index: -1;
         }
+.footer-placeholder{
+    width: 1000px;
+    max-width: none;
+    margin-top: auto;
+}
 
 /* END OF FAQS */
