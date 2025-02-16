@@ -72,7 +72,7 @@ h1, h2, h3, p {
 }
 .ingredients-container {
     display: flex;
-    padding: 50px;
+    padding: 100px;
     background-color: #f7f2ea;
     justify-content: space-between;
 }
