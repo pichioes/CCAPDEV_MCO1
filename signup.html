@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link rel="stylesheet" href="signup.css">
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <img src="img/laybare.png" alt="Lay Bare Logo">
+        </div>
+        <form action="landingpage.html" method="POST">
+            <div class="input-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" placeholder="Enter username">
+            </div>
+            <div class="input-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" placeholder="Enter password">
+            </div>
+            <div class="input-group">
+                <label for="description">Description:</label>
+                <textarea id="description" name="description" placeholder="Enter your description..." rows="4" cols="50"></textarea>
+            </div>
+            <div class="input-group">
+                <label for="profile-pic">Profile Picture:</label>
+                <input type="file" id="file" name="file">
+            </div>
+        <button type="submit" class="signup-btn">Signup</button>
+        </form>
+        <button class="login-btn" onclick="window.location.href='login.html'">Login</button>
+
+    </div>
+</body>
+</html>
