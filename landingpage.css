@@ -10,8 +10,10 @@ body {
 h1, h2, h3, p {
     margin: 0;
 }
+
 .hero {
     background-image: url("img/headerwoman.png");
+    background-color: #f7f2ea;
     background-repeat: no-repeat; 
     background-position: right;
     background-size: 800px;
