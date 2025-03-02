@@ -49,14 +49,30 @@
         
         <div class="other-reviews-container">
             <div class="other-review-card">
-                <h3>Julianna Charlize</h3>
+                <div class="review-header">
+                    <img src="juls.png" alt="Profile Picture" class="profile-pic">
+                    <div class="review-info">
+                        <h3 id="gwen-button" style="cursor: pointer; color: inherit; text-decoration: none;">
+                            Julianna Lammoglia
+                        </h3>
+                        <p style="margin-top: 2px; font-size: x-small; color: grey;">01-03-2025 2:15 PM</p>
+                        <div class="review-stars">⭐⭐⭐⭐⭐</div>
+                    </div>
+                    <div class="review-actions">
+                        <button class="like-btn" onclick="setupReviewActions(this)">👍 <span class="like-count">0</span></button>
+                        <button class="dislike-btn" onclick="setupReviewActions(this)">👎 <span class="dislike-count">0</span></button>
+                        <button>⋮</button>
+                    </div>
+                    
+                </div>
                 <div class="review-buttons">
                     <button style="padding: 5px; width: 150px; font-weight: bolder; font-size:small;" onclick="loadModal2()">Edit your Review!</button>
                     <div id="reviewModalContainer"></div>
                     <button style="padding: 5px; width: 150px; font-weight: bolder; font-size:small"> Delete your review</button>
                 </div>
-                <p><strong>Best waxing experience!</strong></p>
-                <p>"Best underarm wax I've ever had! Quick, efficient, and no irritation afterward. Highly recommend for anyone wanting smooth underarms!"</p>
+                <p style="margin: 0px;"><strong>Best waxing experience!</strong></p>
+                <p style="margin-top: 2px; color: grey;">Underarm</p>
+                <p style="color: grey"><i>"Best underarm wax I've ever had! Quick, efficient, and no irritation afterward. Highly recommend for anyone wanting smooth underarms!"</i></p>
                 <div class="manager-response">Manager Response: Thank you for your great review! Hope to see you soon :)</div>
             </div>
         
@@ -105,7 +121,7 @@
                 <div class="review-header">
                     <img src="alyssa.png" alt="Profile Picture" class="profile-pic">
                     <div class="review-info">
-                        <h4 id="alyssa-button" style="cursor: pointer; color: inherit; text-decoration: none;">
+                        <h3 id="alyssa-button" style="cursor: pointer; color: inherit; text-decoration: none;">
                             Alyssa Mansueto
                         </h4>
                         <p style="margin-top: 2px; font-size: x-small; color: grey;">01-20-2025 9:02 AM</p>

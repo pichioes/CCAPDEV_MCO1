@@ -20,7 +20,7 @@ h3 {
     padding: 20px;
     border-radius: 20px; /* Rounded corners */
     margin: 20px auto;
-    width: 90%; /* Adjust width */
+    width: 80%; /* Adjust width */
     display: flex; /* Arrange items in a row */
     align-items: center; /* Align items vertically */
     gap: 30px; /* Space between image and text */
@@ -63,6 +63,7 @@ h3 {
 }
 .review-buttons {
     display: flex;
+    margin: 15px auto;
 }
 .other-reviews {
     padding: 20px;
