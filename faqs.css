@@ -5,12 +5,19 @@ body {
     font-family: Arial, sans-serif;
     color: white;
     position: relative;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
 }
 h1 {
     font-size: 2em;
 }
 .faq-container {
+    flex-grow: 1;
     width: 60%;
+    margin-bottom: 20px; /* Adjust if needed */
 }
 .faq-item {
     background-color: #f4e9e4;
