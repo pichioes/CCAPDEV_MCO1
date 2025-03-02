@@ -7,12 +7,6 @@
 
     <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
     <style>
-        html, body {
-            height: 100%;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-        }
 
         footer {
             background-color: #dab0b6;
@@ -27,16 +21,18 @@
 
         .footer-container {
             display: flex;
-            justify-content: space-around;
+            justify-content: flex-start;
             align-items: center;
             flex-wrap: wrap;
             width: 100%;
             max-width: 1200px;
             margin: 0 auto;
+            gap: 5%;
+            padding-left: 35%;
         }
 
         .logo-social img {
-            width: 120px;
+            width: 200px;
         }
 
         .social-icons i {
@@ -49,9 +45,17 @@
             margin-bottom: 10px;
         }
 
+        .contact {
+            max-width: 300px;
+            text-align: left;
+        }
+
         .footer-links {
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
+            list-style: none;
+            gap: 7%;
+            justify-content: center;
         }
 
         .footer-links a {
@@ -79,6 +83,7 @@
             color: #ececec;
             text-decoration: none;
         }
+        
 
     </style>
 </head>
@@ -101,13 +106,13 @@
                 <p><i class="fas fa-phone"></i> (02) 8726 6479</p>
                 <p><i class="fas fa-map-marker-alt"></i> 2F Citiplace Bldg. 8001 Jose Abad Santos St., San Juan, Metro Manila</p>
             </div>
-            <div class="footer-links">
-                <a href="landingpage.html">Home</a>
-                <a href="locations.html">Stores</a>
-                <a href="services.html">Services</a>
-                <a href="faqs.html">FAQs</a>
-            </div>
         </div>
+        <ul class="footer-links">
+            <li><a href="landingpage.html">Home</a></li>
+            <li><a href="locations.html">Stores</a></li>
+            <li><a href="services.html">Services</a></li>
+            <li><a href="faqs.html">FAQs</a></li>
+        </ul>
         <hr>
         <div class="footer-bottom">
             <p>Copyright &copy; 2025 Lay Bare Waxing Philippines</p>
