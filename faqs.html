@@ -33,8 +33,11 @@
         </div>
     </div>
     <div class="side-text">LayBare</div>
-     <!-- Footer Placeholder -->
-    <div id="footer-placeholder"></div>
+
+    <div id="footer"></div>
+
+    <script src="nav.js"></script>
+    <script src="footer.js"></script>
 
     <script>
          // Toggle FAQ Answers
@@ -44,13 +47,7 @@
                 faqItem.classList.toggle('active');
             });
         });
- 
-         // Load footer dynamically
-        fetch("footer.html")
-            .then(response => response.text())
-            .then(data => document.getElementById("footer-placeholder").innerHTML = data);
     </script>
 
-    <script src="nav.js"></script>
 </body>
 </html>

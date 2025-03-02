@@ -32,15 +32,7 @@
             <p>"Best underarm wax I've ever had! Quick, efficient, and no irritation afterward. Highly recommend for anyone wanting smooth and soft underarms!"</p>
         </div>
     </div>
-    <div id="footer-placeholder"></div>
-
-    <script> 
- // Load footer dynamically
-            fetch("footer.html")
-            .then(response => response.text())
-            .then(data => document.getElementById("footer-placeholder").innerHTML = data);
-
-    </script>
+    <div id="footer"></div>
 
     <script> 
         function logout() {
@@ -54,6 +46,7 @@
         });
     </script>
     <script src="nav.js"></script>
+    <script src="footer.js"></script>
     <script src="change_picture.js"></script>
     <script src="edit_description.js"></script>
 </body>

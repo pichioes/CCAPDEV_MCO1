@@ -159,16 +159,9 @@
             </div>
         </div>
     </div>
-    <div id="footer-placeholder"></div>
+    <div id="footer"></div>
 
     
-    <script> 
- // Load footer dynamically
-            fetch("footer.html")
-            .then(response => response.text())
-            .then(data => document.getElementById("footer-placeholder").innerHTML = data);
-
-    </script>
     <script>
         document.getElementById("gwen-button").addEventListener("click", function() {
             window.location.href = "view_user.html"; // Replace with the actual target page
@@ -195,6 +188,7 @@
 
 
     <script src="nav.js"></script>
+    <script src="footer.js"></script>
     <script src="review_modal.js"></script>
     <script src="review_actions.js"></script>
     <script src="edit_review.js"></script>
