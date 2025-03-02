@@ -1,11 +1,7 @@
 /* SERVICES CSS */
 body {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     background-color: #f3e0dc;
     font-family: Arial, sans-serif;
-    padding: 20px;
     color: #5a3627;
     position: relative;
 }
@@ -14,6 +10,9 @@ h1 {
     color: #5a3627;
 }
 .services-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 20px;

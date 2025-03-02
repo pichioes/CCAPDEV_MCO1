@@ -1,8 +1,6 @@
 /* FAQS CSS */
 body {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    
     background-color: #c9a1a1;
     font-family: Arial, sans-serif;
     color: white;
