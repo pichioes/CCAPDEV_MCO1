@@ -23,10 +23,9 @@ h1 {
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 20px;
     justify-content: center;
-    max-width: 900px;
+    width: 60%;
     margin: auto;
     position: relative;
-    z-index: 2;
 }
 .store-card {
     background-color: #F6ECE9;
@@ -50,16 +49,7 @@ h1 {
     font-size: 1.2em;
     margin-bottom: 5px;
 }
-.side-text {
-    position: absolute;
-    bottom: -50px;
-    left: 20px;
-    font-size: 8em;
-    font-weight: bold;
-    color: rgba(74, 44, 31, 0.2);
-    white-space: nowrap;
-    z-index: 1;
-}
+
 button {
     background-color:#F6ECE9;
     border:#F6ECE9;
