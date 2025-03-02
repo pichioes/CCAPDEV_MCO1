@@ -2,10 +2,12 @@
 body {
     background-color: #f4e9e4;
     font-family: Arial, sans-serif;
+    row-gap: 50px;
 }
 .profile-container {
     background-color: #c9a1a1;
     padding: 40px;
+    margin: auto;
     border-radius: 15px;
     box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
     text-align: center;
@@ -41,8 +43,8 @@ button {
     background-color: #f4e9e4;
 }
 .reviews-container {
-    margin-top: 40px;
-    width: 50%;
+    margin: auto;
+    width: 55%;
 }
 .review-card {
     background-color: #fff;

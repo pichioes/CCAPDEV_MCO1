@@ -4,20 +4,17 @@ body {
     background-color: #c9a1a1;
     font-family: Arial, sans-serif;
     color: white;
+    row-gap: 50px;
     position: relative;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
 }
 h1 {
     font-size: 2em;
+    margin: auto;
 }
 .faq-container {
     flex-grow: 1;
     width: 60%;
-    margin-bottom: 20px; /* Adjust if needed */
+    margin: auto;
 }
 .faq-item {
     background-color: #f4e9e4;
@@ -42,17 +39,7 @@ h1 {
 .faq-item.active .faq-answer {
     display: block;
 }
-.side-text {
-            position: fixed;
-            right: -130px;
-            top: 50%;
-            transform: translateY(-50%) rotate(270deg);
-            font-size: 5em;
-            font-weight: bold;
-            color: rgba(255, 255, 255, 0.3);
-            white-space: nowrap;
-            z-index: -1;
-        }
+
 .footer-placeholder{
     width: 1000px;
     max-width: none;
