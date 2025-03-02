@@ -7,13 +7,15 @@ body {
     position: relative;
 }
 h1 {
-    font-size: 2em;
-    margin: auto;
+    margin: 50px;
+    justify-content: center;
+    display: flex;
 }
 .faq-container {
     flex-grow: 1;
     width: 60%;
     margin: auto;
+    margin-bottom: 50px;
 }
 .faq-item {
     background-color: #f4e9e4;
