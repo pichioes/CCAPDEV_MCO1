@@ -1,13 +1,15 @@
 /* FAQS CSS */
 body {
-    background-color: #c9a1a1;
+    background-color: #f3e0dc;
+    /* #c9a1a1 */
     font-family: Arial, sans-serif;
-    color: white;
     row-gap: 50px;
     position: relative;
     margin: 0px;
 }
 h1 {
+    color: #4a2c1f;
+    font-size: 3em;
     margin: 50px;
     justify-content: center;
     display: flex;
@@ -19,7 +21,8 @@ h1 {
     margin-bottom: 50px;
 }
 .faq-item {
-    background-color: #f4e9e4;
+    background-color: #c9a1a1;
+    /* #f4e9e4 */
     margin-bottom: 10px;
     border-radius: 10px;
     overflow: hidden;
@@ -31,12 +34,12 @@ h1 {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    color: black;
+    color: white;
 }
 .faq-answer {
     padding: 15px;
     display: none;
-    color: black;
+    color: white;
 }
 .faq-item.active .faq-answer {
     display: block;
