@@ -1,11 +1,8 @@
 /* USER PAGE CSS */
 body {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    row-gap: 50px;
     background-color: #f4e9e4;
     font-family: Arial, sans-serif;
-    padding: 20px;
 }
 .profile-container {
     background-color: #c9a1a1;
