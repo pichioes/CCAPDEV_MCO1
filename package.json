@@ -2,9 +2,9 @@
   "name": "ccapdev_mco1",
   "version": "1.0.0",
   "description": "CCAPDEV MCO",
-  "main": "app.js",
+  "main": "app.mjs",
   "scripts": {
-    "start": "login.html"
+    "start": "node app.mjs"
   },
   "repository": {
     "type": "git",
