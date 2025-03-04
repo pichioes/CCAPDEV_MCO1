@@ -1,0 +1,22 @@
+{
+  "name": "ccapdev_mco1",
+  "version": "1.0.0",
+  "description": "CCAPDEV MCO",
+  "main": "app.js",
+  "scripts": {
+    "start": "login.html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pichioes/CCAPDEV_MCO1.git"
+  },
+  "author": "",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/pichioes/CCAPDEV_MCO1/issues"
+  },
+  "homepage": "https://github.com/pichioes/CCAPDEV_MCO1#readme",
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
