@@ -4,7 +4,8 @@
   "description": "CCAPDEV MCO",
   "main": "app.mjs",
   "scripts": {
-    "start": "node app.mjs"
+    "devStart": "nodemon app.mjs"
+    
   },
   "repository": {
     "type": "git",
@@ -17,6 +18,10 @@
   },
   "homepage": "https://github.com/pichioes/CCAPDEV_MCO1#readme",
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
   }
 }
