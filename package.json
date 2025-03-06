@@ -5,7 +5,6 @@
   "main": "app.mjs",
   "scripts": {
     "devStart": "nodemon app.mjs"
-    
   },
   "repository": {
     "type": "git",
@@ -19,7 +18,9 @@
   "homepage": "https://github.com/pichioes/CCAPDEV_MCO1#readme",
   "dependencies": {
     "bcrypt": "^5.1.1",
-    "express": "^4.21.2"
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "mongoose": "^8.12.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.9"

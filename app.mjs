@@ -2,17 +2,32 @@ import express from 'express'
 import path from 'path'
 import { fileURLToPath } from 'url';
 import fs from 'fs';
+import mongoose from 'mongoose';
+import bcrypt from 'bcrypt';
+import dotenv from 'dotenv';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express()
 
-const USERS_FILE = path.join(__dirname, 'users.json');
+// Connect to MongoDB
+dotenv.config();
 
 app.use(express.json());
 
 app.use(express.static(__dirname));
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => console.log("Connected to MongoDB"))
+    .catch(err => console.error("MongoDB connection error:", err));
+
+const userSchema = new mongoose.Schema({
+    username: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    description: String
+});
+
+const User = mongoose.model("users", userSchema);
 
 app.get('/', (req, res) =>{
     res.sendFile(path.join(__dirname, 'login.html'));
@@ -20,44 +35,53 @@ app.get('/', (req, res) =>{
 
 
 
-app.post('/login', (req, res) => {
+app.post('/login', async (req, res) => {
     const { username, password } = req.body;
 
-    // Load users from users.json
-    let users = JSON.parse(fs.readFileSync(USERS_FILE, 'utf-8'));
+    try {
+        // Find user in database
+        const user = await User.findOne({ username });
+        if (!user) {
+            console.log("username does not exists");
+            return res.status(401).json({ message: "Invalid username or password." });
+        }
 
-    // Find user with matching username and password
-    const user = users.find(user => user.username === username && user.password === password);
+        // Compare passwords
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            console.log("password incorrect");
+            return res.status(401).json({ message: "Invalid username or password." });
+        }
 
-    if (user) {
         res.json({ message: "Login successful!" });
-        console.log("Login success:", username);
-    } else {
-        res.status(401).json({ message: "Invalid username or password" });
-        console.log("Login failed:", username);
+    } catch (err) {
+        res.status(500).json({ message: "Server error." });
     }
 });
 
 // Handle signup requests
-app.post('/signup', (req, res) => {
+app.post('/signup', async (req, res) => {
     const { username, password, description } = req.body;
 
-    // Load existing users
-    let users = JSON.parse(fs.readFileSync(USERS_FILE));
+    try {
+        // Check if the user already exists
+        const existingUser = await User.findOne({ username });
+        if (existingUser) {
+            return res.status(400).json({ message: "Username already taken." });
+        }
 
-    // Check if the username already exists
-    if (users.some(user => user.username === username)) {
-        return res.status(400).json({ message: "Username already taken." });
+        // Hash the password
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Create and save user
+        const newUser = new User({ username, password: hashedPassword, description });
+        await newUser.save();
+
+        res.json({ message: "Signup successful!" });
+    } catch (err) {
+        res.status(500).json({ message: "Server error." });
     }
-
-    // Save new user
-    const newUser = { username, password, description };
-    users.push(newUser);
-    fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
-
-    res.json({ message: "Signup successful!" });
 });
-
 
 app.listen(3000, () => {
 
