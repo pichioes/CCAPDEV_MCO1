@@ -11,30 +11,54 @@
         <div class="logo">
             <img src="img/laybare.png" alt="Lay Bare Logo">
         </div>
-        <form action="landingpage.html" method="POST">
+        <form id="signupForm">
             <div class="input-group">
                 <label for="username">Username:</label>
-                <input type="text" id="username" placeholder="Enter username">
+                <input type="text" id="username" placeholder="Enter username" required>
             </div>
             <div class="input-group">
                 <label for="password">Password:</label>
-                <input type="password" id="password" placeholder="Enter password">
+                <input type="password" id="password" placeholder="Enter password" required>
             </div>
             <div class="input-group">
                 <label for="description">Description:</label>
-                <textarea id="description" name="description" placeholder="Enter your description..." rows="4" cols="50"></textarea>
+                <textarea id="description" name="description" placeholder="Enter your description..." rows="4" cols="50" required></textarea>
             </div>
             <div class="input-group">
                 <label for="profile-pic">Profile Picture:</label>
-                <input type="file" id="file" name="file">
+                <input type="file" id="file" name="file" >
             </div>
-        <!-- <button type="submit" class="signup-btn">Signup</button> -->
+         <button type="submit" class="signup-btn">Signup</button> 
         </form>
 
-        <button style="margin-bottom: 5px;" class="signup-btn" onclick="window.location.href='landingpage.html'">Signup</button>
+        <!-- <button style="margin-bottom: 5px;" class="signup-btn" onclick="window.location.href='landingpage.html'">Signup</button> -->
         <button class="login-btn" onclick="window.location.href='login.html'">Login</button>
         <button class="guest-btn" onclick="window.location.href='landingpage.html'">Continue as Guest</button>
 
     </div>
 </body>
+<script>
+    document.getElementById("signupForm").addEventListener("submit", async function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+            const description = document.getElementById("description").value;
+
+            const response = await fetch('/signup', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password, description})
+            });
+
+            const data = await response.json();
+            
+            if (response.ok) {
+                alert(data.message);
+                window.location.href = "landingpage.html"; // Redirect on success
+            } else {
+                alert("Signup failed: " + data.message);
+            }
+        });
+</script>
 </html>
