@@ -1,4 +1,4 @@
-function loadED() {
+async function loadED() {
     fetch('edit_description.html')
         .then(response => response.text())
         .then(html => {
@@ -10,32 +10,47 @@ function loadED() {
 
                 document.querySelector(".close-button").addEventListener("click", closeModal);
                 document.getElementById("modalOverlay").addEventListener("click", closeModal);
-                document.querySelector("#submitReviewButton").addEventListener("click", submitReview);
+
+                // Attach event listener AFTER modal is loaded
+                document.getElementById("submitReviewButton").addEventListener("click", changeDescription);
             }, 0);
-        });
+        })
+        .catch(error => console.error("Error loading modal:", error));
 }
 
-function closeED() {
+
+async function closeED() {
     document.getElementById('reviewModal').style.display = 'none';
     document.getElementById('modalOverlay').style.display = 'none';
 }
 
-function submitReview(event) {
-    event.preventDefault();
+async function changeDescription(event) {
+    event.preventDefault(); // Prevent default action
 
-    let fileInput = document.getElementById("reviewImage");
-    let file = fileInput.files[0];
-
-    if (!file) {
-        alert("Please select an image.");
+    const description = document.getElementById("reviewText").value;
+    if (!description) {
+        alert("Description cannot be empty!");
         return;
     }
 
-    let reader = new FileReader();
-    reader.onload = function (e) {
-        document.querySelector(".profile-img").src = e.target.result;
-        alert("Picture Changed Successfully!");
-        closeModal();
-    };
-    reader.readAsDataURL(file);
+    try {
+        const response = await fetch('/edit-description', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ description })
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+            alert(data.message);
+            closeModal(); // Close the modal after success
+            window.location.reload(); // Redirect to user page
+        } else {
+            alert("Update failed: " + (data.message || "Unknown error"));
+        }
+    } catch (error) {
+        console.error("Error during fetch:", error);
+        alert("An error occurred while updating the description.");
+    }
 }
+
