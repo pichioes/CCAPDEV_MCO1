@@ -9,14 +9,10 @@
     },
     {
         "_id": "svc003",
-        "Service_Name": "Full Arm Wax"
+        "Service_Name": "Facial Wax"
     },
     {
         "_id": "svc004",
-        "Service_Name": "Full Leg Wax"
-    }, 
-    {
-        "_id": "svc005",
-        "Service_Name": "Brazilian Wax"
+        "Service_Name": "Leg Wax"
     }
 ]

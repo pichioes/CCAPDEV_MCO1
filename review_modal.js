@@ -1,7 +1,5 @@
 function initializeStarRating() {
-
     const stars = document.querySelectorAll(".star");
-
     stars.forEach((star, index) => {
         star.dataset.value = index + 1;
         star.addEventListener("click", function () {
@@ -24,8 +22,10 @@ function loadModal() {
     fetch('review_modal.html')
         .then(response => response.text())
         .then(html => {
+            // Inject the modal HTML into the dedicated container in the main page
             document.getElementById('reviewModalContainer').innerHTML = html;
 
+            // After injection, display the modal and set up event listeners
             setTimeout(() => {
                 document.getElementById('reviewModal').style.display = 'block';
                 document.getElementById('modalOverlay').style.display = 'block';
@@ -46,7 +46,7 @@ function closeModal() {
 
 function submitReview(event) {
     event.preventDefault(); 
-
+    console.log("submitReview triggered");
     let service = document.getElementById("serviceSelect").value;
     let review = document.getElementById("reviewText").value;
     let stars = document.querySelectorAll(".star.active").length;
@@ -60,7 +60,7 @@ function submitReview(event) {
         serviceName: service,
         review: review,
         starRating: stars,
-        imageUrl: "" // you can add upload logic later
+        imageUrl: "" // You can add file upload logic later if needed
     };
 
     fetch("/addreview", {
@@ -79,4 +79,30 @@ function submitReview(event) {
         console.error(err);
         alert("Error submitting review.");
     });
+    fetch("/addreview", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(res => {
+        if (res.status === 401) {
+            alert("You must be logged in to post a review.");
+            window.location.href = "/login.html"; // Redirect to login
+            throw new Error("Not authenticated");
+            }
+            return res.json();
+        })
+    .then(data => {
+        alert(data.message);
+        closeModal();
+    })
+    .catch(err => {
+        console.error(err);
+        if (err.message !== "Not authenticated") {
+            alert("Error submitting review.");
+        }
+     });
 }
+

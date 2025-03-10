@@ -23,11 +23,11 @@ app.use(session({
     secret: "your-secret-key",
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: false } // Set to `true` in production with HTTPS
+    cookie: { secure: false }
 }));
 
 app.use(express.static(__dirname));
-mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log("Connected to MongoDB"))
     .catch(err => console.error("MongoDB connection error:", err));
 
@@ -39,6 +39,7 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model("users", userSchema);
 
+
 const reviewSchema = new mongoose.Schema({
     User_ID: { type: mongoose.Schema.Types.ObjectId, ref: "users" },
     //Location_ID: String, optional: if you plan to add location input later
@@ -47,7 +48,7 @@ const reviewSchema = new mongoose.Schema({
     Date: String,
     Star_rating: Number
 });
-
+const Review = mongoose.model('Review', reviewSchema, 'review');
 const serviceSchema = new mongoose.Schema({
     Service_Name: { type: String, required: true }
 });
@@ -162,36 +163,37 @@ app.post("/logout", (req, res) => {
 
 
 app.post("/addreview", async (req, res) => {
+    console.log("POST /addreview route triggered with body:", req.body);
     if (!req.session.userId) {
         return res.status(401).json({ message: "You must be logged in to post a review." });
     }
 
     const { serviceName, review, starRating, imageUrl = "" } = req.body;
 
-    if (!serviceName || !review || !starRating) {
-        return res.status(400).json({ message: "All fields except image are required." });
-    }
+    //if (!serviceName || !review || !starRating) {
+       // return res.status(400).json({ message: "All fields except image are required." });
+    //}
 
-    if (starRating < 1 || starRating > 5) {
-        return res.status(400).json({ message: "Rating must be between 1 and 5 stars." });
-    }
+   // if (starRating < 1 || starRating > 5) {
+   //     return res.status(400).json({ message: "Rating must be between 1 and 5 stars." });
+   // }
 
     try {
         const service = await Service.findOne({ Service_Name: serviceName });
-        if (!service) {
+        if (!service) { 
             return res.status(400).json({ message: "Invalid service name." });
         }
 
         const newReview = new Review({
             User_ID: req.session.userId._id,
-            Location_ID: "loc001", // default value for now
+            //Location_ID: "loc001", // default value for now
             Service_ID: service._id,
             Review: review,
             Date: new Date().toLocaleDateString('en-GB'),
             Star_rating: starRating,
-            Image_URL: imageUrl
+            //Image_URL: imageUrl
         });
-
+        console.log("Review object:", newReview);
         await newReview.save();
         res.json({ message: "Review submitted successfully!" });
     } catch (err) {
