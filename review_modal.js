@@ -49,13 +49,34 @@ function submitReview(event) {
 
     let service = document.getElementById("serviceSelect").value;
     let review = document.getElementById("reviewText").value;
-    let file = document.getElementById("reviewImage").files[0];
+    let stars = document.querySelectorAll(".star.active").length;
 
-    if (service === "" || review.trim() === "") {
-        alert("Please fill out all fields.");
+    if (service === "" || review.trim() === "" || stars === 0) {
+        alert("Please fill out all fields and select a star rating.");
         return;
     }
 
-    alert("Review submitted successfully!");
-    closeModal();
+    const formData = {
+        serviceName: service,
+        review: review,
+        starRating: stars,
+        imageUrl: "" // you can add upload logic later
+    };
+
+    fetch("/addreview", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(res => res.json())
+    .then(data => {
+        alert(data.message);
+        closeModal();
+    })
+    .catch(err => {
+        console.error(err);
+        alert("Error submitting review.");
+    });
 }

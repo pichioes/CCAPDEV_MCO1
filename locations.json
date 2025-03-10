@@ -1,11 +1,19 @@
 [
     {
       "_id": "loc001",
-      "Location_Name": "New York"
+      "Location_Name": "Orlando"
     },
     {
       "_id": "loc002",
-      "Location_Name": "Los Angeles"
+      "Location_Name": "Ayala North Exchange"
+    },
+    {
+      "_id": "loc003",
+      "Location_Name": "Newport City"
+    },
+    {
+        "_id": "loc004",
+        "Location_Name": "California Garden"
     }
 ]
   

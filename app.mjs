@@ -7,6 +7,7 @@ import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 import session from "express-session"
 
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -37,6 +38,23 @@ const userSchema = new mongoose.Schema({
 });
 
 const User = mongoose.model("users", userSchema);
+
+const reviewSchema = new mongoose.Schema({
+    User_ID: { type: mongoose.Schema.Types.ObjectId, ref: "users" },
+    //Location_ID: String, optional: if you plan to add location input later
+    Service_ID: String,
+    Review: String,
+    Date: String,
+    Star_rating: Number
+});
+
+const serviceSchema = new mongoose.Schema({
+    Service_Name: { type: String, required: true }
+});
+
+const Service = mongoose.model("services", serviceSchema);
+
+
 
 app.get('/', (req, res) =>{
     res.sendFile(path.join(__dirname, 'login.html'));
@@ -142,6 +160,45 @@ app.post("/logout", (req, res) => {
     });
 });
 
+
+app.post("/addreview", async (req, res) => {
+    if (!req.session.userId) {
+        return res.status(401).json({ message: "You must be logged in to post a review." });
+    }
+
+    const { serviceName, review, starRating, imageUrl = "" } = req.body;
+
+    if (!serviceName || !review || !starRating) {
+        return res.status(400).json({ message: "All fields except image are required." });
+    }
+
+    if (starRating < 1 || starRating > 5) {
+        return res.status(400).json({ message: "Rating must be between 1 and 5 stars." });
+    }
+
+    try {
+        const service = await Service.findOne({ Service_Name: serviceName });
+        if (!service) {
+            return res.status(400).json({ message: "Invalid service name." });
+        }
+
+        const newReview = new Review({
+            User_ID: req.session.userId._id,
+            Location_ID: "loc001", // default value for now
+            Service_ID: service._id,
+            Review: review,
+            Date: new Date().toLocaleDateString('en-GB'),
+            Star_rating: starRating,
+            Image_URL: imageUrl
+        });
+
+        await newReview.save();
+        res.json({ message: "Review submitted successfully!" });
+    } catch (err) {
+        console.error("Error saving review:", err);
+        res.status(500).json({ message: "Server error while saving review." });
+    }
+});
 
 app.listen(3000, () => {
 
