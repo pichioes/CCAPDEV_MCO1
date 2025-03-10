@@ -1,0 +1,10 @@
+{
+    "_id": "review001",
+    "User_ID": "user001",
+    "Location_ID": "loc001",
+    "Service_ID": "svc001",
+    "Review": "Awesome service!",
+    "Date": "10/03/2025",
+    "Star_rating": 5
+  }
+  
