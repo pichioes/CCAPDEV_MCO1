@@ -51,7 +51,6 @@ const reviewSchema = new mongoose.Schema({
 });
 const Review = mongoose.model('reviews', reviewSchema);
 const serviceSchema = new mongoose.Schema({
-    _id: String,
     Service_Name: { type: String, required: true }
 });
 
@@ -202,6 +201,7 @@ app.post("/addreview", async (req, res) => {
                 serviceId = service._id;
             }
         }
+        console.log(serviceId)
 
         const newReview = new Review({
             User_ID: req.session.userId._id,
