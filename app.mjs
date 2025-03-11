@@ -31,6 +31,7 @@ mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log("Connected to MongoDB"))
     .catch(err => console.error("MongoDB connection error:", err));
 
+
 const userSchema = new mongoose.Schema({
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
@@ -43,7 +44,7 @@ const User = mongoose.model("users", userSchema);
 const reviewSchema = new mongoose.Schema({
     User_ID: { type: mongoose.Schema.Types.ObjectId, ref: "users" },
     //Location_ID: String, optional: if you plan to add location input later
-    Service_ID: String,
+    Service_ID: { type: mongoose.Schema.Types.ObjectId, ref: "services" },
     Review: String,
     Date: String,
     Star_rating: Number
@@ -84,6 +85,7 @@ app.post('/login', async (req, res) => {
         req.session.userId = user;
         console.log(req.session.userId.username)
         console.log(req.session.userId._id)
+        console.log(typeof req.session.userId._id)
         res.json({ message: "Login successful!" });
     } catch (err) {
         res.status(500).json({ message: "Server error." });
@@ -196,12 +198,9 @@ app.post("/addreview", async (req, res) => {
 
     try {
         console.log("review attempt")
-        const collections = await mongoose.connection.db.listCollections().toArray();
-        console.log(collections)
-        const services = await Service.find(); // Fetch all documents
-        console.log("All Services in Database:", services);
+        
         const service = await Service.findOne({ Service_Name: serviceName });
-        console.log(service)
+        const sId = new ObjectId(service._id);
         if (!service) { 
             return res.status(400).json({ message: "Invalid service name." });
         }
