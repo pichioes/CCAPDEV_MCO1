@@ -18,7 +18,7 @@ function initializeStarRating() {
     }
 }
 
-function loadModal() {
+async function loadModal() {
     fetch('review_modal.html')
         .then(response => response.text())
         .then(html => {
@@ -32,7 +32,7 @@ function loadModal() {
 
                 document.querySelector(".close-button").addEventListener("click", closeModal);
                 document.getElementById("modalOverlay").addEventListener("click", closeModal);
-                document.querySelector("#submitReviewButton").addEventListener("click", submitReview);
+                document.getElementById("submitReviewButton").addEventListener("click", submitReview);
 
                 initializeStarRating();
             }, 0);
@@ -44,7 +44,7 @@ function closeModal() {
     document.getElementById('modalOverlay').style.display = 'none';
 }
 
-function submitReview(event) {
+async function submitReview(event) {
     event.preventDefault(); 
     console.log("submitReview triggered");
     let service = document.getElementById("serviceSelect").value;
@@ -63,7 +63,34 @@ function submitReview(event) {
         imageUrl: "" // You can add file upload logic later if needed
     };
 
-    fetch("/addreview", {
+    try{
+
+        const response = await fetch("/addreview", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(formData)
+        })
+
+        const data = await response.json();
+        if (response.ok) {
+            alert(data.message);
+            alert("button works");
+            closeModal(); // Close the modal after success
+            window.location.reload(); // Redirect to user page
+        } else {
+            alert("Review failed: " + (data.message || "Unknown error"));
+        }
+
+    }catch(error){
+        console.error("Error during fetch:", error);
+        alert("An error occurred trying to submit a review.");
+
+       
+    }
+
+    /*fetch("/addreview", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -103,6 +130,8 @@ function submitReview(event) {
         if (err.message !== "Not authenticated") {
             alert("Error submitting review.");
         }
-     });
+     });*/
+
+
 }
 

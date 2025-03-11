@@ -48,12 +48,12 @@ const reviewSchema = new mongoose.Schema({
     Date: String,
     Star_rating: Number
 });
-const Review = mongoose.model('Review', reviewSchema, 'review');
+const Review = mongoose.model('review', reviewSchema);
 const serviceSchema = new mongoose.Schema({
     Service_Name: { type: String, required: true }
 });
 
-const Service = mongoose.model("services", serviceSchema);
+const Service = mongoose.model("service", serviceSchema);
 
 
 
@@ -82,6 +82,7 @@ app.post('/login', async (req, res) => {
         }
         req.session.userId = user;
         console.log(req.session.userId.username)
+        console.log(req.session.userId._id)
         res.json({ message: "Login successful!" });
     } catch (err) {
         res.status(500).json({ message: "Server error." });
@@ -169,7 +170,8 @@ app.post("/addreview", async (req, res) => {
     }
 
     const { serviceName, review, starRating, imageUrl = "" } = req.body;
-
+    console.log(serviceName)
+    console.log(typeof serviceName)
     //if (!serviceName || !review || !starRating) {
        // return res.status(400).json({ message: "All fields except image are required." });
     //}
@@ -179,7 +181,13 @@ app.post("/addreview", async (req, res) => {
    // }
 
     try {
+        console.log("review attempt")
+        const collections = await mongoose.connection.db.listCollections().toArray();
+        console.log(collections)
+        const services = await Service.find(); // Fetch all documents
+        console.log("All Services in Database:", services);
         const service = await Service.findOne({ Service_Name: serviceName });
+        console.log(service)
         if (!service) { 
             return res.status(400).json({ message: "Invalid service name." });
         }
