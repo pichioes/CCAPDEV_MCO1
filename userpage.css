@@ -3,6 +3,7 @@ body {
     background-color: #f4e9e4;
     font-family: Arial, sans-serif;
     row-gap: 50px;
+    padding-top: 80px;
 }
 .profile-container {
     background-color: #c9a1a1;
