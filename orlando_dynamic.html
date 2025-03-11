@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Store Review Page</title>
+    <link rel="stylesheet" href="reviews_orlando.css">
+</head>
+<body>
+    <div id="navbar"></div>
+
+    <h1>Store Review Page</h1>
+    <div class="store-info">
+        <img src="img/loc1.png" alt="store photo">
+        <div class="store-text">
+            <h2>Lay Bare Waxing Salon - Orlando</h2>
+            <p>Ground Floor Orlando Suites, Corner Singalong, Estrada St, Malate, Manila, 1004 Metro Manila</p>
+            <p>Waxing services in Manila</p>
+            <h3 id="average-rating">4.5 ⭐ (<span id="review-count">0</span> Reviews)</h3>
+        </div>
+    </div>
+    
+    <div class="top-reviews">
+        <h1>Top Reviews</h1>
+        <div class="top-reviews-container" id="top-reviews-container">
+            <!-- Top reviews will be loaded dynamically -->
+        </div>
+    </div>
+    
+    <div class="other-reviews">
+        <h1>Other Reviews</h1>
+        <div class="review-buttons">
+            <button style="padding:15px; width: 200px; font-weight: bolder; font-size: larger;" onclick="loadModal()">Post a Review!</button>
+            <div id="reviewModalContainer"></div> 
+            <div class="search">
+                <input id="search-input" style="padding:20px; width: 200px;" type="text" placeholder="Search for a review...">
+                <button style="padding:20px; width: 200px;" onclick="searchReviews()">Go</button>
+            </div>
+        </div>
+        
+        <div class="other-reviews-container" id="other-reviews-container">
+            <!-- Other reviews will be loaded dynamically -->
+        </div>
+    </div>
+    <div id="footer"></div>
+
+    <script src="nav.js"></script>
+    <script src="footer.js"></script>
+    <script src="review_modal.js"></script>
+    <script src="review_actions.js"></script>
+    <script src="edit_review.js"></script>
+    
+    <script>
+        // Check if user is logged in
+        let currentUser = null;
+        
+        // Fetch current user data when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            fetchCurrentUser();
+            loadReviews();
+        });
+        
+        // Function to fetch current user
+        async function fetchCurrentUser() {
+            try {
+                const response = await fetch('/profile');
+                if (response.ok) {
+                    const data = await response.json();
+                    currentUser = data;
+                    console.log("Logged in as:", currentUser.username);
+                } else {
+                    console.log("Not logged in");
+                }
+            } catch (error) {
+                console.error("Error fetching user data:", error);
+            }
+        }
+
+        // Function to load reviews from the database
+        async function loadReviews() {
+            try {
+                const response = await fetch('/getReviews');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch reviews');
+                }
+                
+                const reviews = await response.json();
+                console.log("Fetched reviews:", reviews);
+                
+                // Update review count and average rating
+                document.getElementById('review-count').textContent = reviews.length;
+                
+                if (reviews.length > 0) {
+                    const totalRating = reviews.reduce((sum, review) => sum + review.Star_rating, 0);
+                    const avgRating = (totalRating / reviews.length).toFixed(1);
+                    document.getElementById('average-rating').textContent = `${avgRating} ⭐ (${reviews.length} Reviews)`;
+                }
+                
+                // Clear containers
+                const topContainer = document.getElementById('top-reviews-container');
+                const otherContainer = document.getElementById('other-reviews-container');
+                topContainer.innerHTML = '';
+                otherContainer.innerHTML = '';
+                
+                // Sort reviews by rating (highest first)
+                const sortedReviews = [...reviews].sort((a, b) => b.Star_rating - a.Star_rating);
+                
+                // Display top 2 reviews
+                const topReviews = sortedReviews.slice(0, 2);
+                topReviews.forEach(review => {
+                    topContainer.innerHTML += createTopReviewCard(review);
+                });
+                
+                // Display other reviews
+                sortedReviews.forEach(review => {
+                    otherContainer.innerHTML += createReviewCard(review);
+                });
+                
+                // Add event listeners for user profile links
+                document.querySelectorAll('.user-profile-link').forEach(link => {
+                    link.addEventListener('click', function() {
+                        const userId = this.getAttribute('data-user-id');
+                        window.location.href = `view_user.html?id=${userId}`;
+                    });
+                });
+                
+            } catch (error) {
+                console.error("Error loading reviews:", error);
+            }
+        }
+        
+        // Function to create a top review card
+        function createTopReviewCard(review) {
+            return `
+                <div class="review-card">
+                    <h2>${review.Title || 'Great Service!'}</h2>
+                    <p>"${review.Review}"</p>
+                    <p>- ${review.User_ID.username}</p>
+                </div>
+            `;
+        }
+        
+        // Function to create a review card
+        function createReviewCard(review) {
+            const isUserReview = currentUser && review.User_ID._id === currentUser._id;
+            const stars = '⭐'.repeat(review.Star_rating);
+            
+            return `
+                <div class="other-review-card" data-review-id="${review._id}">
+                    <div class="review-header">
+                        <img src="${review.User_ID.profile_pic || 'default-profile.png'}" alt="Profile Picture" class="profile-pic">
+                        <div class="review-info">
+                            <h3 class="user-profile-link" data-user-id="${review.User_ID._id}" style="cursor: pointer; color: inherit; text-decoration: none;">
+                                ${review.User_ID.username}
+                            </h3>
+                            <p style="margin-top: 2px; font-size: x-small; color: grey;">${review.Date}</p>
+                            <div class="review-stars">${stars}</div>
+                        </div>
+                        <div class="review-actions">
+                            <button class="like-btn" onclick="likeReview('${review._id}')">👍 <span class="like-count">${review.likes || 0}</span></button>
+                            <button class="dislike-btn" onclick="dislikeReview('${review._id}')">👎 <span class="dislike-count">${review.dislikes || 0}</span></button>
+                            <button onclick="showOptions('${review._id}')">⋮</button>
+                        </div>
+                    </div>
+                    ${isUserReview ? `
+                    <div class="review-buttons">
+                        <button style="padding: 5px; width: 150px; font-weight: bolder; font-size:small;" onclick="loadEditModal('${review._id}')">Edit your Review!</button>
+                        <button style="padding: 5px; width: 150px; font-weight: bolder; font-size:small;" onclick="deleteReview('${review._id}')">Delete your review</button>
+                    </div>
+                    ` : ''}
+                    <p style="margin: 0px;"><strong>${review.Title || 'Review'}</strong></p>
+                    <p style="margin-top: 2px; color: grey;">${review.Service_ID.Service_Name}</p>
+                    <p style="color: grey"><i>"${review.Review}"</i></p>
+                    ${review.ManagerResponse ? `<div class="manager-response">Manager Response: ${review.ManagerResponse}</div>` : ''}
+                </div>
+            `;
+        }
+        
+        // Function to submit a new review
+        async function submitReview(event) {
+            event.preventDefault();
+            
+            if (!currentUser) {
+                alert("You must be logged in to post a review.");
+                return;
+            }
+            
+            const form = event.target;
+            const serviceName = document.getElementById("serviceSelect").value;
+            //const title = document.getElementById("reviewTitle").value;
+            const review = document.getElementById("reviewText").value;
+            const starRating = document.querySelectorAll(".star.active").length;
+            
+            try {
+                const response = await fetch('/addreview', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ serviceName, review, starRating })
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    alert(result.message);
+                    closeModal(); // Close the modal after submission
+                    loadReviews(); // Reload the reviews to show the new one
+                } else {
+                    alert(result.message);
+                }
+            } catch (error) {
+                console.error("Error submitting review:", error);
+                alert("An error occurred while submitting your review. Please try again.");
+            }
+        }
+        
+        // Function to edit a review
+        async function editReview(reviewId, updatedData) {
+            try {
+                const response = await fetch(`/editreview/${reviewId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(updatedData)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    alert(result.message);
+                    closeEditModal();
+                    loadReviews();
+                } else {
+                    alert(result.message);
+                }
+            } catch (error) {
+                console.error("Error updating review:", error);
+                alert("An error occurred while updating your review. Please try again.");
+            }
+        }
+        
+        // Function to delete a review
+        async function deleteReview(reviewId) {
+            if (confirm("Are you sure you want to delete this review?")) {
+                try {
+                    const response = await fetch(`/deletereview/${reviewId}`, {
+                        method: 'DELETE'
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (response.ok) {
+                        alert(result.message);
+                        loadReviews();
+                    } else {
+                        alert(result.message);
+                    }
+                } catch (error) {
+                    console.error("Error deleting review:", error);
+                    alert("An error occurred while deleting your review. Please try again.");
+                }
+            }
+        }
+        
+        // Function to like a review
+        async function likeReview(reviewId) {
+            if (!currentUser) {
+                alert("You must be logged in to like reviews.");
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/likereview/${reviewId}`, {
+                    method: 'POST'
+                });
+                
+                if (response.ok) {
+                    // Update like count in UI
+                    const result = await response.json();
+                    const likeBtn = document.querySelector(`.other-review-card[data-review-id="${reviewId}"] .like-count`);
+                    if (likeBtn) {
+                        likeBtn.textContent = result.likes;
+                    }
+                }
+            } catch (error) {
+                console.error("Error liking review:", error);
+            }
+        }
+        
+        // Function to dislike a review
+        async function dislikeReview(reviewId) {
+            if (!currentUser) {
+                alert("You must be logged in to dislike reviews.");
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/dislikereview/${reviewId}`, {
+                    method: 'POST'
+                });
+                
+                if (response.ok) {
+                    // Update dislike count in UI
+                    const result = await response.json();
+                    const dislikeBtn = document.querySelector(`.other-review-card[data-review-id="${reviewId}"] .dislike-count`);
+                    if (dislikeBtn) {
+                        dislikeBtn.textContent = result.dislikes;
+                    }
+                }
+            } catch (error) {
+                console.error("Error disliking review:", error);
+            }
+        }
+        
+        // Function to search reviews
+        function searchReviews() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const reviewCards = document.querySelectorAll('.other-review-card');
+            
+            reviewCards.forEach(card => {
+                const reviewText = card.textContent.toLowerCase();
+                if (reviewText.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>

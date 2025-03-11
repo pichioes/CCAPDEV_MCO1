@@ -163,6 +163,19 @@ app.post("/logout", (req, res) => {
     });
 });
 
+app.get('/getReviews', async (req, res) => {
+    try {
+        const reviews = await Review.find()
+            .populate('User_ID')
+            .populate('Service_ID')
+            .sort({ Date: -1 }); // Most recent first
+        
+        res.json(reviews);
+    } catch (err) {
+        console.error("Error fetching reviews:", err);
+        res.status(500).json({ message: "Server error while fetching reviews." });
+    }
+});
 
 app.post("/addreview", async (req, res) => {
     console.log("POST /addreview route triggered with body:", req.body);
