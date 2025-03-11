@@ -185,35 +185,32 @@ app.post("/addreview", async (req, res) => {
         return res.status(401).json({ message: "You must be logged in to post a review." });
     }
 
-    const { serviceName, review, starRating, imageUrl = "" } = req.body;
-    console.log(serviceName)
-    console.log(typeof serviceName)
-    //if (!serviceName || !review || !starRating) {
-       // return res.status(400).json({ message: "All fields except image are required." });
-    //}
-
-   // if (starRating < 1 || starRating > 5) {
-   //     return res.status(400).json({ message: "Rating must be between 1 and 5 stars." });
-   // }
+    const { serviceName, review, starRating } = req.body;
+    
+    if (!review || !starRating) {
+        return res.status(400).json({ message: "Review text and rating are required." });
+    }
 
     try {
-        console.log("review attempt")
+        console.log("review attempt");
         
-        const service = await Service.findOne({ Service_Name: serviceName });
-        const sId = new ObjectId(service._id);
-        if (!service) { 
-            return res.status(400).json({ message: "Invalid service name." });
+        // Default to a general service if no serviceName is provided
+        let serviceId = null;
+        if (serviceName) {
+            const service = await Service.findOne({ Service_Name: serviceName });
+            if (service) {
+                serviceId = service._id;
+            }
         }
 
         const newReview = new Review({
             User_ID: req.session.userId._id,
-            //Location_ID: "loc001", // default value for now
-            Service_ID: service._id,
+            Service_ID: serviceId,
             Review: review,
             Date: new Date().toLocaleDateString('en-GB'),
-            Star_rating: starRating,
-            //Image_URL: imageUrl
+            Star_rating: starRating
         });
+        
         console.log("Review object:", newReview);
         await newReview.save();
         res.json({ message: "Review submitted successfully!" });

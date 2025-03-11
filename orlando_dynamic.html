@@ -87,26 +87,42 @@
                 const reviews = await response.json();
                 console.log("Fetched reviews:", reviews);
                 
-                // Update review count and average rating
-                document.getElementById('review-count').textContent = reviews.length;
+                // Check if elements exist before trying to update them
+                const reviewCountElement = document.getElementById('review-count');
+                const avgRatingElement = document.getElementById('average-rating');
                 
-                if (reviews.length > 0) {
-                    const totalRating = reviews.reduce((sum, review) => sum + review.Star_rating, 0);
+                // Update review count and average rating
+                if (reviewCountElement) {
+                    reviewCountElement.textContent = reviews.length;
+                }
+                
+                if (avgRatingElement && reviews.length > 0) {
+                    const totalRating = reviews.reduce((sum, review) => sum + (review.Star_rating || 0), 0);
                     const avgRating = (totalRating / reviews.length).toFixed(1);
-                    document.getElementById('average-rating').textContent = `${avgRating} ⭐ (${reviews.length} Reviews)`;
+                    avgRatingElement.textContent = `${avgRating} ⭐ (${reviews.length} Reviews)`;
+                }
+                
+                // Get containers and check if they exist
+                const topContainer = document.getElementById('top-reviews-container');
+                const otherContainer = document.getElementById('other-reviews-container');
+                
+                if (!topContainer || !otherContainer) {
+                    console.error("Review containers not found in the DOM");
+                    return;
                 }
                 
                 // Clear containers
-                const topContainer = document.getElementById('top-reviews-container');
-                const otherContainer = document.getElementById('other-reviews-container');
                 topContainer.innerHTML = '';
                 otherContainer.innerHTML = '';
                 
-                // Sort reviews by rating (highest first)
-                const sortedReviews = [...reviews].sort((a, b) => b.Star_rating - a.Star_rating);
+                // Filter out reviews without proper structure
+                const validReviews = reviews.filter(review => review && review.Review);
                 
-                // Display top 2 reviews
-                const topReviews = sortedReviews.slice(0, 2);
+                // Sort reviews by rating (highest first)
+                const sortedReviews = [...validReviews].sort((a, b) => (b.Star_rating || 0) - (a.Star_rating || 0));
+                
+                // Display top 2 reviews if available
+                const topReviews = sortedReviews.slice(0, Math.min(2, sortedReviews.length));
                 topReviews.forEach(review => {
                     topContainer.innerHTML += createTopReviewCard(review);
                 });
@@ -120,7 +136,9 @@
                 document.querySelectorAll('.user-profile-link').forEach(link => {
                     link.addEventListener('click', function() {
                         const userId = this.getAttribute('data-user-id');
-                        window.location.href = `view_user.html?id=${userId}`;
+                        if (userId) {
+                            window.location.href = `view_user.html?id=${userId}`;
+                        }
                     });
                 });
                 
@@ -131,35 +149,43 @@
         
         // Function to create a top review card
         function createTopReviewCard(review) {
+            const username = review.User_ID && review.User_ID.username ? review.User_ID.username : 'Anonymous';
             return `
                 <div class="review-card">
                     <h2>${review.Title || 'Great Service!'}</h2>
                     <p>"${review.Review}"</p>
-                    <p>- ${review.User_ID.username}</p>
+                    <p>- ${username}</p>
                 </div>
             `;
         }
         
         // Function to create a review card
         function createReviewCard(review) {
-            const isUserReview = currentUser && review.User_ID._id === currentUser._id;
-            const stars = '⭐'.repeat(review.Star_rating);
+            // Check if User_ID exists and has required properties
+            const username = review.User_ID && review.User_ID.username ? review.User_ID.username : 'Anonymous';
+            const userId = review.User_ID && review.User_ID._id ? review.User_ID._id : '';
+            const isUserReview = currentUser && userId && userId === currentUser._id;
+            
+            // Get service name safely
+            const serviceName = review.Service_ID && review.Service_ID.Service_Name ? review.Service_ID.Service_Name : 'General Service';
+            
+            const stars = '⭐'.repeat(review.Star_rating || 0);
             
             return `
-                <div class="other-review-card" data-review-id="${review._id}">
+                <div class="other-review-card" data-review-id="${review._id || ''}">
                     <div class="review-header">
-                        <img src="${review.User_ID.profile_pic || 'default-profile.png'}" alt="Profile Picture" class="profile-pic">
+                        <img src="${review.User_ID && review.User_ID.profile_pic ? review.User_ID.profile_pic : 'default-profile.png'}" alt="Profile Picture" class="profile-pic">
                         <div class="review-info">
-                            <h3 class="user-profile-link" data-user-id="${review.User_ID._id}" style="cursor: pointer; color: inherit; text-decoration: none;">
-                                ${review.User_ID.username}
+                            <h3 class="user-profile-link" data-user-id="${userId}" style="cursor: pointer; color: inherit; text-decoration: none;">
+                                ${username}
                             </h3>
-                            <p style="margin-top: 2px; font-size: x-small; color: grey;">${review.Date}</p>
+                            <p style="margin-top: 2px; font-size: x-small; color: grey;">${review.Date || ''}</p>
                             <div class="review-stars">${stars}</div>
                         </div>
                         <div class="review-actions">
-                            <button class="like-btn" onclick="likeReview('${review._id}')">👍 <span class="like-count">${review.likes || 0}</span></button>
-                            <button class="dislike-btn" onclick="dislikeReview('${review._id}')">👎 <span class="dislike-count">${review.dislikes || 0}</span></button>
-                            <button onclick="showOptions('${review._id}')">⋮</button>
+                            <button class="like-btn" onclick="likeReview('${review._id || ''}')">👍 <span class="like-count">${review.likes || 0}</span></button>
+                            <button class="dislike-btn" onclick="dislikeReview('${review._id || ''}')">👎 <span class="dislike-count">${review.dislikes || 0}</span></button>
+                            <button onclick="showOptions('${review._id || ''}')">⋮</button>
                         </div>
                     </div>
                     ${isUserReview ? `
@@ -169,7 +195,7 @@
                     </div>
                     ` : ''}
                     <p style="margin: 0px;"><strong>${review.Title || 'Review'}</strong></p>
-                    <p style="margin-top: 2px; color: grey;">${review.Service_ID.Service_Name}</p>
+                    <p style="margin-top: 2px; color: grey;">${serviceName}</p>
                     <p style="color: grey"><i>"${review.Review}"</i></p>
                     ${review.ManagerResponse ? `<div class="manager-response">Manager Response: ${review.ManagerResponse}</div>` : ''}
                 </div>
