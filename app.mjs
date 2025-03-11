@@ -48,12 +48,13 @@ const reviewSchema = new mongoose.Schema({
     Date: String,
     Star_rating: Number
 });
-const Review = mongoose.model('review', reviewSchema);
+const Review = mongoose.model('reviews', reviewSchema);
 const serviceSchema = new mongoose.Schema({
+    _id: String,
     Service_Name: { type: String, required: true }
 });
 
-const Service = mongoose.model("service", serviceSchema);
+const Service = mongoose.model("services", serviceSchema);
 
 
 
