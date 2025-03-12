@@ -143,9 +143,14 @@ app.post('/login', async (req, res) => {
 });
 
 // Handle signup requests
-app.post('/signup', async (req, res) => {
+app.post('/signup', profilePictureUpload, async (req, res) => {
     const { username, password, description } = req.body;
-
+    let imagePath = null;
+        if (req.file) {
+            console.log("image placed")
+            imagePath = `/uploads/${req.file.filename}`;
+            console.log(typeof imagePath)
+        }
     try {
         // Check if the user already exists
         const existingUser = await User.findOne({ username });
@@ -157,7 +162,8 @@ app.post('/signup', async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         // Create and save user
-        const newUser = new User({ username, password: hashedPassword, description });
+        const newUser = new User({ username, password: hashedPassword, description, profilePicture: imagePath});
+        console.log("Saving user:", newUser);
         await newUser.save();
         req.session.userId = newUser;
         res.json({ message: "Signup successful!" });
