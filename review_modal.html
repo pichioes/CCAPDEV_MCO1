@@ -1,4 +1,3 @@
-<!-- review_modal.html -->
 <style>
     .modal {
         display: none;
@@ -14,7 +13,6 @@
         text-align: center;
         animation: fadeIn 0.3s ease-in-out;
     }
-  
     .modal-overlay {
         display: none;
         position: fixed;
@@ -25,40 +23,35 @@
         background: rgba(0, 0, 0, 0.5);
         backdrop-filter: blur(5px);
     }
-    
     .modal-content {
         display: flex;
         flex-direction: column;
         align-items: center;
         gap: 15px;
     }
-  
     /* Stars CSS */
     .star {
         font-size: 30px;
         cursor: pointer;
-        color: #ccc; 
+        color: #ccc;
         transition: color 0.3s;
     }
-  
     .star.active {
-        color: #f4b400; 
+        color: #f4b400;
     }
-  
     /* Exit button CSS */
     .close-container {
         display: flex;
         justify-content: center;
         align-items: center;
         background: #c69fa5;
-        width: 30px;  
+        width: 30px;
         height: 30px;
         border-radius: 50%;
         position: absolute;
         top: 10px;
         right: 10px;
     }
-    
     .close-button {
         background: none;
         border: none;
@@ -66,7 +59,6 @@
         font-size: 20px;
         cursor: pointer;
     }
-  
     /* Submit button */
     .submit-container button {
         width: 100%;
@@ -76,9 +68,8 @@
         background-color: #c69fa5;
         color: white;
     }
-  
     /* Text input CSS */
-    .modal select, .modal textarea, .modal input[type="file"] {
+    .modal select, .modal textarea, .modal input[type="text"], .modal input[type="file"] {
         width: 100%;
         max-width: 350px;
         padding: 10px;
@@ -86,43 +77,76 @@
         border: 1px solid #c69fa5;
         box-sizing: border-box;
     }
-  
+    /* Preview image */
+    .image-preview {
+        max-width: 100%;
+        max-height: 150px;
+        display: none;
+        margin-top: 10px;
+    }
     /* Transitions CSS */
     @keyframes fadeIn {
-        from { opacity: 0; transform: translate(-50%, -55%); }
-        to { opacity: 1; transform: translate(-50%, -50%); }
+        from {
+            opacity: 0;
+            transform: translate(-50%, -55%);
+        }
+        to {
+            opacity: 1;
+            transform: translate(-50%, -50%);
+        }
     }
-  </style>
-  
-  <div class="modal-overlay" id="modalOverlay" onclick="closeModal()"></div>
-  <div class="modal" id="reviewModal">
-      <div class="close-container">
-          <button class="close-button" onclick="closeModal()">&times;</button>
-      </div>
-      <div class="modal-content">
-          <h2>Leave a Review</h2>
-  
-          <div class="star-container">
-              <span class="star" data-value="1">&#9733;</span>
-              <span class="star" data-value="2">&#9733;</span>
-              <span class="star" data-value="3">&#9733;</span>
-              <span class="star" data-value="4">&#9733;</span>
-              <span class="star" data-value="5">&#9733;</span>
-          </div>
-          
-          <select id="serviceSelect">
-              <option value="">Select your service</option>
-              <option value="Underarm Wax">Underarm Wax</option>
-              <option value="Leg Wax">Leg Wax</option>
-              <option value="Full Body Wax">Full Body Wax</option>
-              <option value="Facial Wax">Facial Wax</option>
-          </select>
-  
-          <textarea id="reviewText" placeholder="Type your review here..."></textarea>
-          <input type="file" id="reviewImage">
-          <div class="submit-container">
-              <button id="submitReviewButton">Submit Review</button>
-          </div>
-      </div>
-  </div>
-  
+</style>
+
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal()"></div>
+<div class="modal" id="reviewModal">
+    <div class="close-container">
+        <button class="close-button" onclick="closeModal()">&times;</button>
+    </div>
+    <div class="modal-content">
+        <h2>Leave a Review</h2>
+        <div class="star-container">
+            <span class="star" data-value="1">&#9733;</span>
+            <span class="star" data-value="2">&#9733;</span>
+            <span class="star" data-value="3">&#9733;</span>
+            <span class="star" data-value="4">&#9733;</span>
+            <span class="star" data-value="5">&#9733;</span>
+        </div>
+        <select id="serviceSelect">
+            <option value="">Select your service</option>
+            <option value="Underarm Wax">Underarm Wax</option>
+            <option value="Leg Wax">Leg Wax</option>
+            <option value="Full Body Wax">Full Body Wax</option>
+            <option value="Facial Wax">Facial Wax</option>
+            <option value="Brazilian Wax">Brazilian Wax</option>
+        </select>
+        <!-- New title input field -->
+        <textarea id="reviewTitle" placeholder="Review Title"></textarea>
+        <textarea id="reviewText" placeholder="Type your review here..."></textarea>
+        <div>
+            <label for="reviewImage">Upload an image:</label>
+            <input type="file" id="reviewImage" accept="image/*">
+            <img id="imagePreview" class="image-preview" alt="Preview">
+        </div>
+        <div class="submit-container">
+            <button id="submitReviewButton">Submit Review</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Add image preview functionality
+    document.getElementById('reviewImage').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            const preview = document.getElementById('imagePreview');
+            
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            }
+            
+            reader.readAsDataURL(file);
+        }
+    });
+</script>

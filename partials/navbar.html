@@ -4,38 +4,43 @@
         <img src="img\laybare.png" alt="LayBare Logo">
     </div>
     <ul class="menu">
-        <li><a href="landingpage.html">Home</a></li>
-        <li><a href="locations.html">Stores</a></li>
-        <li><a href="services.html">Services</a></li>
-        <li><a href="faqs.html">FAQs</a></li>
+        <li><a href="landingpage.html"><img src="icons/home-09-stroke-rounded.svg" alt="Home"> Home</a></li>
+        <li><a href="locations.html"><img src="icons/location-05-stroke-rounded.svg" alt="Stores"> Stores</a></li>
+        <li><a href="services.html"><img src="icons/honey-02-stroke-rounded.svg" alt="Services"> Services</a></li>
+        <li><a href="faqs.html"><img src="icons/help-circle-stroke-rounded.svg" alt="FAQs"> FAQs</a></li>
     </ul>
-
+    
     <ul class="profile-menu">
-        <li><a href="userpage.html">Profile</a></li>
+        <li><a href="userpage.html"><img src="icons/user-circle-stroke-rounded.svg" alt="Profile"> Profile</a></li>
     </ul>
 </nav>
 
 <style>
     .navbar{
         min-height: 70px;
-        max-width: 700px;
+        max-width: 900px; /* Increased max-width */
         margin: 0 auto;
         display: flex;
         justify-content: space-between;
         box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-        padding: 0px 30px;
+        padding: 0px 20px; /* Reduced padding */
         font-weight: 700;
-        font-size: larger;
+        font-size: large; /* Slightly reduced font size */
         align-items: center;
         background-color: #6b420a;
         border-radius: 25px;
-        position: sticky;
+        position: fixed;
         top: 10px;
+        left: 0;
+        right: 0;
+        z-index: 1000; 
     }
 
     .navbar .menu, .navbar .profile-menu{
         display: flex;
         color: #FFF0b9;
+        padding: 0; /* Reset padding */
+        margin: 0; /* Reset margin */
     }
 
     .navbar ul{
@@ -43,13 +48,55 @@
     }
 
     .navbar .menu a, .navbar .profile-menu a{
-        margin-right: 30px;
+        margin-right: 30px; /* Reduced margin */
         text-decoration: none;
         color: #FFF0b9;
+        white-space: nowrap; /* Prevent text wrapping */
     }
 
     .logo img {
-        height: 80px; /* Adjust height as needed */
+        height: 80px; /* Slightly reduced logo height */
         width: auto;
     }
+
+    .navbar a img {
+        height: 18px;
+        width: auto;
+        margin-right: 5px; /* Reduced margin */
+        vertical-align: middle;
+    }
+
+    .navbar a {
+        display: flex;
+        align-items: center;
+    }
+
+    /* Add responsive design for smaller screens */
+    /* @media (max-width: 768px) {
+        .navbar {
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 10px;
+        }
+        
+        .logo {
+            margin-bottom: 10px;
+            order: 1;
+        }
+        
+        .menu {
+            order: 2;
+            justify-content: center;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .profile-menu {
+            order: 3;
+        }
+        
+        .navbar .menu a, .navbar .profile-menu a {
+            margin: 5px 10px;
+        }
+    } */
 </style>

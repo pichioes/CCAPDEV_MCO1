@@ -5,6 +5,7 @@ body {
     color: #5a3627;
     position: relative;
     margin: 0;
+    padding-top: 80px;
 }
 h1 {
     font-size: 3em;

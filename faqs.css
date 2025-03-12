@@ -6,6 +6,7 @@ body {
     row-gap: 50px;
     position: relative;
     margin: 0px;
+    padding-top: 80px;
 }
 h1 {
     color: #4a2c1f;

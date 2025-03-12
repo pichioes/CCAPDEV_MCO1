@@ -5,14 +5,68 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Profile</title>
     <link rel="stylesheet" href="userpage.css">
+    <style>
+        /* Additional styles for scroll buttons */
+        .reviews-container {
+            position: relative;
+        }
+        
+        .scroll-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(201, 161, 161, 0.7);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 10;
+            transition: background-color 0.3s ease;
+        }
+        
+        .scroll-btn:hover {
+            background-color: rgba(201, 161, 161, 1);
+        }
+        
+        .scroll-left {
+            left: 0;
+        }
+        
+        .scroll-right {
+            right: 0;
+        }
+        
+        /* Ensure review container has space for buttons */
+        #userReviews {
+            padding: 20px 50px;
+        }
+    </style>
 </head>
 <body>
     <div id="navbar"></div>
 
     <div class="profile-container">
         <img src="img/pfp1.png" alt="Profile Picture" class="profile-img" id="profilePic">
-        <h2>Julianna Lammoglia</h2>
-        <p class="description">Hi! I love getting waxed at Lay Bare!<br>I leave reviews to help the girlies out :)</p>
+        <h2>Loading...</h2>
+        <p class="description">Loading profile information...</p>
+
+        <div class="user-stats">
+            <div class="stat-item">
+                <div class="stat-value" id="reviewCount">0</div>
+                <div class="stat-label">Reviews</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="avgRating">0.0</div>
+                <div class="stat-label">Avg. Rating</div>
+            </div>
+        </div>
+
         <div class="button-group">
             <button class="edit-btn" onclick="loadModal()">Change Picture</button> 
             <button class="edit-btn" onclick="loadED()">Edit Description</button>
@@ -21,13 +75,11 @@
     </div>
 
     <div class="reviews-container">
-        <h3>Recent Reviews</h3>
-        <div class="review-card">
-            <h4 id="juls-button" style="cursor: pointer; color: inherit; text-decoration: none;">
-                Julianna Lammoglia
-            </h4>
-            <p><strong>Underarm Wax</strong></p>
-            <p>"Best underarm wax I've ever had! Quick, efficient, and no irritation afterward. Highly recommend for anyone wanting smooth and soft underarms!"</p>
+        <h2 style="text-align: center; color: black;">My Reviews</h2>
+        <button id="scrollLeft" class="scroll-btn scroll-left">&#10094;</button>
+        <button id="scrollRight" class="scroll-btn scroll-right">&#10095;</button>
+        <div id="user-reviews">
+            <p>Loading your reviews...</p>
         </div>
     </div>
     
@@ -35,58 +87,215 @@
 
     <div id="footer"></div>
 
-    <script> 
-        function logout() {
-         window.location.href = "login.html"; // Redirects to another HTML file
-        }
-    </script>
-
-    <script>
-        document.getElementById("juls-button").addEventListener("click", function() {
-            window.location.href = "reviews_orlando.html"; // Replace with the actual target page
-        });
-    </script>
     <script src="nav.js"></script>
     <script src="footer.js"></script>
     <script src="change_picture.js"></script>
     <script src="edit_description.js"></script>
-</body>
-<script>
-    document.addEventListener("DOMContentLoaded", async function () {
-        try {
+
+    <script>
+        document.addEventListener("DOMContentLoaded", async function () {
+            try {
+                // Fetch user profile data
+                const profileResponse = await fetch("/profile");
+                if (!profileResponse.ok) {
+                    alert("You must be logged in to view this page.");
+                    window.location.href = "login.html"; // Redirect to login page
+                    return;
+                }
+
+                const user = await profileResponse.json();
+                
+                // Update profile information
+                document.querySelector("h2").textContent = user.username;
+                document.querySelector(".description").textContent = user.description || "No description provided.";
+                
+                // Set profile picture if available
+                if (user.profilePicture) {
+                    document.getElementById("profilePic").src = user.profilePicture;
+                }
+                
+                // Fetch user's reviews
+                await loadUserReviews();
+                
+            } catch (error) {
+                console.error("Error fetching profile:", error);
+                alert("Error loading profile.");
+            }
+        });
+
+        async function loadUserReviews() {
+            try {
+                const reviewsResponse = await fetch(`/user-reviews/${await getUserId()}`);
+                if (!reviewsResponse.ok) {
+                    throw new Error("Failed to fetch reviews");
+                }
+
+                const reviews = await reviewsResponse.json();
+                const reviewsContainer = document.getElementById("user-reviews");
+                
+                // Clear loading message
+                reviewsContainer.innerHTML = "";
+                
+                // Update stats
+                document.getElementById('reviewCount').textContent = reviews.length;
+                const totalRating = reviews.reduce((sum, review) => sum + (review.Star_rating || 0), 0);
+                    const avgRating = (totalRating / reviews.length).toFixed(1);
+                    document.getElementById('avgRating').textContent = avgRating;
+                
+                // Change the ID to match the CSS selector
+                reviewsContainer.id = "userReviews";
+                
+                
+                if (reviews.length === 0) {
+                    reviewsContainer.innerHTML = "<p>You haven't posted any reviews yet.</p>";
+                    return;
+                }
+                
+                // Display each review
+                reviews.forEach(review => {
+                    const serviceName = review.Service_ID ? review.Service_ID.Service_Name : "Unknown Service";
+                    const stars = "★".repeat(review.Star_rating) + "☆".repeat(5 - review.Star_rating);
+                    
+                    const reviewElement = document.createElement("div");
+                    reviewElement.className = "review-card";
+                    reviewElement.innerHTML = `
+                        <div class="review-header">
+                            <p class="service-name"><strong>${serviceName}</strong></p>
+                            <div class="stars">${stars}</div>
+                            <h5>${review.Title || "Review"}</h5>
+                        </div>
+                        <p class="review-text">${review.Review}</p>
+                        ${review.Image_path ? `<img src="${review.Image_path}" alt="Review Image" class="review-image">` : ''}
+                        <p class="review-date">${review.Date}</p>
+                        <div class="review-actions">
+                            <button class="edit-review-btn" onclick="editReview('${review._id}')">Edit</button>
+                            <button class="delete-review-btn" onclick="deleteReview('${review._id}')">Delete</button>
+                        </div>
+                    `;
+                    
+                    reviewsContainer.appendChild(reviewElement);
+                });
+
+                setupScrollButtons();
+                
+            } catch (error) {
+                console.error("Error loading reviews:", error);
+                document.getElementById("user-reviews").innerHTML = "<p>Error loading your reviews. Please try again later.</p>";
+            }
+        }
+        
+        // Helper function to get the current user's ID
+        async function getUserId() {
             const response = await fetch("/profile");
-            if (!response.ok) {
-                alert("You must be logged in to view this page.");
-                window.location.href = "login.html"; // Redirect to login page
-                return;
+            const data = await response.json();
+            return data._id;
+        }
+        
+        // Function to edit a review
+        async function editReview(reviewId) {
+            // Redirect to a review edit page or show a modal
+            // For now, we'll just alert
+            alert("Edit review feature coming soon!");
+        }
+        
+        // Function to delete a review
+        async function deleteReview(reviewId) {
+            if (confirm("Are you sure you want to delete this review?")) {
+                try {
+                    const response = await fetch(`/deletereview/${reviewId}`, {
+                        method: "DELETE"
+                    });
+                    
+                    if (response.ok) {
+                        alert("Review deleted successfully!");
+                        // Reload reviews
+                        loadUserReviews();
+                    } else {
+                        const error = await response.json();
+                        alert(error.message || "Failed to delete review");
+                    }
+                } catch (error) {
+                    console.error("Error deleting review:", error);
+                    alert("Error deleting review");
+                }
             }
+        }
 
-            const user = await response.json();
+        // Function to handle horizontal scrolling
+        function setupScrollButtons() {
+            const reviewsContainer = document.getElementById('userReviews');
+            const scrollLeftBtn = document.getElementById('scrollLeft');
+            const scrollRightBtn = document.getElementById('scrollRight');
             
-            document.querySelector("h2").textContent = user.username; // Set username
-            document.querySelector(".description").textContent = user.description; // Set description
-        } catch (error) {
-            console.error("Error fetching profile:", error);
-            alert("Error loading profile.");
+            // Scroll amount (width of one review card plus margins)
+            const scrollAmount = 350;
+            
+            scrollLeftBtn.addEventListener('click', () => {
+                reviewsContainer.scrollBy({
+                    left: -scrollAmount,
+                    behavior: 'smooth'
+                });
+            });
+            
+            scrollRightBtn.addEventListener('click', () => {
+                reviewsContainer.scrollBy({
+                    left: scrollAmount,
+                    behavior: 'smooth'
+                });
+            });
+            
+            // Update button visibility on scroll
+            reviewsContainer.addEventListener('scroll', updateScrollButtonsVisibility);
         }
-    });
-
-    async function logout() {
-        try {
-            const response = await fetch("/logout", { method: "POST" });
-
-            if (response.ok) {
-                alert("Logged out successfully!");
-                window.location.href = "login.html"; // Redirect to login page
+        
+        // Function to update scroll buttons visibility
+        function updateScrollButtonsVisibility() {
+            const reviewsContainer = document.getElementById('userReviews');
+            const scrollLeftBtn = document.getElementById('scrollLeft');
+            const scrollRightBtn = document.getElementById('scrollRight');
+            
+            // Hide left button if at the beginning
+            if (reviewsContainer.scrollLeft <= 10) {
+                scrollLeftBtn.style.opacity = '0.3';
             } else {
-                alert("Logout failed.");
+                scrollLeftBtn.style.opacity = '1';
             }
-        } catch (error) {
-            console.error("Logout error:", error);
-            alert("Error logging out.");
+            
+            // Hide right button if at the end
+            const isAtEnd = reviewsContainer.scrollLeft + reviewsContainer.clientWidth >= 
+                reviewsContainer.scrollWidth - 10;
+                
+            if (isAtEnd) {
+                scrollRightBtn.style.opacity = '0.3';
+            } else {
+                scrollRightBtn.style.opacity = '1';
+            }
+            
+            // If content doesn't overflow, hide both buttons
+            if (reviewsContainer.scrollWidth <= reviewsContainer.clientWidth) {
+                scrollLeftBtn.style.display = 'none';
+                scrollRightBtn.style.display = 'none';
+            } else {
+                scrollLeftBtn.style.display = 'flex';
+                scrollRightBtn.style.display = 'flex';
+            }
         }
-    }
-</script>
 
+        async function logout() {
+            try {
+                const response = await fetch("/logout", { method: "POST" });
 
+                if (response.ok) {
+                    alert("Logged out successfully!");
+                    window.location.href = "login.html"; // Redirect to login page
+                } else {
+                    alert("Logout failed.");
+                }
+            } catch (error) {
+                console.error("Logout error:", error);
+                alert("Error logging out.");
+            }
+        }
+    </script>
+</body>
 </html>

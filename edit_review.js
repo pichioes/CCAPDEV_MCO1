@@ -44,7 +44,7 @@ function closeModal() {
     document.getElementById('modalOverlay').style.display = 'none';
 }
 
-function submitReview(event) {
+function submitReview1(event) {
     event.preventDefault(); 
 
     let service = document.getElementById("serviceSelect").value;
