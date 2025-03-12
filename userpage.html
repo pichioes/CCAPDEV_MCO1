@@ -55,6 +55,18 @@
         <img src="img/pfp1.png" alt="Profile Picture" class="profile-img" id="profilePic">
         <h2>Loading...</h2>
         <p class="description">Loading profile information...</p>
+
+        <div class="user-stats">
+            <div class="stat-item">
+                <div class="stat-value" id="reviewCount">0</div>
+                <div class="stat-label">Reviews</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="avgRating">0.0</div>
+                <div class="stat-label">Avg. Rating</div>
+            </div>
+        </div>
+
         <div class="button-group">
             <button class="edit-btn" onclick="loadModal()">Change Picture</button> 
             <button class="edit-btn" onclick="loadED()">Edit Description</button>
@@ -124,8 +136,15 @@
                 // Clear loading message
                 reviewsContainer.innerHTML = "";
                 
+                // Update stats
+                document.getElementById('reviewCount').textContent = reviews.length;
+                const totalRating = reviews.reduce((sum, review) => sum + (review.Star_rating || 0), 0);
+                    const avgRating = (totalRating / reviews.length).toFixed(1);
+                    document.getElementById('avgRating').textContent = avgRating;
+                
                 // Change the ID to match the CSS selector
                 reviewsContainer.id = "userReviews";
+                
                 
                 if (reviews.length === 0) {
                     reviewsContainer.innerHTML = "<p>You haven't posted any reviews yet.</p>";
