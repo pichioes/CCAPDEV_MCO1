@@ -152,9 +152,9 @@ button {
     margin-top: 10px;
 }
 .logout-btn {
-    background-color: #f4e9e4; /* Dark red for visibility */
+    background-color: #f4e9e4; 
     color: #c9a1a1;
-    margin-top: 15px; /* Adds spacing below the button group */
+    margin-top: 15px; 
     padding: 10px 20px;
     border: none;
     border-radius: 5px;

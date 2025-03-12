@@ -102,7 +102,7 @@ button {
     height: 300px;
     overflow-y: auto;
 }
-.review-card h4{
+.review-card h4, .review-card strong {
     margin: 0;
     color: #c9a1a1;
     font-size: 18px;
