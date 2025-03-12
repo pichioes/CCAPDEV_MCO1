@@ -46,27 +46,6 @@ button {
     background-color: #f4e9e4;
 }
 
-.user-stats {
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-    margin-top: 20px;
-}
-
-.stat-item {
-    text-align: center;
-}
-.stat-value {
-    font-size: 24px;
-    font-weight: bold;
-    color: #fff;
-}
-
-.stat-label {
-    color: #fff;
-    font-size: 14px;
-}
-
 .reviews-container {
     display: flex;
     flex-direction: column;
@@ -105,10 +84,20 @@ button {
     height: 300px;
     overflow-y: auto;
 }
-.review-card h4 {
+.review-card h4, .review-card strong {
     margin: 0;
     color: #c9a1a1;
     font-size: 18px;
+}
+.review-card h5{
+    margin: 0;
+    color: #666;
+    font-size: 16px;
+}
+.review-card p {
+    color: #666;
+    font-style: italic;
+    font-size: 15px;
 }
 .review-header {
     margin-bottom: 10px;
@@ -133,8 +122,10 @@ button {
 }
 .review-image {
     max-width: 100%;
-    border-radius: 5px;
-    margin: 10px 0;
+    max-height: 120px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-top: 10px;
 }
 .review-actions {
     display: flex;
@@ -170,5 +161,14 @@ button {
     cursor: pointer;
     font-size: 16px;
     width: fit-content;
+    
+@media (max-width: 768px) {
+    .profile-container, .reviews-container {
+        width: 90%;
+    }
+    .review-card {
+        min-width: 250px;
+    }
+}
 }
 /* END OF USER PAGE CSS */

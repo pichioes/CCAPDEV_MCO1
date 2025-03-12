@@ -5,48 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Profile</title>
     <link rel="stylesheet" href="view_user.css">
-    <style>
-        /* Additional styles for scroll buttons */
-        .reviews-container {
-            position: relative;
-        }
-        
-        .scroll-btn {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background-color: rgba(201, 161, 161, 0.7);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            font-size: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            z-index: 10;
-            transition: background-color 0.3s ease;
-        }
-        
-        .scroll-btn:hover {
-            background-color: rgba(201, 161, 161, 1);
-        }
-        
-        .scroll-left {
-            left: 0;
-        }
-        
-        .scroll-right {
-            right: 0;
-        }
-        
-        /* Ensure review container has space for buttons */
-        #userReviews {
-            padding: 20px 50px;
-        }
-    </style>
 </head>
 <body>
     <div id="navbar"></div>
@@ -153,7 +111,7 @@
                     
                     // Display reviews
                     reviews.forEach(review => {
-                        reviewsContainer.innerHTML += createReviewCard(review);
+                        reviewsContainer.appendChild(createReviewCard(review));
                     });
                     
                     // Show/hide scroll buttons based on content
@@ -177,23 +135,64 @@
         // Function to create a review card
         function createReviewCard(review) {
             const serviceName = review.Service_ID && review.Service_ID.Service_Name ? review.Service_ID.Service_Name : 'General Service';
-            const stars = '⭐'.repeat(review.Star_rating || 0);
+            const stars = '★'.repeat(review.Star_rating || 0) + '☆'.repeat(5 - (review.Star_rating || 0));
             const title = review.Title || 'Review';
             
-            // Add image if it exists
-            const imageHtml = review.Image_path ? 
-                `<div class="review-image"><img src="${review.Image_path}" alt="Review Image"></div>` : '';
+            // Create card element
+            const reviewElement = document.createElement('div');
+            reviewElement.className = 'review-card';
             
-            return `
-                <div class="review-card">
-                    <p><strong>${title}</strong></p>
-                    <p style="margin-top: 2px; color: grey;">${serviceName}</p>
-                    <div class="review-stars">${stars}</div>
-                    <p style="color: grey; font-style: italic;">"${review.Review}"</p>
-                    ${imageHtml}
-                    <p style="margin-top: 10px; font-size: 12px; color: #888;">Posted on: ${review.Date || 'Unknown date'}</p>
-                </div>
-            `;
+            // Create review header
+            const headerDiv = document.createElement('div');
+            headerDiv.className = 'review-header';
+            
+            // Add service name
+            const serviceElement = document.createElement('p');
+            serviceElement.className = 'service-name';
+            serviceElement.innerHTML = `<strong>${serviceName}</strong>`;
+            headerDiv.appendChild(serviceElement);
+            
+            // Add stars
+            const starsElement = document.createElement('div');
+            starsElement.className = 'stars';
+            starsElement.textContent = stars;
+            headerDiv.appendChild(starsElement);
+
+            // Add title
+            const titleElement = document.createElement('h5');
+            titleElement.textContent = title;
+            headerDiv.appendChild(titleElement);
+            
+            // Add review text
+            const reviewText = document.createElement('p');
+            reviewText.className = 'review-text';
+            reviewText.textContent = review.Review;
+            
+            // Add image if available
+            let imageElement = null;
+            if (review.Image_path) {
+                imageElement = document.createElement('img');
+                imageElement.src = review.Image_path;
+                imageElement.alt = 'Review Image';
+                imageElement.className = 'review-image';
+            }
+
+            // Add date
+            const dateElement = document.createElement('p');
+            dateElement.className = 'review-date';
+            dateElement.textContent = review.Date || 'Unknown date';
+            headerDiv.appendChild(dateElement);
+            
+            
+            // Assemble card
+            reviewElement.appendChild(headerDiv);
+            reviewElement.appendChild(reviewText);
+            if (imageElement) {
+                reviewElement.appendChild(imageElement);
+            }
+            reviewElement.appendChild(dateElement);
+
+            return reviewElement;
         }
         
         // Function to handle horizontal scrolling

@@ -141,13 +141,13 @@
                     reviewElement.className = "review-card";
                     reviewElement.innerHTML = `
                         <div class="review-header">
-                            <h4>${review.Title || "Review"}</h4>
-                            <div class="stars">${stars}</div>
                             <p class="service-name"><strong>${serviceName}</strong></p>
-                            <p class="review-date">${review.Date}</p>
+                            <div class="stars">${stars}</div>
+                            <h5>${review.Title || "Review"}</h5>
                         </div>
                         <p class="review-text">${review.Review}</p>
                         ${review.Image_path ? `<img src="${review.Image_path}" alt="Review Image" class="review-image">` : ''}
+                        <p class="review-date">${review.Date}</p>
                         <div class="review-actions">
                             <button class="edit-review-btn" onclick="editReview('${review._id}')">Edit</button>
                             <button class="delete-review-btn" onclick="deleteReview('${review._id}')">Delete</button>
