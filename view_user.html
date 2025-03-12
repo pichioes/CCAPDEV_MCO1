@@ -4,40 +4,272 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Profile</title>
-    <link rel="stylesheet" href="userpage.css">
+    <link rel="stylesheet" href="view_user.css">
+    <style>
+        /* Additional styles for scroll buttons */
+        .reviews-container {
+            position: relative;
+        }
+        
+        .scroll-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(201, 161, 161, 0.7);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 10;
+            transition: background-color 0.3s ease;
+        }
+        
+        .scroll-btn:hover {
+            background-color: rgba(201, 161, 161, 1);
+        }
+        
+        .scroll-left {
+            left: 0;
+        }
+        
+        .scroll-right {
+            right: 0;
+        }
+        
+        /* Ensure review container has space for buttons */
+        #userReviews {
+            padding: 20px 50px;
+        }
+    </style>
 </head>
 <body>
     <div id="navbar"></div>
 
     <div class="profile-container">
-        <img src="img/pfp1.png" alt="Profile Picture" class="profile-img" id="profilePic">
-        <h2>Gwen Stacey</h2>
-        <p class="description">Hi! I love getting waxed at Lay Bare!<br>I leave reviews to help the girlies out :)</p>
-    </div>
-    
-    <div id="reviewModalContainer"></div>
-
-    <div class="reviews-container">
-        <h3>Recent Reviews</h3>
-        <div class="review-card">
-            <h4 id="gwen-button" style="cursor: pointer; color: inherit; text-decoration: none;">
-                Gwen Stacey
-            </h4>
-            <p><strong>Underarm Wax</strong></p>
-            <p>"Best underarm wax I've ever had! Quick, efficient, and no irritation afterward. Highly recommend for anyone wanting smooth and soft underarms!"</p>
+        <img src="default-profile.png" alt="Profile Picture" class="profile-img" id="profilePic">
+        <h2 id="username">Loading...</h2>
+        <p class="description" id="userDescription">Loading user information...</p>
+        
+        <div class="user-stats">
+            <div class="stat-item">
+                <div class="stat-value" id="reviewCount">0</div>
+                <div class="stat-label">Reviews</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="avgRating">0.0</div>
+                <div class="stat-label">Avg. Rating</div>
+            </div>
         </div>
     </div>
-    
-    <script>
-        document.getElementById("gwen-button").addEventListener("click", function() {
-            window.location.href = "reviews_orlando.html"; // Replace with the actual target page
-        });
-    </script>
 
-    
+    <div class="reviews-container">
+        <h3>User Reviews</h3>
+        <button class="scroll-btn scroll-left" id="scrollLeft">&#10094;</button>
+        <div id="userReviews">
+            <!-- User reviews will be loaded here -->
+            <p id="loading-message">Loading reviews...</p>
+        </div>
+        <button class="scroll-btn scroll-right" id="scrollRight">&#10095;</button>
+    </div>
+
     <div id="footer"></div>
 
     <script src="nav.js"></script>
     <script src="footer.js"></script>
+    
+    <script>
+        // Function to get URL parameters
+        function getUrlParameter(name) {
+            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+            var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+            var results = regex.exec(location.search);
+            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        }
+        
+        // Get user ID from URL
+        const userId = getUrlParameter('id');
+        if (!userId) {
+            document.getElementById('username').textContent = 'User not found';
+            document.getElementById('userDescription').textContent = 'Invalid user ID provided.';
+            document.getElementById('loading-message').textContent = 'Cannot load reviews for this user.';
+        }
+        
+        // Function to load user data
+        async function loadUserData() {
+            try {
+                // This would be a new API endpoint you need to create in your backend
+                const response = await fetch(`/user/${userId}`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch user data');
+                }
+                
+                const userData = await response.json();
+                
+                // Update profile information
+                document.getElementById('username').textContent = userData.username;
+                document.getElementById('userDescription').textContent = userData.description || 'No description available.';
+                
+                // Update profile picture if available
+                if (userData.profilePicture) {
+                    document.getElementById('profilePic').src = userData.profilePicture;
+                }
+                
+            } catch (error) {
+                console.error('Error loading user data:', error);
+                document.getElementById('username').textContent = 'User not found';
+                document.getElementById('userDescription').textContent = 'Could not load user information.';
+            }
+        }
+        
+        // Function to load user reviews
+        async function loadUserReviews() {
+            try {
+                // This would be a new API endpoint you need to create in your backend
+                const response = await fetch(`/user-reviews/${userId}`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch user reviews');
+                }
+                
+                const reviews = await response.json();
+                const reviewsContainer = document.getElementById('userReviews');
+                
+                // Clear loading message
+                reviewsContainer.innerHTML = '';
+                
+                // Update stats
+                document.getElementById('reviewCount').textContent = reviews.length;
+                
+                if (reviews.length > 0) {
+                    // Calculate average rating
+                    const totalRating = reviews.reduce((sum, review) => sum + (review.Star_rating || 0), 0);
+                    const avgRating = (totalRating / reviews.length).toFixed(1);
+                    document.getElementById('avgRating').textContent = avgRating;
+                    
+                    // Display reviews
+                    reviews.forEach(review => {
+                        reviewsContainer.innerHTML += createReviewCard(review);
+                    });
+                    
+                    // Show/hide scroll buttons based on content
+                    updateScrollButtonsVisibility();
+                } else {
+                    reviewsContainer.innerHTML = '<p>This user has not posted any reviews yet.</p>';
+                    // Hide scroll buttons if no reviews
+                    document.querySelector('.scroll-left').style.display = 'none';
+                    document.querySelector('.scroll-right').style.display = 'none';
+                }
+                
+            } catch (error) {
+                console.error('Error loading user reviews:', error);
+                document.getElementById('userReviews').innerHTML = '<p>Could not load reviews for this user.</p>';
+                // Hide scroll buttons on error
+                document.querySelector('.scroll-left').style.display = 'none';
+                document.querySelector('.scroll-right').style.display = 'none';
+            }
+        }
+        
+        // Function to create a review card
+        function createReviewCard(review) {
+            const serviceName = review.Service_ID && review.Service_ID.Service_Name ? review.Service_ID.Service_Name : 'General Service';
+            const stars = '⭐'.repeat(review.Star_rating || 0);
+            const title = review.Title || 'Review';
+            
+            // Add image if it exists
+            const imageHtml = review.Image_path ? 
+                `<div class="review-image"><img src="${review.Image_path}" alt="Review Image"></div>` : '';
+            
+            return `
+                <div class="review-card">
+                    <p><strong>${title}</strong></p>
+                    <p style="margin-top: 2px; color: grey;">${serviceName}</p>
+                    <div class="review-stars">${stars}</div>
+                    <p style="color: grey; font-style: italic;">"${review.Review}"</p>
+                    ${imageHtml}
+                    <p style="margin-top: 10px; font-size: 12px; color: #888;">Posted on: ${review.Date || 'Unknown date'}</p>
+                </div>
+            `;
+        }
+        
+        // Function to handle horizontal scrolling
+        function setupScrollButtons() {
+            const reviewsContainer = document.getElementById('userReviews');
+            const scrollLeftBtn = document.getElementById('scrollLeft');
+            const scrollRightBtn = document.getElementById('scrollRight');
+            
+            // Scroll amount (width of one review card plus margins)
+            const scrollAmount = 350;
+            
+            scrollLeftBtn.addEventListener('click', () => {
+                reviewsContainer.scrollBy({
+                    left: -scrollAmount,
+                    behavior: 'smooth'
+                });
+            });
+            
+            scrollRightBtn.addEventListener('click', () => {
+                reviewsContainer.scrollBy({
+                    left: scrollAmount,
+                    behavior: 'smooth'
+                });
+            });
+            
+            // Update button visibility on scroll
+            reviewsContainer.addEventListener('scroll', updateScrollButtonsVisibility);
+        }
+        
+        // Function to update scroll buttons visibility
+        function updateScrollButtonsVisibility() {
+            const reviewsContainer = document.getElementById('userReviews');
+            const scrollLeftBtn = document.getElementById('scrollLeft');
+            const scrollRightBtn = document.getElementById('scrollRight');
+            
+            // Hide left button if at the beginning
+            if (reviewsContainer.scrollLeft <= 10) {
+                scrollLeftBtn.style.opacity = '0.3';
+            } else {
+                scrollLeftBtn.style.opacity = '1';
+            }
+            
+            // Hide right button if at the end
+            const isAtEnd = reviewsContainer.scrollLeft + reviewsContainer.clientWidth >= 
+                reviewsContainer.scrollWidth - 10;
+                
+            if (isAtEnd) {
+                scrollRightBtn.style.opacity = '0.3';
+            } else {
+                scrollRightBtn.style.opacity = '1';
+            }
+            
+            // If content doesn't overflow, hide both buttons
+            if (reviewsContainer.scrollWidth <= reviewsContainer.clientWidth) {
+                scrollLeftBtn.style.display = 'none';
+                scrollRightBtn.style.display = 'none';
+            } else {
+                scrollLeftBtn.style.display = 'flex';
+                scrollRightBtn.style.display = 'flex';
+            }
+        }
+        
+        // Load data when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            if (userId) {
+                loadUserData();
+                loadUserReviews();
+                setupScrollButtons();
+                
+                // Initial check for scroll buttons
+                updateScrollButtonsVisibility();
+                
+                // Check again after window resize
+                window.addEventListener('resize', updateScrollButtonsVisibility);
+            }
+        });
+    </script>
 </body>
 </html>

@@ -58,6 +58,14 @@
         document.addEventListener('DOMContentLoaded', function() {
             fetchCurrentUser();
             loadReviews();
+            document.querySelectorAll('.user-profile-link').forEach(link => {
+                link.addEventListener('click', function() {
+                    const userId = this.getAttribute('data-user-id');
+                    if (userId) {
+                        window.location.href = `view_user.html?id=${userId}`;
+                    }
+                });
+            });
         });
         
         // Function to fetch current user
@@ -150,14 +158,20 @@
         // Function to create a top review card
         function createTopReviewCard(review) {
             const username = review.User_ID && review.User_ID.username ? review.User_ID.username : 'Anonymous';
+            const title = review.Title || 'Great Service!';
+            const imageHtml = review.Image_path ? 
+                `<div class="review-image"><img src="${review.Image_path}" alt="Review Image" style="max-width: 100%; max-height: 200px; margin-top: 10px;"></div>` : '';
+            
             return `
                 <div class="review-card">
-                    <h2>${review.Title || 'Great Service!'}</h2>
+                    <h2>${title}</h2>
                     <p>"${review.Review}"</p>
+                    ${imageHtml}
                     <p>- ${username}</p>
                 </div>
             `;
         }
+
         
         // Function to create a review card
         function createReviewCard(review) {
@@ -170,11 +184,16 @@
             const serviceName = review.Service_ID && review.Service_ID.Service_Name ? review.Service_ID.Service_Name : 'General Service';
             
             const stars = '⭐'.repeat(review.Star_rating || 0);
+            const title = review.Title || 'Review';
+            
+            // Add image if it exists
+            const imageHtml = review.Image_path ? 
+                `<div class="review-image"><img src="${review.Image_path}" alt="Review Image" style="max-width: 100%; max-height: 200px; margin-top: 10px;"></div>` : '';
             
             return `
                 <div class="other-review-card" data-review-id="${review._id || ''}">
                     <div class="review-header">
-                        <img src="${review.User_ID && review.User_ID.profile_pic ? review.User_ID.profile_pic : 'default-profile.png'}" alt="Profile Picture" class="profile-pic">
+                        <img src="${review.User_ID && review.User_ID.profilePicture ? review.User_ID.profilePicture : 'default-profile.png'}" alt="Profile Picture" class="profile-pic">
                         <div class="review-info">
                             <h3 class="user-profile-link" data-user-id="${userId}" style="cursor: pointer; color: inherit; text-decoration: none;">
                                 ${username}
@@ -194,9 +213,10 @@
                         <button style="padding: 5px; width: 150px; font-weight: bolder; font-size:small;" onclick="deleteReview('${review._id}')">Delete your review</button>
                     </div>
                     ` : ''}
-                    <p style="margin: 0px;"><strong>${review.Title || 'Review'}</strong></p>
+                    <p style="margin: 0px;"><strong>${title}</strong></p>
                     <p style="margin-top: 2px; color: grey;">${serviceName}</p>
                     <p style="color: grey"><i>"${review.Review}"</i></p>
+                    ${imageHtml}
                     ${review.ManagerResponse ? `<div class="manager-response">Manager Response: ${review.ManagerResponse}</div>` : ''}
                 </div>
             `;
@@ -213,15 +233,26 @@
             
             const form = event.target;
             const serviceName = document.getElementById("serviceSelect").value;
-            //const title = document.getElementById("reviewTitle").value;
+            const title = document.getElementById("reviewTitle").value; // Uncomment this line
             const review = document.getElementById("reviewText").value;
             const starRating = document.querySelectorAll(".star.active").length;
+            const imageFile = document.getElementById("reviewImage").files[0];
             
             try {
+                // Use FormData to properly handle file uploads
+                const formData = new FormData();
+                formData.append('serviceName', serviceName);
+                formData.append('title', title || 'Review'); // Add default if empty
+                formData.append('review', review);
+                formData.append('starRating', starRating);
+                
+                if (imageFile) {
+                    formData.append('reviewImage', imageFile);
+                }
+                
                 const response = await fetch('/addreview', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ serviceName, review, starRating })
+                    body: formData
                 });
                 
                 const result = await response.json();
