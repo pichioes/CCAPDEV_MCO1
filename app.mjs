@@ -97,7 +97,11 @@ const reviewSchema = new mongoose.Schema({
     Review: String,
     Date: String,
     Star_rating: Number,
-    Image_path: String // Added field for image path
+    Image_path: String, // Added field for image path
+    likes: Number,
+    dislikes: Number,
+    likedBy: [String],
+    dislikedBy: [String]
 });
 const Review = mongoose.model('reviews', reviewSchema);
 
@@ -390,7 +394,10 @@ app.post("/addreview", upload.single('reviewImage'), async (req, res) => {
             Review: review,
             Date: new Date().toLocaleDateString('en-GB'),
             Star_rating: starRating,
-            Image_path: imagePath
+            Image_path: imagePath,
+            likes: 0,
+            dislikes: 0,
+            likedBy: []
         });
         
         console.log("Review object to be saved:", newReview);
@@ -400,6 +407,112 @@ app.post("/addreview", upload.single('reviewImage'), async (req, res) => {
         console.error("Error saving review:", err);
         res.status(500).json({ message: "Server error while saving review." });
     }
+});
+
+app.post("/likereview",  async (req, res) => {
+    
+    try{
+        let { reviewId } = req.body; 
+        const userId = req.session.userId._id;
+
+        if (!mongoose.Types.ObjectId.isValid(reviewId)) {
+            return res.status(400).json({ message: "Invalid review ID" });
+        }
+        reviewId = new mongoose.Types.ObjectId(reviewId);
+
+         //find review in db
+        const review =  await Review.findOne({_id: reviewId});
+
+        if (!review) {
+            return res.status(404).json({ message: "Review not found" });
+        }
+
+        if (review.likedBy.includes(userId)) {
+            await Review.updateOne(
+                { _id: reviewId }, // Filter
+                {
+                    $inc: { likes: -1} , // Increment likes by 1
+                    $pull: { likedBy: userId }
+                }
+            );
+            const result = await Review.findOne({ _id: reviewId });
+            return res.json({ message: "Unliked successfully", likes: result.likes });
+        }else{
+       
+         
+            await Review.updateOne(
+                { _id: reviewId }, // Filter
+                {
+                    $inc: { likes: 1} , // Increment likes by 1
+                    $push: { likedBy: userId }
+                }
+            );
+            const result = await Review.findOne({ _id: reviewId });
+
+            res.json({ message: "Liked successfully", likes: result.likes});
+            
+        }
+
+    }catch (err) {
+        console.error("Error liking review:", err);
+        res.status(500).json({ message: "Server error while liking review." });
+    }
+    
+});
+
+
+app.post("/dislikereview",  async (req, res) => {
+    
+    try{
+        let { reviewId } = req.body; 
+        const userId = req.session.userId._id;
+
+        if (!mongoose.Types.ObjectId.isValid(reviewId)) {
+            return res.status(400).json({ message: "Invalid review ID" });
+        }
+        reviewId = new mongoose.Types.ObjectId(reviewId);
+
+         //find review in db
+        const review =  await Review.findOne({_id: reviewId});
+
+        if (!review) {
+            return res.status(404).json({ message: "Review not found" });
+        }
+        console.log("review found")
+        console.log(userId)
+        if (review.dislikedBy.includes(userId)) {
+            console.log("its here")
+            await Review.updateOne(
+                { _id: reviewId }, // Filter
+                {
+                    $inc: { dislikes: -1} , // Increment likes by 1
+                    $pull: { dislikedBy: userId }
+                }
+            );
+            const result = await Review.findOne({ _id: reviewId });
+            console.log(result)
+            return res.json({ message: "Undisliked successfully", dislikes: result.dislikes });
+        }else{
+       
+           
+            await Review.updateOne(
+                { _id: reviewId }, // Filter
+                {
+                    $inc: { dislikes: 1} , // Increment likes by 1
+                    $push: { dislikedBy: userId }
+                }
+            );
+            const result = await Review.findOne({ _id: reviewId });
+            console.log(result)
+            res.json({ message: "disliked successfully", dislikes: result.dislikes});
+            
+        }
+
+    }catch (err) {
+        console.error("Error liking review:", err);
+        res.status(500).json({ message: "Server error while liking review." });
+    }
+    
 });
 
 // Also update the base64 endpoint to match

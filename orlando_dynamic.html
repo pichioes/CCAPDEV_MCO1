@@ -325,13 +325,16 @@
             }
             
             try {
-                const response = await fetch(`/likereview/${reviewId}`, {
-                    method: 'POST'
+                const response = await fetch("/likereview", {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ reviewId })
                 });
                 
                 if (response.ok) {
                     // Update like count in UI
                     const result = await response.json();
+                    
                     const likeBtn = document.querySelector(`.other-review-card[data-review-id="${reviewId}"] .like-count`);
                     if (likeBtn) {
                         likeBtn.textContent = result.likes;
@@ -350,8 +353,10 @@
             }
             
             try {
-                const response = await fetch(`/dislikereview/${reviewId}`, {
-                    method: 'POST'
+                const response = await fetch("/dislikereview", {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ reviewId })
                 });
                 
                 if (response.ok) {
