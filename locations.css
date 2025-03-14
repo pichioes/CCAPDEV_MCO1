@@ -12,12 +12,20 @@ h1 {
     color: #4a2c1f;
 }
 
+a {
+    text-decoration: none; /* Removes underline */
+    color: inherit; /* Keeps link color the same as surrounding text */
+}
+
+a:focus, a:active {
+    outline: none; /* Prevents focus outline */
+}
+
 .search-bar-container {
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 20px;
-    
 }
 .store-locator-container {
     display: grid;
@@ -61,4 +69,8 @@ button {
     width: 200px; 
     border-radius: 5%;
     display: flex;
+}
+
+.rating {
+    font-weight: bold;
 }
