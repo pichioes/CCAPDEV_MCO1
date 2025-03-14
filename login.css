@@ -28,6 +28,13 @@ h2 {
 .input-group {
     margin: 15px 0;
     font-family: Montserrat, sans-serif;
+    display: flex;
+    align-items: center; /* Aligns checkbox and text */
+    gap: 8px; /* Adds spacing between the checkbox and label */
+}
+.input-group input[type="checkbox"] {
+    width: auto; /* Ensures the checkbox does not stretch */
+    margin: 0; /* Removes unwanted spacing */
 }
 label {
     display: block;
