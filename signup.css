@@ -1,11 +1,11 @@
-/* LOGIN CSS */
+/* SIGNUP CSS */
 body {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
     background-color: #f4e9e4;
-    font-family: Arial, sans-serif;
+    font-family: Montserrat, sans-serif;
 }
 .container {
     background-color: #c9a1a1;
@@ -71,4 +71,20 @@ button:hover {
     opacity: 0.8;
 }
 
-/* END OF LOGIN CSS */
+body, h2, label, input, button, textarea {
+    font-family: 'Montserrat', sans-serif;
+}
+
+.custom-file-label {
+    display: inline-block;
+    background-color: #b78c8c;
+    color: white;
+    font-family: 'Montserrat', sans-serif;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    transition: 0.3s;
+}
+
+/* END OF SIGNUP CSS */
