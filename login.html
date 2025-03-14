@@ -8,6 +8,29 @@
     <link rel="stylesheet" href="login.css">
 </head>
 <body>
+    <!-- Cookie Consent Banner -->
+    <div id="cookie-banner" style="display:none; position: fixed; bottom: 20px; left: 20px; right: 20px; background: #fff0f0; color: #5a4b4b; padding: 15px 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.15); font-family: 'Montserrat', sans-serif; z-index: 1000; max-width: 400px; margin: auto;">
+        This website uses cookies to enhance your experience.
+        <button onclick="acceptCookies()" style="margin-left: 10px; background-color: #b78c8c; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer;">
+            Accept
+        </button>
+    </div>
+    <script>
+        function acceptCookies() {
+            document.cookie = "accepted=true; max-age=" + (60 * 60 * 24 * 21) + "; path=/";
+            document.getElementById("cookie-banner").style.display = "none";
+        }
+    
+        function hasAcceptedCookies() {
+            return document.cookie.includes("accepted=true");
+        }
+    
+        window.addEventListener("load", function () {
+            if (!hasAcceptedCookies()) {
+                document.getElementById("cookie-banner").style.display = "block";
+            }
+        });
+    </script>
     <div class="container">
         <div class="logo">
             <img src="img/laybare.png" alt="Lay Bare Logo">

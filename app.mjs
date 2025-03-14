@@ -7,6 +7,8 @@ import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 import session from "express-session"
 import multer from 'multer'; // Add multer for file upload
+import cookieParser from 'cookie-parser';
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -17,6 +19,7 @@ const app = express()
 dotenv.config();
 
 app.use(express.json());
+app.use(cookieParser());
 
 app.use(session({
     secret: "your-secret-key",
@@ -25,7 +28,50 @@ app.use(session({
     cookie: { secure: false }
 }));
 
+
 app.use(express.static(__dirname));
+
+// Serve cookie consent bar
+app.get('/cookie-notice', (req, res) => {
+    res.send(`
+        <div style="position: fixed; bottom: 10px; left: 10px; background: #eee; padding: 10px; border: 1px solid #aaa;">
+            This website uses cookies to improve your experience.
+            <button onclick="document.cookie='accepted=true; max-age=1814400'; this.parentElement.style.display='none';">Accept</button>
+        </div>
+    `);
+});
+
+// Add cookie setting to login route
+app.post('/login', async (req, res) => {
+    const { username, password } = req.body;
+
+    try {
+        const user = await User.findOne({ username });
+        if (!user) {
+            console.log("username does not exist");
+            return res.status(401).json({ message: "Invalid username or password." });
+        }
+
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            console.log("password incorrect");
+            return res.status(401).json({ message: "Invalid username or password." });
+        }
+
+        req.session.userId = user;
+
+        // Set cookie for 3 weeks (21 days)
+        res.cookie('user', user.username, {
+            httpOnly: true,
+            maxAge: 1000 * 60 * 60 * 24 * 21 // 3 weeks
+        });
+        console.log(`✅ Cookie set for user: ${user.username}`);
+
+        res.json({ message: "Login successful!" });
+    } catch (err) {
+        res.status(500).json({ message: "Server error." });
+    }
+});
 
 // Create uploads directory if it doesn't exist
 const uploadsDir = path.join(__dirname, 'uploads');
