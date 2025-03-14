@@ -28,21 +28,22 @@ h2 {
 .input-group {
     margin: 15px 0;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
+    width: 100%;
 }
 label {
     display: block;
     color: #fff;
     text-align: left;
+    margin-bottom: 5px;
 }
-input {
-    width: 89%;
+input, textarea {
+    width: 100%;
     padding: 10px;
     border-radius: 5px;
     border: 1px solid #ccc;
-    margin-top: 5px;
 }
 .button-group {
     display: flex;
@@ -66,15 +67,14 @@ button {
     background-color: #b78c8c;
     color: white;
     width: 100%;
+    margin-bottom: 5px;
 }
 button:hover {
     opacity: 0.8;
 }
-
 body, h2, label, input, button, textarea {
     font-family: 'Montserrat', sans-serif;
 }
-
 .custom-file-label {
     display: inline-block;
     background-color: #b78c8c;
@@ -86,5 +86,4 @@ body, h2, label, input, button, textarea {
     text-align: center;
     transition: 0.3s;
 }
-
 /* END OF SIGNUP CSS */
