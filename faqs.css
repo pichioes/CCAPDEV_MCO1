@@ -28,6 +28,15 @@ h1 {
     border-radius: 10px;
     overflow: hidden;
 }
+
+.faq-question span {
+    transition: transform 0.3s ease-in-out;
+}
+
+.faq-item.active .faq-question span {
+    transform: rotate(180deg);
+}
+
 .faq-question {
     padding: 15px;
     cursor: pointer;
