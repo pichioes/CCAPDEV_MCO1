@@ -7,7 +7,7 @@ import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
-import multer from 'multer'; // Add multer for file upload
+import multer from 'multer'; 
 import cookieParser from 'cookie-parser';
 
 
@@ -32,7 +32,7 @@ app.use(session({
 }));
 
 
-// Connect to MongoDB
+// MongoDB connection
 dotenv.config();
 
 app.use(express.json());
@@ -194,8 +194,6 @@ const serviceSchema = new mongoose.Schema({
 
 const Service = mongoose.model("services", serviceSchema);
 
-
-
 app.get('/', (req, res) => {
     if (req.session.userId) {
         // User has an active session (even remembered), redirect to landing page
@@ -223,7 +221,7 @@ app.post('/signup', profilePictureUpload, async (req, res) => {
             return res.status(400).json({ message: "Username already taken." });
         }
 
-        // password hashi
+        // password hash
         const hashedPassword = await bcrypt.hash(password, 10);
 
         // Create and save user
@@ -297,7 +295,7 @@ app.get("/profile", async (req, res) => {
         }
         console.log("user found")
         res.json({ 
-            _id: user._id,  // Add this line
+            _id: user._id,
             username: user.username, 
             description: user.description,
             profilePicture: user.profilePicture 
@@ -355,9 +353,7 @@ app.get('/getReviews', async (req, res) => {
 app.get("/getServiceRatings", async (req, res) => {
    
     const { service } = req.query;
-    
     const serviceId = await Service.findOne({ Service_Name: service });
-    
     
     if (!service) {
       return res.status(400).json({ error: "Service is required" });
@@ -365,15 +361,12 @@ app.get("/getServiceRatings", async (req, res) => {
   
     try {
       const reviews = await Review.find({ Service_ID: serviceId._id });
-  
       if (reviews.length === 0) {
-        
         return res.json({ service, averageRating: "No ratings yet" });
         
       }
       
       const avgRating = reviews.reduce((sum, review) => sum + review.Star_rating, 0) / reviews.length;
-     
       const response = res.json({ service, averageRating: avgRating.toFixed(1) });
       
     } catch (error) {
