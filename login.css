@@ -29,9 +29,19 @@ h2 {
     margin: 15px 0;
     font-family: Montserrat, sans-serif;
     display: flex;
-    align-items: center; /* Aligns checkbox and text */
+    align-items: left; /* Aligns checkbox and text */
     gap: 8px; /* Adds spacing between the checkbox and label */
+    flex-direction: column;
 }
+
+.input-group label {
+    margin-bottom: 0px; /* Reduces space between label and input */
+}
+
+.input-group input {
+    margin-top: 0; /* Removes extra spacing above the input */
+}
+
 .input-group input[type="checkbox"] {
     width: auto; /* Ensures the checkbox does not stretch */
     margin: 0; /* Removes unwanted spacing */
@@ -40,6 +50,7 @@ label {
     display: block;
     color: #fff;
     text-align: left;
+    margin-top: 3px;
 }
 input {
     width: 89%;
@@ -77,6 +88,12 @@ button:hover {
 
 body, h2, label, input, button {
     font-family: 'Montserrat', sans-serif;
+}
+
+.checkbox-group {
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
 }
 
 /* END OF LOGIN CSS */
