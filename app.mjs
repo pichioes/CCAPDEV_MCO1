@@ -175,11 +175,12 @@ const profilePictureUpload = multer({
 const reviewSchema = new mongoose.Schema({
     User_ID: { type: mongoose.Schema.Types.ObjectId, ref: "users" },
     Service_ID: { type: mongoose.Schema.Types.ObjectId, ref: "services" },
-    Title: String, // Added Title field
+    Title: String, 
     Review: String,
     Date: String,
     Star_rating: Number,
-    Image_path: String, // Added field for image path
+    Image_path: String, 
+    Video_path: String,
     likes: Number,
     dislikes: Number,
     likedBy: [String],
@@ -197,7 +198,7 @@ const Service = mongoose.model("services", serviceSchema);
 
 app.get('/', (req, res) => {
     if (req.session.userId) {
-        // ✅ User has an active session (even remembered), redirect to landing page
+        // User has an active session (even remembered), redirect to landing page
         return res.redirect('/landingpage.html');
     } else {
         // Not logged in, show login page
@@ -222,7 +223,7 @@ app.post('/signup', profilePictureUpload, async (req, res) => {
             return res.status(400).json({ message: "Username already taken." });
         }
 
-        // Hash the password
+        // password hashi
         const hashedPassword = await bcrypt.hash(password, 10);
 
         // Create and save user
@@ -281,65 +282,6 @@ app.post("/update-profile-picture", (req, res) => {
             res.status(500).json({ message: "Server error" });
         }
     });
-});
-
-// Also add support for base64 profile picture uploads
-app.post("/update-profile-picture-base64", async (req, res) => {
-    if (!req.session.userId) {
-        return res.status(401).json({ message: "You must be logged in to update your profile picture." });
-    }
-
-    try {
-        const { imageData } = req.body;
-        
-        if (!imageData || !imageData.startsWith('data:image')) {
-            return res.status(400).json({ message: "Valid image data is required." });
-        }
-
-        // Get current user
-        const user = await User.findById(req.session.userId._id);
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
-        }
-
-        // Delete old profile picture if it exists
-        if (user.profilePicture) {
-            const oldImagePath = path.join(__dirname, user.profilePicture);
-            if (fs.existsSync(oldImagePath)) {
-                fs.unlinkSync(oldImagePath);
-            }
-        }
-
-        // Process base64 image
-        const matches = imageData.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
-        
-        if (!matches || matches.length !== 3) {
-            return res.status(400).json({ message: "Invalid image format." });
-        }
-
-        const type = matches[1].split('/')[1];
-        const buffer = Buffer.from(matches[2], 'base64');
-        const filename = `profile-${user._id}-${Date.now()}.${type}`;
-        const filepath = path.join(uploadsDir, filename);
-        
-        fs.writeFileSync(filepath, buffer);
-        const profilePicturePath = `/uploads/${filename}`;
-
-        // Update user with new profile picture path
-        const updatedUser = await User.findByIdAndUpdate(
-            user._id,
-            { profilePicture: profilePicturePath },
-            { new: true }
-        );
-
-        res.json({ 
-            message: "Profile picture updated successfully!",
-            profilePicture: profilePicturePath
-        });
-    } catch (error) {
-        console.error("Error updating profile picture:", error);
-        res.status(500).json({ message: "Server error" });
-    }
 });
 
 app.get("/profile", async (req, res) => {
@@ -440,21 +382,21 @@ app.get("/getServiceRatings", async (req, res) => {
   });
 
 // Updated to handle file upload and title
-app.post("/addreview", upload.single('reviewImage'), async (req, res) => {
+app.post("/addreview", upload.single('reviewMedia'), async (req, res) => {
     console.log("POST /addreview route triggered with body:", req.body);
     if (!req.session.userId) {
         return res.status(401).json({ message: "You must be logged in to post a review." });
     }
-
+    
     try {
         console.log("review attempt");
         
-        const { serviceName, title, review, starRating } = req.body;
+        const { serviceName, title, review, starRating, mediaType } = req.body;
         
         if (!review || !starRating) {
             return res.status(400).json({ message: "Review text and rating are required." });
         }
-
+        
         // Default to a general service if no serviceName is provided
         let serviceId = null;
         if (serviceName) {
@@ -469,21 +411,31 @@ app.post("/addreview", upload.single('reviewImage'), async (req, res) => {
             }
         }
         console.log(serviceId);
-
-        // Handle image path if an image was uploaded
+        
+        // media path
         let imagePath = null;
+        let videoPath = null;
+        
         if (req.file) {
-            imagePath = `/uploads/${req.file.filename}`;
+            const filePath = `/uploads/${req.file.filename}`;
+            
+            // Determine if it's an image or video based on mediaType or file mimetype
+            if (mediaType === 'video' || (req.file.mimetype && req.file.mimetype.startsWith('video/'))) {
+                videoPath = filePath;
+            } else {
+                imagePath = filePath;
+            }
         }
-
+        
         const newReview = new Review({
             User_ID: req.session.userId._id,
             Service_ID: serviceId,
-            Title: title || 'Review', // Ensure title is saved with a default if not provided
+            Title: title || 'Review',
             Review: review,
             Date: new Date().toLocaleDateString('en-GB'),
             Star_rating: starRating,
             Image_path: imagePath,
+            Video_path: videoPath, 
             likes: 0,
             dislikes: 0,
             likedBy: []
@@ -602,68 +554,6 @@ app.post("/dislikereview",  async (req, res) => {
         res.status(500).json({ message: "Server error while liking review." });
     }
     
-});
-
-// Also update the base64 endpoint to match
-app.post("/addreview-base64", async (req, res) => {
-    if (!req.session.userId) {
-        return res.status(401).json({ message: "You must be logged in to post a review." });
-    }
-
-    try {
-        const { serviceName, title, review, starRating, imageData } = req.body;
-        
-        if (!review || !starRating) {
-            return res.status(400).json({ message: "Review text and rating are required." });
-        }
-
-        let imagePath = null;
-        
-        // Handle base64 image if provided
-        if (imageData && imageData.startsWith('data:image')) {
-            const matches = imageData.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
-            
-            if (matches && matches.length === 3) {
-                const type = matches[1].split('/')[1];
-                const buffer = Buffer.from(matches[2], 'base64');
-                const filename = `review-${Date.now()}.${type}`;
-                const filepath = path.join(uploadsDir, filename);
-                
-                fs.writeFileSync(filepath, buffer);
-                imagePath = `/uploads/${filename}`;
-            }
-        }
-
-        // Handle service same as before
-        let serviceId = null;
-        if (serviceName) {
-            const service = await Service.findOne({ Service_Name: serviceName });
-            if (service) {
-                serviceId = service._id;
-            } else {
-                const newService = new Service({ Service_Name: serviceName });
-                await newService.save();
-                serviceId = newService._id;
-            }
-        }
-
-        const newReview = new Review({
-            User_ID: req.session.userId._id,
-            Service_ID: serviceId,
-            Title: title || 'Review',  // Ensure title is saved with a default if not provided
-            Review: review,
-            Date: new Date().toLocaleDateString('en-GB'),
-            Star_rating: starRating,
-            Image_path: imagePath
-        });
-        
-        console.log("Review object to be saved (base64):", newReview);
-        await newReview.save();
-        res.json({ message: "Review submitted successfully!" });
-    } catch (err) {
-        console.error("Error saving review:", err);
-        res.status(500).json({ message: "Server error while saving review." });
-    }
 });
 
 // Add routes for editing and deleting reviews
