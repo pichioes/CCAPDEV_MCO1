@@ -410,6 +410,35 @@ app.get('/getReviews', async (req, res) => {
     }
 });
 
+app.get("/getServiceRatings", async (req, res) => {
+   
+    const { service } = req.query;
+    
+    const serviceId = await Service.findOne({ Service_Name: service });
+    
+    
+    if (!service) {
+      return res.status(400).json({ error: "Service is required" });
+    }
+  
+    try {
+      const reviews = await Review.find({ Service_ID: serviceId._id });
+  
+      if (reviews.length === 0) {
+        
+        return res.json({ service, averageRating: "No ratings yet" });
+        
+      }
+      
+      const avgRating = reviews.reduce((sum, review) => sum + review.Star_rating, 0) / reviews.length;
+     
+      const response = res.json({ service, averageRating: avgRating.toFixed(1) });
+      
+    } catch (error) {
+      res.status(500).json({ error: "Error fetching reviews" });
+    }
+  });
+
 // Updated to handle file upload and title
 app.post("/addreview", upload.single('reviewImage'), async (req, res) => {
     console.log("POST /addreview route triggered with body:", req.body);

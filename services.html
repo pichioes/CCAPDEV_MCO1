@@ -16,35 +16,35 @@
             <img src="img/pic1.png" alt="Underarm Wax">
             <h2>Underarm Wax</h2>
             <p>A session to a multi-step service directed by selected Lay Bare branches to help smoothen the skin through whitening service.</p>
-            <p class="rating">⭐ 4.5</p>
+            <p class="rating" id="underarm-rating">⭐ 4.5</p>
             <div class="price-time">P380 | Time: 10 Mins</div>
         </div>
         <div class="service-card">
             <img src="img/pic2.png" alt="Full Arm Wax">
             <h2>Brazilian Wax</h2>
             <p>Removal of the hair in the genitalia area. This is done with honey wax, making sure that it stays smooth all throughout. Hassle-free and almost painless!</p>
-            <p class="rating">⭐ 4.5</p>
-            <div class="price-time">P340 | Time: 20 Mins</div>
+            <p class="rating" id="brazilian-rating">⭐ 4.5</p>
+            <div class="price-time" >P340 | Time: 20 Mins</div>
         </div>
         <div class="service-card">
             <img src="img/pic3.png" alt="Full Legs">
             <h2>Full Legs</h2>
             <p>Hair is waxed from the tips of your toes to the top of your thighs. This ensures the smoothness of skin in the legs, making sure it stays for long.</p>
-            <p class="rating">⭐ 4.5</p>
+            <p class="rating" id="full-legs-rating">⭐ 4.5</p>
             <div class="price-time">P650 | Time: 35 Mins</div>
         </div>
         <div class="service-card">
             <img src="img/pic4.png" alt="Full Arm Wax">
             <h2>Full Arm Wax</h2>
             <p>Hair is waxed from the tips of your fingers to the top of your shoulders.</p>
-            <p class="rating">⭐ 4.5</p>
+            <p class="rating" id="full-arm-rating">⭐ 4.5</p>
             <div class="price-time">P340 | Time: 20 Mins</div>            
         </div>
         <div class="service-card">
             <img src="img/pic5.png" alt="Full Body Wax">
             <h2>Full Body Wax</h2>
             <p>Get the ultimate hair-free body when we remove hair from brow-to-toe.</p>
-            <p class="rating">⭐ 4.5</p>
+            <p class="rating" id="full-body-rating">⭐ 4.5</p>
             <div class="price-time">P2,150 | Time: 100 Mins</div>            
         </div>
     </div>
@@ -53,5 +53,39 @@
 
     <script src="nav.js"></script>
     <script src="footer.js"></script>
+    <script>
+          document.addEventListener('DOMContentLoaded', function() {
+            showAvgServiceRating("Underarm Wax", "underarm-rating");
+            showAvgServiceRating("Brazilian Wax", "brazilian-rating");
+            showAvgServiceRating("Full Leg Wax", "full-legs-rating");
+            showAvgServiceRating("Full Body Wax", "full-body-rating");
+            showAvgServiceRating("Full Arm Wax", "full-arm-rating");
+        });
+        
+        async function showAvgServiceRating(service, elemId){
+            try {
+                const response = await fetch(`/getServiceRatings?service=${encodeURIComponent(service)}`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch reviews');
+                }
+                
+                const data = await response.json();
+                
+                const avgRatingElement = document.getElementById(elemId);
+                // Update review count and average rating
+                
+                
+               
+                
+               
+                document.getElementById(elemId).textContent = `⭐ ${data.averageRating}`;
+                
+               
+            } catch (error) {
+                console.error("Error loading reviews:", error);
+            }
+
+        }
+    </script>
 </body>
 </html>
