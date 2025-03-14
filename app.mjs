@@ -1,11 +1,12 @@
 import express from 'express'
+import session from 'express-session';
 import path from 'path'
 import { fileURLToPath } from 'url';
 import fs from 'fs';
+import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
-import session from "express-session"
 import multer from 'multer'; // Add multer for file upload
 import cookieParser from 'cookie-parser';
 
@@ -13,7 +14,23 @@ import cookieParser from 'cookie-parser';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const app = express()
+const app = express();
+const PORT = 3000;
+
+// Middleware
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'public'))); // for CSS and frontend files
+
+app.use(session({
+  secret: 'very super secret',
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    httpOnly: true,
+    maxAge: null // We'll set it dynamically based on "remember me"
+  }
+}));
+
 
 // Connect to MongoDB
 dotenv.config();
@@ -30,7 +47,57 @@ app.use(session({
 
 
 app.use(express.static(__dirname));
+app.post('/login', async (req, res) => {
 
+    const { username, password, remember } = req.body;
+
+    try {
+        const user = await User.findOne({ username });
+        if (!user) {
+            return res.status(401).json({ message: "Invalid username or password." });
+        }
+
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(401).json({ message: "Invalid username or password." });
+        }
+
+        // Set session
+        req.session.userId = user;
+
+        // Set session cookie maxAge if remember me is checked
+        if (remember) {
+            req.session.cookie.maxAge = 1000 * 60 * 60 * 24 * 21; // 21 days
+        } else {
+            req.session.cookie.expires = false;
+        }
+
+        res.json({ message: "Login successful!" });
+        console.log("Remember Me:", remember);
+        console.log("Session maxAge:", req.session.cookie.maxAge);
+        console.log("Session expires:", req.session.cookie.expires);
+
+    } catch (err) {
+        console.error("Login error:", err);
+        res.status(500).json({ message: "Server error" });
+    }
+});
+
+
+app.get('/dashboard', (req, res) => {
+    if (req.session.user) {
+      res.send(`Welcome ${req.session.user}! <a href="/logout">Logout</a>`);
+    } else {
+      res.redirect('/login.html');
+    }
+});
+
+app.get('/logout', (req, res) => {
+    req.session.destroy(() => {
+      res.redirect('/login.html');
+    });
+});
+  
 // Serve cookie consent bar
 app.get('/cookie-notice', (req, res) => {
     res.send(`
@@ -41,37 +108,6 @@ app.get('/cookie-notice', (req, res) => {
     `);
 });
 
-// Add cookie setting to login route
-app.post('/login', async (req, res) => {
-    const { username, password } = req.body;
-
-    try {
-        const user = await User.findOne({ username });
-        if (!user) {
-            console.log("username does not exist");
-            return res.status(401).json({ message: "Invalid username or password." });
-        }
-
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) {
-            console.log("password incorrect");
-            return res.status(401).json({ message: "Invalid username or password." });
-        }
-
-        req.session.userId = user;
-
-        // Set cookie for 3 weeks (21 days)
-        res.cookie('user', user.username, {
-            httpOnly: true,
-            maxAge: 1000 * 60 * 60 * 24 * 21 // 3 weeks
-        });
-        console.log(`✅ Cookie set for user: ${user.username}`);
-
-        res.json({ message: "Login successful!" });
-    } catch (err) {
-        res.status(500).json({ message: "Server error." });
-    }
-});
 
 // Create uploads directory if it doesn't exist
 const uploadsDir = path.join(__dirname, 'uploads');
@@ -159,38 +195,16 @@ const Service = mongoose.model("services", serviceSchema);
 
 
 
-app.get('/', (req, res) =>{
-    res.sendFile(path.join(__dirname, 'login.html'));
-});
-
-
-
-app.post('/login', async (req, res) => {
-    const { username, password } = req.body;
-
-    try {
-        // Find user in database
-        const user = await User.findOne({ username });
-        if (!user) {
-            console.log("username does not exists");
-            return res.status(401).json({ message: "Invalid username or password." });
-        }
-
-        // Compare passwords
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) {
-            console.log("password incorrect");
-            return res.status(401).json({ message: "Invalid username or password." });
-        }
-        req.session.userId = user;
-        console.log(req.session.userId.username)
-        console.log(req.session.userId._id)
-        console.log(typeof req.session.userId._id)
-        res.json({ message: "Login successful!" });
-    } catch (err) {
-        res.status(500).json({ message: "Server error." });
+app.get('/', (req, res) => {
+    if (req.session.userId) {
+        // ✅ User has an active session (even remembered), redirect to landing page
+        return res.redirect('/landingpage.html');
+    } else {
+        // Not logged in, show login page
+        return res.sendFile(path.join(__dirname, 'login.html'));
     }
 });
+
 
 // Handle signup requests
 app.post('/signup', profilePictureUpload, async (req, res) => {
