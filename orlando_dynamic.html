@@ -127,8 +127,8 @@
                 // Filter out reviews without proper structure
                 const validReviews = reviews.filter(review => review && review.Review);
                 
-                // Sort reviews by rating (highest first)
-                const sortedReviews = [...validReviews].sort((a, b) => (b.Star_rating || 0) - (a.Star_rating || 0));
+                // Sort reviews by likes (highest first)
+                const sortedReviews = [...validReviews].sort((a, b) => (b.likes || 0) - (a.likes || 0));
                 
                 // Display top 2 reviews if available
                 const topReviews = sortedReviews.slice(0, Math.min(2, sortedReviews.length));
