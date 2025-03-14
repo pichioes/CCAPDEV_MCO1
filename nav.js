@@ -16,8 +16,35 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Insert the navbar HTML
                 navbarContainer.innerHTML = html;
                 
-                // Add any additional functionality for navbar if needed
-                // (e.g., highlight current page, mobile menu toggle, etc.)
+                // Add profile redirect functionality
+                const profileLink = document.querySelector('.profile-menu a');
+                if (profileLink) {
+                    profileLink.addEventListener('click', async function(event) {
+                        event.preventDefault();
+                        
+                        try {
+                            // Check if user is logged in by querying the profile endpoint
+                            const response = await fetch('/profile');
+                            
+                            if (response.status === 401) {
+                                // User is not logged in, redirect to login page
+                                window.location.href = 'login.html';
+                            } else if (response.ok) {
+                                // User is logged in, proceed to profile page
+                                window.location.href = 'userpage.html';
+                            } else {
+                                // Handle other errors
+                                console.error('Error checking login status:', response.statusText);
+                                // Default to userpage in case of unexpected errors
+                                window.location.href = 'userpage.html';
+                            }
+                        } catch (error) {
+                            console.error('Error checking login status:', error);
+                            // Default to userpage in case of network errors
+                            window.location.href = 'userpage.html';
+                        }
+                    });
+                }
             })
             .catch(error => {
                 console.error('Error loading navbar:', error);
