@@ -1,19 +1,23 @@
 [
     {
-      "_id": "loc001",
-      "Location_Name": "Orlando"
+      "Location_Name": "Orlando",
+      "Description": "Description Goes here",
+      "Address":"Address goes here"
     },
     {
-      "_id": "loc002",
-      "Location_Name": "Ayala North Exchange"
+      "Location_Name": "Ayala North Exchange",
+      "Description": "Description Goes here",
+      "Address":"Address goes here"
     },
     {
-      "_id": "loc003",
-      "Location_Name": "Newport City"
+      "Location_Name": "Newport City",
+      "Description": "Description Goes here",
+      "Address":"Address goes here"
     },
     {
-        "_id": "loc004",
-        "Location_Name": "California Garden"
+      "Location_Name": "California Garden",
+      "Description": "Description Goes here",
+      "Address":"Address goes here"
     }
 ]
   
