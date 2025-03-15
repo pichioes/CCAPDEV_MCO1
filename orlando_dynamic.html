@@ -49,17 +49,17 @@
     <script src="footer.js"></script>
     <script src="review_modal.js"></script>
     <script src="review_actions.js"></script>
-    <script src="edit_review.js"></script>
     <script src="guest_checker.js"></script>
     <script src="search.js"></script>
+    <script src="edit_review.js"></script>
     
     <script>
         // Check if user is logged in
         let currentUser = null;
         
         // Fetch current user data when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            fetchCurrentUser();
+        document.addEventListener('DOMContentLoaded', async function() {
+            await fetchCurrentUser();
             loadReviews();
             document.querySelectorAll('.user-profile-link').forEach(link => {
                 link.addEventListener('click', function() {
@@ -211,11 +211,13 @@
                         </div>
                     </div>
                     ${isUserReview ? `
-                    <div class="review-buttons">
+                        <div class="review-buttons">
                         <button style="padding: 5px; width: 150px; font-weight: bolder; font-size:small;" onclick="loadEditModal('${review._id}')">Edit your Review!</button>
                         <button style="padding: 5px; width: 150px; font-weight: bolder; font-size:small;" onclick="deleteReview('${review._id}')">Delete your review</button>
-                    </div>
+                        <div id="editReviewModalContainer"></div>
+                        </div>
                     ` : ''}
+
                     <p style="margin: 0px;"><strong>${title}</strong></p>
                     <p style="margin-top: 2px; color: grey;">${serviceName}</p>
                     <p style="color: grey"><i>"${review.Review}"</i></p>
@@ -270,30 +272,6 @@
             } catch (error) {
                 console.error("Error submitting review:", error);
                 alert("An error occurred while submitting your review. Please try again.");
-            }
-        }
-        
-        // Function to edit a review
-        async function editReview(reviewId, updatedData) {
-            try {
-                const response = await fetch(`/editreview/${reviewId}`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(updatedData)
-                });
-                
-                const result = await response.json();
-                
-                if (response.ok) {
-                    alert(result.message);
-                    closeEditModal();
-                    loadReviews();
-                } else {
-                    alert(result.message);
-                }
-            } catch (error) {
-                console.error("Error updating review:", error);
-                alert("An error occurred while updating your review. Please try again.");
             }
         }
         

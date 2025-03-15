@@ -1,7 +1,5 @@
-function initializeStarRating() {
-
-    const stars = document.querySelectorAll(".star");
-
+function initializeEditStarRating(currentRating) {
+    const stars = document.querySelectorAll("#edit-star-container .star");
     stars.forEach((star, index) => {
         star.dataset.value = index + 1;
         star.addEventListener("click", function () {
@@ -11,51 +9,92 @@ function initializeStarRating() {
 
     function updateStars(rating) {
         stars.forEach(star => {
-            if (parseInt(star.dataset.value) <= rating) {
-                star.classList.add("active");
-            } else {
-                star.classList.remove("active");
+            star.classList.toggle("active", parseInt(star.dataset.value) <= rating);
+        });
+        document.getElementById("editReviewModal").dataset.stars = rating;
+    }
+
+    updateStars(currentRating); // Pre-fill stars
+}
+
+async function loadEditModal(reviewId) {
+    const response = await fetch('/getReviews');
+    const allReviews = await response.json();
+    const review = allReviews.find(r => r._id === reviewId);
+    if (!review) return alert("Review not found");
+
+    const html = await fetch('edit_review.html').then(res => res.text());
+    document.getElementById('editReviewModalContainer').innerHTML = html;
+
+    setTimeout(() => {
+        document.getElementById('editReviewModal').style.display = 'block';
+        document.getElementById('editModalOverlay').style.display = 'block';
+
+        // Fill in data
+        document.getElementById("editReviewTitle").value = review.Title;
+        document.getElementById("editReviewText").value = review.Review;
+        document.getElementById("editServiceSelect").value = review.Service_ID?.Service_Name || "";
+        initializeEditStarRating(review.Star_rating || 0);
+
+        // Preview current image
+        if (review.Image_path) {
+            const preview = document.getElementById("editImagePreview");
+            preview.src = review.Image_path;
+            preview.style.display = "block";
+        }
+
+        document.getElementById("editReviewImage").addEventListener("change", function (event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const preview = document.getElementById("editImagePreview");
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
             }
         });
-    }
+
+        document.getElementById("submitEditReviewButton").onclick = () => submitEditReview(reviewId);
+    }, 0);
 }
 
-function loadModal2() {
-    fetch('edit_review.html')
-        .then(response => response.text())
-        .then(html => {
-            document.getElementById('reviewModalContainer').innerHTML = html;
+function closeEditModal() {
+    document.getElementById('editReviewModal').style.display = 'none';
+    document.getElementById('editModalOverlay').style.display = 'none';
+}
 
-            setTimeout(() => {
-                document.getElementById('reviewModal').style.display = 'block';
-                document.getElementById('modalOverlay').style.display = 'block';
+async function submitEditReview(reviewId) {
+    const formData = new FormData();
+    const stars = parseInt(document.getElementById("editReviewModal").dataset.stars || 0);
+    const serviceName = document.getElementById("editServiceSelect").value;
+    const title = document.getElementById("editReviewTitle").value;
+    const reviewText = document.getElementById("editReviewText").value;
+    const imageFile = document.getElementById("editReviewImage").files[0];
 
-                document.querySelector(".close-button").addEventListener("click", closeModal);
-                document.getElementById("modalOverlay").addEventListener("click", closeModal);
-                document.querySelector("#submitReviewButton").addEventListener("click", submitReview);
+    formData.append('starRating', stars);
+    formData.append('title', title);
+    formData.append('review', reviewText);
+    formData.append('serviceName', serviceName);
+    if (imageFile) formData.append('reviewImage', imageFile);
 
-                initializeStarRating();
-            }, 0);
+    try {
+        const res = await fetch(`/editreview/${reviewId}`, {
+            method: 'PUT',
+            body: formData
         });
-}
 
-function closeModal() {
-    document.getElementById('reviewModal').style.display = 'none';
-    document.getElementById('modalOverlay').style.display = 'none';
-}
-
-function submitReview1(event) {
-    event.preventDefault(); 
-
-    let service = document.getElementById("serviceSelect").value;
-    let review = document.getElementById("reviewText").value;
-    let file = document.getElementById("reviewImage").files[0];
-
-    if (service === "" || review.trim() === "") {
-        alert("Please fill out all fields.");
-        return;
+        const result = await res.json();
+        if (res.ok) {
+            alert(result.message);
+            closeEditModal();
+            window.location.reload();
+        } else {
+            alert("Failed to update review: " + result.message);
+        }
+    } catch (err) {
+        console.error("Edit error:", err);
+        alert("Error editing review.");
     }
-
-    alert("Review submitted successfully!");
-    closeModal();
 }

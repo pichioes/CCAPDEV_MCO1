@@ -1,138 +1,151 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Review Modal</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        .modal {
-            font-family: Montserrat, sans-serif;
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+<style>
+    .modal {
+        font-family: Montserrat, sans-serif;
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        width: 400px;
+        text-align: center;
+        animation: fadeIn 0.3s ease-in-out;
+        z-index: 1001;
+    }
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(5px);
+        z-index: 1000;
+    }
+    .modal-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+    }
+    .star {
+        font-size: 30px;
+        cursor: pointer;
+        color: #ccc;
+        transition: color 0.3s;
+    }
+    .star.active {
+        color: #f4b400;
+    }
+    .close-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #c69fa5;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
+    .close-button {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 20px;
+        cursor: pointer;
+    }
+    .submit-container button {
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #c69fa5;
+        background-color: #c69fa5;
+        color: white;
+    }
+    .modal select, .modal textarea, .modal input[type="text"], .modal input[type="file"] {
+        width: 100%;
+        max-width: 350px;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #c69fa5;
+        box-sizing: border-box;
+    }
+    .image-preview {
+        max-width: 100%;
+        max-height: 150px;
+        display: none;
+        margin-top: 10px;
+    }
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translate(-50%, -55%);
+        }
+        to {
+            opacity: 1;
             transform: translate(-50%, -50%);
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-            width: 400px;
-            text-align: center;
-            animation: fadeIn 0.3s ease-in-out;
         }
+    }
+</style>
 
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(5px);
-        }
-        
-        .modal-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-        }
-
-        /* Stars CSS */
-        .star {
-            font-size: 30px;
-            cursor: pointer;
-            color: #ccc; 
-            transition: color 0.3s;
-        }
-
-        .star.active {
-            color: #f4b400; 
-        }
-
-        /* Exit button CSS */
-        .close-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: #c69fa5;
-            width: 30px;  
-            height: 30px;
-            border-radius: 50%; /* round border */
-            position: absolute;
-            top: 10px;
-            right: 10px;
-        }
-        
-        .close-button {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 20px;
-            cursor: pointer;
-        }
-
-        /* Submit button */
-        .submit-container button {
-            width: 100%;
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #c69fa5;
-            background-color: #c69fa5;
-            color: white;
-        }
-
-        /* Text input CSS */
-        .modal select, .modal textarea, .modal input[type="file"] {
-            width: 100%;
-            max-width: 350px;
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #c69fa5;
-            box-sizing: border-box;
-        }
-
-        /* Transitions CSS */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translate(-50%, -55%); }
-            to { opacity: 1; transform: translate(-50%, -50%); }
-        }
-    </style>
-</head>
-<body>
-    <div class="modal-overlay" id="modalOverlay" onclick="closeModal()"></div>
-    <div class="modal" id="reviewModal">
-        <div class="close-container">
-            <button class="close-button" onclick="closeModal()">&times;</button>
+<div class="modal-overlay" id="editModalOverlay" onclick="closeEditModal()"></div>
+<div class="modal" id="editReviewModal">
+    <div class="close-container">
+        <button class="close-button" onclick="closeEditModal()">&times;</button>
+    </div>
+    <div class="modal-content">
+        <h2>Edit Your Review</h2>
+        <div class="star-container" id="edit-star-container">
+            <span class="star" data-value="1">&#9733;</span>
+            <span class="star" data-value="2">&#9733;</span>
+            <span class="star" data-value="3">&#9733;</span>
+            <span class="star" data-value="4">&#9733;</span>
+            <span class="star" data-value="5">&#9733;</span>
         </div>
-        <div class="modal-content">
-            <h2>Edit your review!</h2>
-
-            <div class="star-container">
-                <span class="star" data-value="1">&#9733;</span>
-                <span class="star" data-value="2">&#9733;</span>
-                <span class="star" data-value="3">&#9733;</span>
-                <span class="star" data-value="4">&#9733;</span>
-                <span class="star" data-value="5">&#9733;</span>
-            </div>
-            
-            <select id="serviceSelect">
-                <option value="">Select your service</option>
-                <option value="Underarm Wax">Underarm Wax</option>
-                <option value="Leg Wax">Leg Wax</option>
-                <option value="Full Body Wax">Full Body Wax</option>
-                <option value="Facial Wax">Facial Wax</option>
-            </select>
-
-            <textarea id="reviewText" placeholder="Type your review here..."></textarea>
-            <input type="file" id="reviewImage">
-            <div class="submit-container">
-                <button id="submitReviewButton">Confirm edit</button>
-            </div>
+        <select id="editServiceSelect">
+            <option value="">Select your service</option>
+            <option value="Underarm Wax">Underarm Wax</option>
+            <option value="Full Leg Wax">Leg Wax</option>
+            <option value="Full Body Wax">Full Body Wax</option>
+            <option value="Full Arm Wax">Facial Wax</option>
+            <option value="Brazilian Wax">Brazilian Wax</option>
+        </select>
+        <textarea id="editReviewTitle" placeholder="Review Title"></textarea>
+        <textarea id="editReviewText" placeholder="Type your updated review here..."></textarea>
+        <div>
+            <label for="editReviewImage">Upload a new image:</label>
+            <input type="file" id="editReviewImage" accept="image/*">
+            <img id="editImagePreview" class="image-preview" alt="Preview">
+        </div>
+        <div class="submit-container">
+            <button id="submitEditReviewButton">Update Review</button>
         </div>
     </div>
+</div>
 
-</body>
-</html>
+<script>
+    // Add image preview functionality
+    document.addEventListener('change', function (event) {
+        if (event.target.id === 'editReviewImage') {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                const preview = document.getElementById('editImagePreview');
+
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                }
+
+                reader.readAsDataURL(file);
+            }
+        }
+    });
+</script>
