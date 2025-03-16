@@ -19,6 +19,7 @@ function initializeStarRating() {
 }
 
 async function loadModal() {
+    const locationId = getLocationIdFromURL() || '67d4708826e81b777f2d75d1';
     fetch('review_modal.html')
         .then(response => response.text())
         .then(html => {
@@ -67,6 +68,7 @@ async function submitReview(event) {
     event.preventDefault(); 
     console.log("submitReview triggered");
     
+    let locationId = getLocationIdFromURL();
     let service = document.getElementById("serviceSelect").value;
     let title = document.getElementById("reviewTitle").value;
     let review = document.getElementById("reviewText").value;
@@ -85,6 +87,7 @@ async function submitReview(event) {
         formData.append('title', title || 'Review'); // Ensure title has default value if empty
         formData.append('review', review);
         formData.append('starRating', stars);
+        formData.append('locationId', locationId);
         
         // Only append the file if one was selected
         if (imageFile) {
@@ -146,4 +149,10 @@ async function submitReview(event) {
             alert("An error occurred trying to submit a review.");
         }
     }
+}
+
+function getLocationIdFromURL() {
+    // Example implementation - adjust based on your URL structure
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('locationId');
 }

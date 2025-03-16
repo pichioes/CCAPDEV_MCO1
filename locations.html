@@ -18,7 +18,7 @@
         </div>
     </div>
     <div class="store-locator-container">
-        <a href="orlando_dynamic.html" class="store-card">
+        <a href="reviewpage.html?locationId=67d4708826e81b777f2d75d1" class="store-card">
             <img src="img/loc1.png" alt="Orlando Store">
             <div class="store-info">
                 <h2>Lay Bare Waxing Salon - Orlando</h2>
@@ -26,28 +26,28 @@
                 <p class="rating" id="orlando-rating">⭐ 4.5 | Waxing services in Manila.</p>
             </div>
         </a>
-        <a href="reviews_orlando.html" class="store-card">
+        <a href="reviewpage.html?locationId=67d4708826e81b777f2d75d2" class="store-card">
             <img src="img/loc2.png" alt="Ayala North Exchange">
             <div class="store-info">
                 <h2>Lay Bare Waxing Salon - Ayala North Exchange</h2>
                 <p>📍 2F, Ayala North Exchange, 6798 Ayala Avenue corner Amorsolo and Salcedo, Makati</p>
-                <p class="rating">⭐ 4.6 | Waxing services in Makati</p>
+                <p class="rating" id="ayala-rating">⭐ 4.6 | Waxing services in Makati</p>
             </div>
         </a>
-        <a href="reviews_orlando.html" class="store-card">
+        <a href="reviewpage.html?locationId=67d4708826e81b777f2d75d3" class="store-card">
             <img src="img/loc3.png" alt="Newport City Store">
             <div class="store-info">
                 <h2>Lay Bare Waxing Salon - Newport City</h2>
                 <p>📍 A1 Ground Floor, Newport City, The Palm Tree Villas, Villamor, Novaliches, Pasay, Metro Manila</p>
-                <p class="rating">⭐ 4.7 | Waxing services in Pasay</p>
+                <p class="rating" id="newport-rating">⭐ 4.7 | Waxing services in Pasay</p>
             </div>
         </a>
-        <a href="reviews_orlando.html" class="store-card">
+        <a href="reviewpage.html?locationId=67d4708826e81b777f2d75d4" class="store-card">
             <img src="img/loc4.png" alt="California Garden Store">
             <div class="store-info">
                 <h2>Lay Bare Waxing Salon - California Garden</h2>
                 <p>📍 Unit R67 California Garden Square, Domingo M. Guevarra, Mandaluyong City, Mandaluyong, Metro Manila</p>
-                <p class="rating">⭐ 4.8 | Waxing services in Mandaluyong</p>
+                <p class="rating" id="california-rating">⭐ 4.8 | Waxing services in Mandaluyong</p>
             </div>
         </a>
     </div>
@@ -57,35 +57,39 @@
     <script src="footer.js"></script>
     <script src="search.js"></script>
     <script>
-         document.addEventListener('DOMContentLoaded', function() {
-           showAverageRatings();
-        });
-        async function showAverageRatings(){
-            try {
-                const response = await fetch('/getReviews');
-                if (!response.ok) {
-                    throw new Error('Failed to fetch reviews');
-                }
-                
-                const reviews = await response.json();
-                
-                const avgRatingElement = document.getElementById('orlando-rating');
-                // Update review count and average rating
-           
-                
-                if (avgRatingElement && reviews.length > 0) {
-                    const totalRating = reviews.reduce((sum, review) => sum + (review.Star_rating || 0), 0);
-                    const avgRating = (totalRating / reviews.length).toFixed(1);
-                    avgRatingElement.textContent = `${avgRating} ⭐ | Waxing services in Manila.`;
-                }
-                
-                // Get containers and check if they exist
-               
-            } catch (error) {
-                console.error("Error loading reviews:", error);
+        async function showAverageRatings() {
+    try {
+        // Fetch ratings for each location
+        const locations = [
+            { id: '67d4708826e81b777f2d75d1', elementId: 'orlando-rating' },
+            { id: '67d4708826e81b777f2d75d2', elementId: 'ayala-rating' },
+            { id: '67d4708826e81b777f2d75d3', elementId: 'newport-rating' },
+            { id: '67d4708826e81b777f2d75d4', elementId: 'california-rating' }
+        ];
+        
+        for (const location of locations) {
+            const response = await fetch(`/getReviewsByLocation/${location.id}`);
+            if (!response.ok) {
+                throw new Error(`Failed to fetch reviews for location ${location.id}`);
             }
-
+            
+            const reviews = await response.json();
+            const ratingElement = document.getElementById(location.elementId);
+            
+            if (ratingElement && reviews.length > 0) {
+                const totalRating = reviews.reduce((sum, review) => sum + (review.Star_rating || 0), 0);
+                const avgRating = (totalRating / reviews.length).toFixed(1);
+                
+                // Update the rating text (preserving the description)
+                const currentText = ratingElement.textContent;
+                const description = currentText.split('|')[1] || ' Waxing services';
+                ratingElement.textContent = `⭐ ${avgRating} |${description}`;
+            }
         }
+    } catch (error) {
+        console.error("Error loading ratings:", error);
+    }
+}
 
     </script>
    

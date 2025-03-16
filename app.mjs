@@ -175,6 +175,7 @@ const profilePictureUpload = multer({
 const reviewSchema = new mongoose.Schema({
     User_ID: { type: mongoose.Schema.Types.ObjectId, ref: "users" },
     Service_ID: { type: mongoose.Schema.Types.ObjectId, ref: "services" },
+    Location_ID: { type: mongoose.Schema.Types.ObjectId, ref: "locations" },
     Title: String, 
     Review: String,
     Date: String,
@@ -193,6 +194,14 @@ const serviceSchema = new mongoose.Schema({
 });
 
 const Service = mongoose.model("services", serviceSchema);
+
+const locationSchema = new mongoose.Schema({
+    Location_Name: { type: String, required: true }
+});
+
+const Location = mongoose.model("locations", locationSchema);
+
+
 
 app.get('/', (req, res) => {
     if (req.session.userId) {
@@ -374,6 +383,40 @@ app.get("/getServiceRatings", async (req, res) => {
     }
   });
 
+  app.get('/getLocation/:locationId', async (req, res) => {
+    try {
+        const locationId = req.params.locationId;
+        const location = await Location.findById(locationId);
+        
+        if (!location) {
+            return res.status(404).json({ message: 'Location not found' });
+        }
+        
+        res.json(location);
+    } catch (error) {
+        console.error('Error fetching location:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+// Get reviews by location ID
+app.get('/getReviewsByLocation/:locationId', async (req, res) => {
+    try {
+        const locationId = req.params.locationId;
+        
+        // Find all reviews for the given location, populate user and service info
+        const reviews = await Review.find({ Location_ID: locationId })
+            .populate('User_ID')
+            .populate('Service_ID')
+            .sort({ Date: -1 }); // Sort by date, newest first
+        
+        res.json(reviews);
+    } catch (error) {
+        console.error('Error fetching reviews by location:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
 // Updated to handle file upload and title
 app.post("/addreview", upload.single('reviewMedia'), async (req, res) => {
     console.log("POST /addreview route triggered with body:", req.body);
@@ -384,7 +427,7 @@ app.post("/addreview", upload.single('reviewMedia'), async (req, res) => {
     try {
         console.log("review attempt");
         
-        const { serviceName, title, review, starRating, mediaType } = req.body;
+        const { serviceName, title, review, starRating, mediaType, locationId } = req.body;
         
         if (!review || !starRating) {
             return res.status(400).json({ message: "Review text and rating are required." });
@@ -419,10 +462,11 @@ app.post("/addreview", upload.single('reviewMedia'), async (req, res) => {
                 imagePath = filePath;
             }
         }
-        
+        console.log(locationId)
         const newReview = new Review({
             User_ID: req.session.userId._id,
             Service_ID: serviceId,
+            Location_ID: locationId,
             Title: title || 'Review',
             Review: review,
             Date: new Date().toLocaleDateString('en-GB'),
@@ -432,6 +476,7 @@ app.post("/addreview", upload.single('reviewMedia'), async (req, res) => {
             likes: 0,
             dislikes: 0,
             likedBy: []
+            
         });
         
         console.log("Review object to be saved:", newReview);
