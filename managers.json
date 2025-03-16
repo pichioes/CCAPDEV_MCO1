@@ -1,0 +1,32 @@
+[
+    {
+      "Username": "OrlandoManager",
+      "Password": "orlando",
+      "Location_ID": { "$oid": "67d4708826e81b77f2d75d1"} ,
+      "Description": "I am the best manager"
+    },
+    {
+      "Username": "AyalaManager",
+      "Password": "ayala",
+      "Location_ID": { "$oid": "67d4708826e81b777f2d75d2"} ,
+      "Description": "I love ayala malls"
+    },
+    {
+        "Username": "NewportManager",
+      "Password": "newport",
+      "Location_ID": { "$oid": "67d4708826e81b777f2d75d3"} ,
+      "Description": "I love newport"
+    },
+    {
+        "Username": "CaliManager",
+      "Password": "cali",
+      "Location_ID": { "$oid": "67d4708826e81b777f2d75d4"} ,
+      "Description": "I like to serve california girls"
+    },
+    {
+        "Username": "WalterManager",
+      "Password": "walter",
+      "Location_ID": { "$oid": "67d6bc4a51b7370c2607e635"} ,
+      "Description": "where dem girls at"
+    }
+]
