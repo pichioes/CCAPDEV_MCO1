@@ -48,22 +48,46 @@ app.use(session({
 
 app.use(express.static(__dirname));
 app.post('/login', async (req, res) => {
-
     const { username, password, remember } = req.body;
 
     try {
-        const user = await User.findOne({ username });
+        // First check the users collection
+        let user = await User.findOne({ username });
+        let isManager = false;
+        
+        // If not found in users, check managers collection
         if (!user) {
+            user = await Manager.findOne({ Username: username });
+            if (user) isManager = true;
+            console.log("powet1");
+            console.log(user);
+            console.log(isManager);
+        }
+        
+        // If not found in either collection
+        if (!user) {
+            console.log("powet2");
             return res.status(401).json({ message: "Invalid username or password." });
         }
 
-        const isMatch = await bcrypt.compare(password, user.password);
+        // Check password differently based on user type
+        let isMatch = false;
+        
+        if (isManager) {
+            // For managers, direct string comparison (no bcrypt)
+            isMatch = user.Password === password;
+        } else {
+            // For regular users, use bcrypt
+            isMatch = await bcrypt.compare(password, user.password);
+        }
+        
         if (!isMatch) {
             return res.status(401).json({ message: "Invalid username or password." });
         }
 
-        // Set session
+        // Set session with user info and manager flag
         req.session.userId = user;
+        req.session.isManager = isManager;
 
         // Set session cookie maxAge if remember me is checked
         if (remember) {
@@ -72,10 +96,10 @@ app.post('/login', async (req, res) => {
             req.session.cookie.expires = false;
         }
 
-        res.json({ message: "Login successful!" });
-        console.log("Remember Me:", remember);
-        console.log("Session maxAge:", req.session.cookie.maxAge);
-        console.log("Session expires:", req.session.cookie.expires);
+        res.json({ 
+            message: "Login successful!",
+            isManager: isManager
+        });
 
     } catch (err) {
         console.error("Login error:", err);
@@ -157,6 +181,15 @@ const userSchema = new mongoose.Schema({
 });
 
 const User = mongoose.model("users", userSchema);
+
+const managerSchema = new mongoose.Schema({
+    Username: { type: String, required: true },
+    Password: { type: String, required: true },
+    Description: String,
+    Location_ID: { type: mongoose.Schema.Types.ObjectId, ref: "locations" }
+});
+
+const Manager = mongoose.model("managers", managerSchema);
 
 const profilePictureUpload = multer({
     storage: storage,
@@ -293,22 +326,39 @@ app.post("/update-profile-picture", (req, res) => {
 
 app.get("/profile", async (req, res) => {
     if (!req.session.userId) {
-        console.log("not login")
         return res.status(401).json({ message: "Not logged in" });
     }
 
     try {
-        const user = await User.findById(req.session.userId);
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
+        let user;
+        if (req.session.isManager) {
+            user = await Manager.findById(req.session.userId._id);
+            if (!user) {
+                return res.status(404).json({ message: "Manager not found" });
+            }
+            
+            res.json({ 
+                _id: user._id,
+                username: user.Username,
+                description: user.Description,
+                locationId: user.Location_ID,
+                isManager: true,
+                profilePicture: user.profilePicture || null
+            });
+        } else {
+            user = await User.findById(req.session.userId._id);
+            if (!user) {
+                return res.status(404).json({ message: "User not found" });
+            }
+            
+            res.json({ 
+                _id: user._id,
+                username: user.username, 
+                description: user.description,
+                profilePicture: user.profilePicture,
+                isManager: false
+            });
         }
-        console.log("user found")
-        res.json({ 
-            _id: user._id,
-            username: user.username, 
-            description: user.description,
-            profilePicture: user.profilePicture 
-        });
     } catch (err) {
         res.status(500).json({ message: "Server error." });
     }
