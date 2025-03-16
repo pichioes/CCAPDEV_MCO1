@@ -32,7 +32,7 @@ a:focus, a:active {
 .store-locator-container {
     display: grid;
     padding: 50px;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Adjusted for responsiveness */
+    grid-template-columns: repeat(3, 1fr); /* Fixed 3 columns by default */
     gap: 20px;
     row-gap: 50px;
     justify-content: center;
@@ -40,12 +40,30 @@ a:focus, a:active {
     margin: auto;
 }
 
-@media (min-width: 1024px) {
+/* Mobile - single column */
+@media (max-width: 768px) {
     .store-locator-container {
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* More flexible resizing */
+        grid-template-columns: 1fr;
     }
-    img {
-        max-height: 234px;
+}
+
+/* Tablet - two columns */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .store-locator-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Large screens - increase columns when zoomed out */
+@media (min-width: 1600px) {
+    .store-locator-container {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (min-width: 2000px) {
+    .store-locator-container {
+        grid-template-columns: repeat(5, 1fr);
     }
 }
 
