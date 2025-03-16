@@ -32,17 +32,17 @@ a:focus, a:active {
 .store-locator-container {
     display: grid;
     padding: 50px;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Adjusted for responsiveness */
     gap: 20px;
+    row-gap: 50px;
     justify-content: center;
     width: 80%;
     margin: auto;
 }
 
-/* Ensures at least 3 columns on larger screens */
 @media (min-width: 1024px) {
     .store-locator-container {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* More flexible resizing */
     }
     img {
         max-height: 234px;
@@ -60,6 +60,7 @@ a:focus, a:active {
     text-decoration: none; /* Removes link underline */
     color: inherit; /* Keeps the text color */
     transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out;
+    height: 100%; /* Ensures uniform card height */
 }
 
 .store-card:hover {
@@ -77,11 +78,19 @@ a:focus, a:active {
     padding: 10px;
     text-align: left;
     width: 100%;
+    flex-grow: 1; /* Allows content to fill available space */
+    display: flex;
+    flex-direction: column;
 }
 
 .store-info h2 {
     font-size: 1.2em;
     margin-bottom: 5px;
+}
+
+.rating {
+    font-weight: bold;
+    margin-top: auto; /* Pushes rating to the bottom */
 }
 
 button {
@@ -94,8 +103,4 @@ button {
     width: 200px;
     border-radius: 5%;
     display: flex;
-}
-
-.rating {
-    font-weight: bold;
 }
