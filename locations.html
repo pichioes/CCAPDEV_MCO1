@@ -57,6 +57,9 @@
     <script src="footer.js"></script>
     <script src="search.js"></script>
     <script>
+         document.addEventListener('DOMContentLoaded', function() {
+           showAverageRatings();
+        });
         async function showAverageRatings() {
     try {
         // Fetch ratings for each location
