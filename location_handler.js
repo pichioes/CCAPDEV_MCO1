@@ -134,3 +134,69 @@ document.addEventListener('DOMContentLoaded', async function() {
     loadLocationDetails();
     loadReviews();
 });
+
+// Function to add a manager comment
+async function addManagerComment(reviewId) {
+    if (!currentUser || !currentUser.isManager) {
+        alert("You must be logged in as a manager to add comments.");
+        return;
+    }
+    
+    const commentText = document.getElementById(`manager-comment-${reviewId}`).value.trim();
+    if (!commentText) {
+        alert("Please enter a comment.");
+        return;
+    }
+    
+    try {
+        const response = await fetch(`/addmanagercomment/${reviewId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ comment: commentText })
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok) {
+            alert(result.message);
+            // Reload reviews to show the updated comment
+            loadReviews();
+        } else {
+            alert(result.message);
+        }
+    } catch (error) {
+        console.error("Error adding manager comment:", error);
+        alert("An error occurred while adding your comment. Please try again.");
+    }
+}
+
+// Function to delete a manager comment
+async function deleteManagerComment(reviewId) {
+    if (!currentUser || !currentUser.isManager) {
+        alert("You must be logged in as a manager to delete comments.");
+        return;
+    }
+    
+    if (confirm("Are you sure you want to delete this comment?")) {
+        try {
+            const response = await fetch(`/deletemanagercomment/${reviewId}`, {
+                method: 'DELETE'
+            });
+            
+            const result = await response.json();
+            
+            if (response.ok) {
+                alert(result.message);
+                // Reload reviews to show the updated UI
+                loadReviews();
+            } else {
+                alert(result.message);
+            }
+        } catch (error) {
+            console.error("Error deleting manager comment:", error);
+            alert("An error occurred while deleting your comment. Please try again.");
+        }
+    }
+}

@@ -218,8 +218,18 @@ const reviewSchema = new mongoose.Schema({
     likes: Number,
     dislikes: Number,
     likedBy: [String],
-    dislikedBy: [String]
+    dislikedBy: [String],
+    // New fields for manager comments
+    managerComment: String,
+    managerCommentId: String, // Format: MC-XXXXX as mentioned
+    managerCommentDate: String,
+    Manager_ID: { type: mongoose.Schema.Types.ObjectId, ref: "managers" },
+    Date: String, // original date (already used for sorting)
+    uploadTimestamp: { type: Date, default: Date.now }, // for exact upload time
+    lastEdited: { type: Date }, // this will store the latest edit timestamp
+    edited: { type: Boolean, default: false }, // indicator for whether review was edited
 });
+
 const Review = mongoose.model('reviews', reviewSchema);
 
 const serviceSchema = new mongoose.Schema({
@@ -698,7 +708,9 @@ app.put("/editreview/:id", upload.single('reviewImage'), async (req, res) => {
                 Review: review || existingReview.Review,
                 Star_rating: starRating || existingReview.Star_rating,
                 Service_ID: serviceId,
-                Image_path: imagePath
+                Image_path: imagePath,
+                lastEdited: new Date(),     // Add this
+                edited: true                // Add this
             },
             { new: true }
         );
@@ -717,34 +729,143 @@ app.delete("/deletereview/:id", async (req, res) => {
 
     try {
         const reviewId = req.params.id;
-        
-        // Check if review exists and belongs to the user
-        const existingReview = await Review.findById(reviewId);
-        if (!existingReview) {
+        const review = await Review.findById(reviewId);
+
+        if (!review) {
             return res.status(404).json({ message: "Review not found." });
         }
-        
-        if (existingReview.User_ID.toString() !== req.session.userId._id.toString()) {
-            return res.status(403).json({ message: "You can only delete your own reviews." });
-        }
 
-        // Delete the image file if it exists
-        if (existingReview.Image_path) {
-            const imagePath = path.join(__dirname, existingReview.Image_path);
-            if (fs.existsSync(imagePath)) {
-                fs.unlinkSync(imagePath);
+        const userId = req.session.userId._id.toString();
+        const isManager = req.session.isManager;
+
+        // If user is a manager, check location match
+        if (isManager) {
+            const manager = await Manager.findById(userId);
+            if (!manager || !manager.Location_ID.equals(review.Location_ID)) {
+                return res.status(403).json({ message: "You can only delete reviews for your own location." });
+            }
+        } else {
+            // If not a manager, make sure user owns the review
+            if (review.User_ID.toString() !== userId) {
+                return res.status(403).json({ message: "You can only delete your own reviews." });
             }
         }
 
-        // Delete the review
+        // Delete attached image if it exists
+        if (review.Image_path) {
+            const imagePath = path.join(__dirname, review.Image_path);
+            if (fs.existsSync(imagePath)) fs.unlinkSync(imagePath);
+        }
+
         await Review.findByIdAndDelete(reviewId);
         res.json({ message: "Review deleted successfully!" });
+
     } catch (err) {
         console.error("Error deleting review:", err);
         res.status(500).json({ message: "Server error while deleting review." });
     }
 });
 
+
+// Add manager comment to a review
+app.post("/addmanagercomment/:reviewId", async (req, res) => {
+    if (!req.session.userId || !req.session.isManager) {
+        return res.status(401).json({ message: "You must be logged in as a manager to add comments." });
+    }
+
+    try {
+        const reviewId = req.params.reviewId;
+        const { comment } = req.body;
+        
+        if (!comment) {
+            return res.status(400).json({ message: "Comment text is required." });
+        }
+
+        // Find the review
+        const review = await Review.findById(reviewId);
+        if (!review) {
+            return res.status(404).json({ message: "Review not found." });
+        }
+
+        // Check if the manager belongs to the location of the review
+        const manager = await Manager.findById(req.session.userId._id);
+        if (!manager || !manager.Location_ID.equals(review.Location_ID)) {
+            return res.status(403).json({ 
+                message: "You can only comment on reviews for your location." 
+            });
+        }
+
+        // Generate a unique comment ID
+        const commentId = `MC-${Math.floor(10000 + Math.random() * 90000)}`;
+
+        // Update the review with the manager's comment
+        const updatedReview = await Review.findByIdAndUpdate(
+            reviewId,
+            {
+                managerComment: comment,
+                managerCommentId: commentId,
+                managerCommentDate: new Date().toLocaleDateString('en-GB'),
+                Manager_ID: req.session.userId._id
+            },
+            { new: true }
+        );
+
+        res.json({ 
+            message: "Comment added successfully!", 
+            review: updatedReview 
+        });
+    } catch (err) {
+        console.error("Error adding manager comment:", err);
+        res.status(500).json({ message: "Server error while adding comment." });
+    }
+});
+
+// Delete manager comment from a review
+app.delete("/deletemanagercomment/:reviewId", async (req, res) => {
+    if (!req.session.userId || !req.session.isManager) {
+        return res.status(401).json({ message: "You must be logged in as a manager to delete comments." });
+    }
+
+    try {
+        const reviewId = req.params.reviewId;
+        
+        // Find the review
+        const review = await Review.findById(reviewId);
+        if (!review) {
+            return res.status(404).json({ message: "Review not found." });
+        }
+
+        // Check if the manager belongs to the location of the review
+        const manager = await Manager.findById(req.session.userId._id);
+        if (!manager || !manager.Location_ID.equals(review.Location_ID)) {
+            return res.status(403).json({ 
+                message: "You can only delete comments for reviews in your location." 
+            });
+        }
+
+        // Update the review to remove the manager's comment
+        const updatedReview = await Review.findByIdAndUpdate(
+            reviewId,
+            {
+                $unset: {
+                    managerComment: "",
+                    managerCommentId: "",
+                    managerCommentDate: "",
+                    Manager_ID: ""
+                }
+            },
+            { new: true }
+        );
+
+        res.json({ 
+            message: "Comment deleted successfully!", 
+            review: updatedReview 
+        });
+    } catch (err) {
+        console.error("Error deleting manager comment:", err);
+        res.status(500).json({ message: "Server error while deleting comment." });
+    }
+});
 // Route to get a specific user's data
 app.get('/user/:id', async (req, res) => {
     try {
@@ -796,6 +917,14 @@ app.get('/user-reviews/:id', async (req, res) => {
         console.error("Error fetching user reviews:", error);
         res.status(500).json({ message: "Server error while fetching user reviews" });
     }
+});
+
+// example endpoint in 
+app.get('/reviews/location/:locationId', async (req, res) => {
+    const reviews = await Review.find({ Location_ID: req.params.locationId })
+        .populate('User_ID')
+        .populate('Location_ID');
+    res.json(reviews);
 });
 
 // Endpoint for the view_user.html page

@@ -162,3 +162,93 @@ button {
     object-fit: cover; /* Prevents stretching */
 }
 
+.manager-comment {
+    background-color: #f0f7ff;
+    border-left: 4px solid #3498db;
+    padding: 10px 15px;
+    margin-top: 15px;
+    border-radius: 4px;
+}
+
+.manager-comment h4 {
+    color: #3498db;
+    margin-top: 0;
+    margin-bottom: 5px;
+}
+
+.manager-comment p {
+    margin: 5px 0;
+}
+
+.comment-date {
+    font-size: 0.8em;
+    color: #777;
+    text-align: right;
+}
+
+.manager-comment-form {
+    margin-top: 15px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.manager-comment-form h4 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #555;
+}
+
+.manager-comment-form textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical;
+    margin-bottom: 10px;
+}
+
+.manager-comment-form button, .delete-comment-btn {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.delete-comment-btn {
+    background-color: #e74c3c;
+    font-size: 0.8em;
+    padding: 5px 10px;
+    float: right;
+}
+
+.manager-comment-form button:hover, .delete-comment-btn:hover {
+    opacity: 0.9;
+}
+
+.review-text {
+    max-height: 3.6em; /* About 2 lines */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1; 
+    line-clamp: 1;
+    -webkit-box-orient: vertical;
+    transition: max-height 0.3s ease;
+}
+
+.review-text.expanded {
+    -webkit-line-clamp: unset;
+    line-clamp: unset;
+    max-height: none;
+}
+
+.see-more-link {
+    color: #777;
+    cursor: pointer;
+    font-size: small;
+    margin-top: 5px;
+    display: inline-block;
+}

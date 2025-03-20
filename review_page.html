@@ -91,58 +91,162 @@
             `;
         }
 
-        
+    async function addManagerComment(reviewId) {
+            const textarea = document.getElementById(`manager-comment-${reviewId}`);
+            const comment = textarea.value.trim();
+            if (!comment) {
+                alert("Please enter a comment.");
+                return;
+        }
+
+        try {
+            const response = await fetch(`/addmanagercomment/${reviewId}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ comment })
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                alert("Manager comment added.");
+                loadReviews(); // reload to update UI
+            } else {
+                alert(result.message || "Failed to add comment.");
+            }
+        } catch (err) {
+            console.error("Error adding comment:", err);
+            alert("Error occurred while adding the comment.");
+        }
+    }
+
+    async function deleteManagerComment(reviewId) {
+        if (!confirm("Are you sure you want to delete this manager comment?")) return;
+
+        try {
+            const response = await fetch(`/deletemanagercomment/${reviewId}`, {
+                method: 'DELETE'
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                alert("Manager comment deleted.");
+                loadReviews(); // reload to reflect change
+            } else {
+                alert(result.message || "Failed to delete comment.");
+            }
+        } catch (err) {
+            console.error("Error deleting comment:", err);
+            alert("Error occurred while deleting the comment.");
+        }
+    }
+
+
         // Function to create a review card
         function createReviewCard(review) {
-            // Check if User_ID exists and has required properties
             const username = review.User_ID && review.User_ID.username ? review.User_ID.username : 'Anonymous';
             const userId = review.User_ID && review.User_ID._id ? review.User_ID._id : '';
             const isUserReview = currentUser && userId && userId === currentUser._id;
-            
-            // Get service name safely
             const serviceName = review.Service_ID && review.Service_ID.Service_Name ? review.Service_ID.Service_Name : 'General Service';
-            
             const stars = '⭐'.repeat(review.Star_rating || 0);
             const title = review.Title || 'Review';
-            
-            // Add image if it exists
-            const imageHtml = review.Image_path ? 
-                `<div class="review-image"><img src="${review.Image_path}" alt="Review Image" style="max-width: 100%; max-height: 200px; margin-top: 10px;"></div>` : '';
-            
-            return `
-                <div class="other-review-card" data-review-id="${review._id || ''}">
-                    <div class="review-header">
-                        <img src="${review.User_ID && review.User_ID.profilePicture ? review.User_ID.profilePicture : 'default-profile.png'}" alt="Profile Picture" class="profile-pic">
-                        <div class="review-info">
-                            <h3 class="user-profile-link" data-user-id="${userId}" style="cursor: pointer; color: inherit; text-decoration: none;">
-                                ${username}
-                            </h3>
-                            <p style="margin-top: 2px; font-size: x-small; color: grey;">${review.Date || ''}</p>
-                            <div class="review-stars">${stars}</div>
-                        </div>
-                        <div class="review-actions">
-                            <button class="like-btn" onclick="likeReview('${review._id || ''}')">👍 <span class="like-count">${review.likes || 0}</span></button>
-                            <button class="dislike-btn" onclick="dislikeReview('${review._id || ''}')">👎 <span class="dislike-count">${review.dislikes || 0}</span></button>
-                            <button onclick="showOptions('${review._id || ''}')">⋮</button>
-                        </div>
-                    </div>
-                    ${isUserReview ? `
-                        <div class="review-buttons">
-                        <button style="padding: 5px; width: 150px; font-weight: bolder; font-size:small;" onclick="loadEditModal('${review._id}')">Edit your Review!</button>
-                        <button style="padding: 5px; width: 150px; font-weight: bolder; font-size:small;" onclick="deleteReview('${review._id}')">Delete your review</button>
-                        <div id="editReviewModalContainer"></div>
-                        </div>
-                    ` : ''}
 
-                    <p style="margin: 0px;"><strong>${title}</strong></p>
-                    <p style="margin-top: 2px; color: grey;">${serviceName}</p>
-                    <p style="color: grey"><i>"${review.Review}"</i></p>
-                    ${imageHtml}
-                    ${review.ManagerResponse ? `<div class="manager-response">Manager Response: ${review.ManagerResponse}</div>` : ''}
+            //const isManagerOfLocation = currentUser && currentUser.isManager && 
+            //    currentUser.locationId && review.Location_ID && 
+            //    currentUser.locationId === review.Location_ID._id;
+            const uploadTime = review.uploadTimestamp 
+                ? new Date(review.uploadTimestamp).toLocaleString() 
+                : (review.Date || '');
+
+            const editedTime = review.edited && review.lastEdited
+                ? `<p style="font-size: x-small; color: grey;">(Edited: ${new Date(review.lastEdited).toLocaleString()})</p>`
+                : '';
+
+            const editedLabel = review.edited
+                ? '<span style="font-size:small; color:grey;">✏️ Edited</span>'
+                : '';
+
+            const imageHtml = review.Image_path
+                ? `<div class="review-image"><img src="${review.Image_path}" alt="Review Image" style="max-width: 100%; max-height: 200px; margin-top: 10px;"></div>`
+                : '';
+
+            const managerCommentHtml = review.managerComment ? `
+                <div class="manager-comment">
+                    <h4>Manager Response (${review.managerCommentId || 'MC-XXXXX'}):</h4>
+                    <p>${review.managerComment}</p>
+                    <p class="comment-date">Responded on: ${review.managerCommentDate || 'N/A'}</p>
+                    ${currentUser && currentUser.isManager ? `
+                        <button class="delete-comment-btn" onclick="deleteManagerComment('${review._id}')">Delete Comment</button>
+                    ` : ''}
                 </div>
-            `;
-        }
-        
+            ` : '';
+
+            const managerCommentForm = currentUser && currentUser.isManager && !review.managerComment ? `
+                <div class="manager-comment-form">
+                    <h4>Add Manager Response:</h4>
+                    <textarea id="manager-comment-${review._id}" rows="3" placeholder="Enter your response..."></textarea>
+                    <button onclick="addManagerComment('${review._id}')">Submit Response</button>
+                </div>
+            ` : '';
+
+            return `
+        <div class="other-review-card" data-review-id="${review._id || ''}">
+            <div class="review-header">
+                <img src="${review.User_ID && review.User_ID.profilePicture ? review.User_ID.profilePicture : 'default-profile.png'}" alt="Profile Picture" class="profile-pic">
+                <div class="review-info">
+                    <h3 class="user-profile-link" data-user-id="${userId}" style="cursor: pointer; color: inherit; text-decoration: none;">
+                    ${username} ${editedLabel}
+                    </h3>
+                    <p style="margin-top: 2px; font-size: x-small; color: grey;">Uploaded: ${uploadTime}</p>
+                    ${editedTime}
+                    <div class="review-stars">${stars}</div>
+                </div>
+
+                <div class="review-actions">
+                    <button class="like-btn" onclick="likeReview('${review._id || ''}')">👍 <span class="like-count">${review.likes || 0}</span></button>
+                    <button class="dislike-btn" onclick="dislikeReview('${review._id || ''}')">👎 <span class="dislike-count">${review.dislikes || 0}</span></button>
+                    <button onclick="showOptions('${review._id || ''}')">⋮</button>
+                </div>
+            </div>
+
+            ${isUserReview ? `
+                <div class="review-buttons">
+                    <button style="padding: 5px; width: 150px; font-weight: bolder; font-size:small;" onclick="loadEditModal('${review._id}')">Edit your Review!</button>
+                    <button style="padding: 5px; width: 150px; font-weight: bolder; font-size:small;" onclick="deleteReview('${review._id}')">Delete your review</button>
+                    <div id="editReviewModalContainer"></div>
+                </div>
+            ` : ''}
+            ${currentUser && currentUser.isManager ? `
+                 <div class="review-buttons">
+                    <button style="padding: 5px; width: 150px; font-weight: bolder; font-size:small;" 
+                    onclick="deleteReview('${review._id}')">Delete Review</button>
+                </div>
+            ` : ''}
+
+
+            <p style="margin: 0px;"><strong>${title}</strong></p>
+            <p style="margin-top: 2px; color: grey;">${serviceName}</p>
+            <div class="review-text-container">
+                <p class="review-text" id="review-text-${review._id}">${review.Review}</p>
+                <a class="see-more-link" id="see-more-${review._id}" onclick="toggleReview('${review._id}')">See more</a>
+            </div>
+            ${imageHtml}
+
+            ${managerCommentHtml}
+            ${managerCommentForm}
+        </div>
+    `;
+}
+
+function toggleReview(reviewId) {
+    const textElement = document.getElementById(`review-text-${reviewId}`);
+    const linkElement = document.getElementById(`see-more-${reviewId}`);
+
+    const expanded = textElement.classList.toggle('expanded');
+    linkElement.textContent = expanded ? 'See less' : 'See more';
+}
+    
         // Function to submit a new review
         
         // Function to delete a review
@@ -221,8 +325,7 @@
             } catch (error) {
                 console.error("Error disliking review:", error);
             }
-        }
-        
+        }   
         // Function to search reviews
         function searchReviews() {
             const searchTerm = document.getElementById('search-input').value.toLowerCase();
@@ -237,6 +340,63 @@
                 }
             });
         }
+
+        document.addEventListener("DOMContentLoaded", async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const locationId = urlParams.get("locationId");
+
+
+            if (!locationId) {
+                alert("No location ID provided.");
+                return;
+            }
+
+            try {
+                const response = await fetch(`/reviews/location/${locationId}`);
+                if (!response.ok) {
+                    throw new Error("Failed to fetch reviews.");
+                }
+
+                const reviews = await response.json();
+
+                // Set store info using the first review's Location_ID
+                if (reviews.length > 0 && reviews[0].Location_ID) {
+                    document.querySelector("h2").textContent = reviews[0].Location_ID.Store_Name || "Store";
+                    document.querySelector(".store-text p").textContent = reviews[0].Location_ID.Address || "";
+                }
+
+                // Update average rating
+                const avgRating = (reviews.reduce((sum, r) => sum + (r.Star_rating || 0), 0) / reviews.length).toFixed(1);
+                document.getElementById("average-rating").innerHTML = `${avgRating} ⭐ (<span id="review-count">${reviews.length}</span> Reviews)`;
+
+                const topContainer = document.getElementById("top-reviews-container");
+                const otherContainer = document.getElementById("other-reviews-container");
+
+                topContainer.innerHTML = "";
+                otherContainer.innerHTML = "";
+
+                reviews.forEach((review, index) => {
+                    const cardHtml = `
+                        <div class="review-card">
+                            <h2>${review.Title || "Review"}</h2>
+                            <p>"${review.Review}"</p>
+                            ${review.Image_path ? `<img src="${review.Image_path}" alt="Review Image">` : ""}
+                            <p>- ${review.User_ID?.username || "Anonymous"}</p>
+                        </div>
+                    `;
+                    if (index < 2) {
+                        topContainer.innerHTML += cardHtml;
+                    } else {
+                        otherContainer.innerHTML += cardHtml;
+                    }
+                });
+
+            } catch (error) {
+                console.error("Error loading location reviews:", error);
+                alert("Error loading location reviews.");
+            }
+        });
+
     </script>
 </body>
 </html>

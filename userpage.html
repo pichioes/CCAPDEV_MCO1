@@ -92,6 +92,7 @@
     <script src="footer.js"></script>
     <script src="change_picture.js"></script>
     <script src="edit_description.js"></script>
+    <script src="review_page.html"></script>
 
     <script>
         document.addEventListener("DOMContentLoaded", async function () {
@@ -159,6 +160,10 @@
                     
                     const reviewElement = document.createElement("div");
                     reviewElement.className = "review-card";
+                    reviewElement.style.cursor = "pointer";
+                    reviewElement.onclick = () => {
+                        window.location.href = `review_page.html?locationId=${review.Location_ID}`;
+                    };
                     reviewElement.innerHTML = `
                         <div class="review-header">
                             <p class="service-name"><strong>${serviceName}</strong></p>
@@ -169,10 +174,11 @@
                         ${review.Image_path ? `<img src="${review.Image_path}" alt="Review Image" class="review-image">` : ''}
                         <p class="review-date">${review.Date}</p>
                         <div class="review-actions">
-                            <button class="edit-review-btn" onclick="editReview('${review._id}')">Edit</button>
-                            <button class="delete-review-btn" onclick="deleteReview('${review._id}')">Delete</button>
+                            <button class="edit-review-btn" onclick="event.stopPropagation(); editReview('${review._id}')">Edit</button>
+                            <button class="delete-review-btn" onclick="event.stopPropagation(); deleteReview('${review._id}')">Delete</button>
                         </div>
                     `;
+
                     
                     reviewsContainer.appendChild(reviewElement);
                 });
@@ -194,10 +200,9 @@
         
         // Function to edit a review
         async function editReview(reviewId) {
-            // Redirect to a review edit page or show a modal
-            // For now, we'll just alert
-            alert("Edit review feature coming soon!");
+            await loadEditModal(reviewId);
         }
+
         
         // Function to delete a review
         async function deleteReview(reviewId) {
