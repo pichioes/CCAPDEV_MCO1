@@ -32,15 +32,17 @@
          <button type="submit" class="signup-btn">Signup</button> 
         </form>
 
-        <!-- <button style="margin-bottom: 5px;" class="signup-btn" onclick="window.location.href='landingpage.html'">Signup</button> -->
+
         <button class="login-btn" onclick="window.location.href='login.html'">Login</button>
         <button class="guest-btn" onclick="window.location.href='landingpage.html'">Continue as Guest</button>
 
     </div>
 </body>
+
+
 <script>
     document.getElementById("signupForm").addEventListener("submit", async function(event) {
-            event.preventDefault(); // Prevent default form submission
+            event.preventDefault();
 
             const username = document.getElementById("username").value;
             const password = document.getElementById("password").value;
@@ -66,7 +68,7 @@
             
             if (response.ok) {
                 alert(data.message);
-                window.location.href = "landingpage.html"; // Redirect on success
+                window.location.href = "landingpage.html";
             } else {
                 alert("Signup failed: " + data.message);
             }
@@ -75,15 +77,12 @@
     async function submitProfilePicture(event) {
         event.preventDefault();
 
-      
-
         if (!file) {
             alert("Please select an image.");
             return;
         }
 
         try {
-            // Option 1: Use FormData to send the file directly
             const formData = new FormData();
             formData.append('profilePicture', file);
 
@@ -92,23 +91,8 @@
                 body: formData
             });
 
-            // Option 2: Send as base64 if you prefer that method
-            // let reader = new FileReader();
-            // reader.onload = async function(e) {
-            //     const imageData = e.target.result;
-            //     const response = await fetch('/update-profile-picture-base64', {
-            //         method: 'POST',
-            //         headers: {
-            //             'Content-Type': 'application/json'
-            //         },
-            //         body: JSON.stringify({ imageData })
-            //     });
-            // };
-            // reader.readAsDataURL(file);
-
             if (response.ok) {
                 const data = await response.json();
-                // Update the profile picture on the page
                 document.querySelector(".profile-img").src = data.profilePicture;
                 alert("Profile picture updated successfully!");
                 closeModal();
@@ -120,10 +104,6 @@
             console.error("Error uploading profile picture:", error);
             alert("Failed to update profile picture. Please try again.");
         }
-}
-
-
-
-
+    }
 </script>
 </html>

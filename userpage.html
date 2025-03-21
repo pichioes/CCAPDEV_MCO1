@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="userpage.css">
     <style>
-        /* More scroll button CSS */
+        /* scroll button CSS */
         .reviews-container {
             position: relative;
         }
@@ -87,6 +87,8 @@
 
     <div id="footer"></div>
 
+    <!-- scripts -->
+
     <script src="nav.js"></script>
     <script src="footer.js"></script>
     <script src="change_picture.js"></script>
@@ -100,7 +102,6 @@
 
         document.addEventListener("DOMContentLoaded", async function () {
             try {
-                // Fetch user profile data
                 const profileResponse = await fetch("/profile");
                 if (!profileResponse.ok) {
                     alert("You must be logged in to view this page.");
@@ -120,12 +121,11 @@
                     document.getElementById("profilePic").src = user.profilePicture;
                 }
                 
-                // Update UI for manager
+                // manager ui update :D
                 if (isManager) {
                     document.getElementById("reviewsSectionTitle").textContent = "Location Reviews";
                     document.getElementById("reviewLabel").textContent = "Total Reviews";
                     
-                    // Get location name
                     if (locationId) {
                         try {
                             const locationResponse = await fetch(`/getLocation/${locationId}`);
@@ -140,7 +140,6 @@
                     }
                 }
                 
-                // Load appropriate reviews based on user type
                 await loadReviews();
                 
             } catch (error) {
@@ -154,10 +153,10 @@
                 let reviewsResponse;
                 
                 if (isManager && locationId) {
-                    // For managers, get reviews by location
+                    // For managers
                     reviewsResponse = await fetch(`/getReviewsByLocation/${locationId}`);
                 } else {
-                    // For regular users, get their own reviews
+                    // For users
                     reviewsResponse = await fetch(`/user-reviews/${currentUserId}`);
                 }
                 
@@ -168,7 +167,6 @@
                 const reviews = await reviewsResponse.json();
                 const reviewsContainer = document.getElementById("user-reviews");
                 
-                // Clear loading message
                 reviewsContainer.innerHTML = "";
                 
                 // Update stats
@@ -177,7 +175,6 @@
                 const avgRating = reviews.length > 0 ? (totalRating / reviews.length).toFixed(1) : "0.0";
                 document.getElementById('avgRating').textContent = avgRating;
                 
-                // Change the ID to match the CSS selector
                 reviewsContainer.id = "userReviews";
                 
                 if (reviews.length === 0) {
@@ -202,7 +199,7 @@
                         window.location.href = `review_page.html?locationId=${review.Location_ID}`;
                     };
                     
-                    // Different layouts for manager vs regular user
+                    // diff layouts depending on user type
                     if (isManager) {
                         reviewElement.innerHTML = `
                             <div class="review-header">
@@ -274,7 +271,6 @@
                 
                 if (response.ok) {
                     alert("Response added successfully!");
-                    // Reload reviews
                     loadReviews();
                 } else {
                     const error = await response.json();
@@ -286,7 +282,7 @@
             }
         }
         
-        // Function to delete manager comment
+        // Function: manager comment
         async function deleteManagerComment(reviewId) {
             if (confirm("Are you sure you want to delete your response?")) {
                 try {
@@ -296,7 +292,6 @@
                     
                     if (response.ok) {
                         alert("Response deleted successfully!");
-                        // Reload reviews
                         loadReviews();
                     } else {
                         const error = await response.json();
@@ -309,14 +304,14 @@
             }
         }
         
-        // Function to edit a review (only for regular users)
+        // Function: edit a review
         async function editReview(reviewId) {
             if (!isManager) {
                 await loadEditModal(reviewId);
             }
         }
         
-        // Function to delete a review
+        // Function: delete a review
         async function deleteReview(reviewId) {
             const confirmMessage = isManager ? 
                 "Are you sure you want to delete this customer review?" : 
@@ -330,7 +325,6 @@
                     
                     if (response.ok) {
                         alert("Review deleted successfully!");
-                        // Reload reviews
                         loadReviews();
                     } else {
                         const error = await response.json();
@@ -343,13 +337,12 @@
             }
         }
 
-        // Function to handle horizontal scrolling
+        // Function: for horizontal scrolling
         function setupScrollButtons() {
             const reviewsContainer = document.getElementById('userReviews');
             const scrollLeftBtn = document.getElementById('scrollLeft');
             const scrollRightBtn = document.getElementById('scrollRight');
             
-            // Scroll amount (width of one review card plus margins)
             const scrollAmount = 350;
             
             scrollLeftBtn.addEventListener('click', () => {
@@ -366,26 +359,24 @@
                 });
             });
             
-            // Update button visibility on scroll
             reviewsContainer.addEventListener('scroll', updateScrollButtonsVisibility);
-            // Initial check
             updateScrollButtonsVisibility();
         }
         
-        // Function to update scroll buttons visibility
+        // Function: update scroll buttons when scrolling
         function updateScrollButtonsVisibility() {
             const reviewsContainer = document.getElementById('userReviews');
             const scrollLeftBtn = document.getElementById('scrollLeft');
             const scrollRightBtn = document.getElementById('scrollRight');
             
-            // Hide left button if at the beginning
+            // Hide left button at start
             if (reviewsContainer.scrollLeft <= 10) {
                 scrollLeftBtn.style.opacity = '0.3';
             } else {
                 scrollLeftBtn.style.opacity = '1';
             }
             
-            // Hide right button if at the end
+            // Hide right button at end
             const isAtEnd = reviewsContainer.scrollLeft + reviewsContainer.clientWidth >= 
                 reviewsContainer.scrollWidth - 10;
                 
@@ -395,7 +386,7 @@
                 scrollRightBtn.style.opacity = '1';
             }
             
-            // If content doesn't overflow, hide both buttons
+            // hide both buttons if !overflow
             if (reviewsContainer.scrollWidth <= reviewsContainer.clientWidth) {
                 scrollLeftBtn.style.display = 'none';
                 scrollRightBtn.style.display = 'none';
@@ -411,7 +402,7 @@
 
                 if (response.ok) {
                     alert("Logged out successfully!");
-                    window.location.href = "login.html"; // Redirect to login page
+                    window.location.href = "login.html";
                 } else {
                     alert("Logout failed.");
                 }

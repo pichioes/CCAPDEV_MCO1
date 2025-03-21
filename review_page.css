@@ -18,17 +18,17 @@ h3 {
 .store-info {
     background-color: #fff;
     padding: 20px;
-    border-radius: 20px; /* Rounded corners */
+    border-radius: 20px; 
     margin: 20px auto;
-    width: 80%; /* Adjust width */
-    display: flex; /* Arrange items in a row */
-    align-items: center; /* Align items vertically */
-    gap: 30px; /* Space between image and text */
+    width: 80%; 
+    display: flex; 
+    align-items: center;
+    gap: 30px; 
     text-align: left;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Soft shadow */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
 }
 .store-text {
-    flex: 1; /* Ensures text fills remaining space */
+    flex: 1; 
 }
 .top-reviews {
     padding: 20px;
@@ -39,9 +39,9 @@ h3 {
 }
 .top-reviews-container{
     display: flex;
-    flex-wrap: wrap; /* Allow reviews to wrap to next line */
-    justify-content: flex-start; /* Align items to the left */
-    gap: 20px; /* Smaller gap between cards */
+    flex-wrap: wrap; 
+    justify-content: flex-start; 
+    gap: 20px; 
 }
 .review-card {
     background-color: #fff;
@@ -157,10 +157,10 @@ button {
 }
 
 .store-info img {
-    width: 300px; /* Adjust width */
-    height: auto; /* Maintain aspect ratio */
-    border-radius: 20px; /* Smooth rounded edges */
-    object-fit: cover; /* Prevents stretching */
+    width: 300px;
+    height: auto; 
+    border-radius: 20px;
+    object-fit: cover; 
 }
 
 .manager-comment {
@@ -230,7 +230,7 @@ button {
 }
 
 .review-text {
-    max-height: 3.6em; /* About 2 lines */
+    max-height: 3.6em; 
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;

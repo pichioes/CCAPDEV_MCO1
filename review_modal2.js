@@ -19,7 +19,7 @@ function initializeStarRating() {
 }
 
 function loadModal() {
-    const locationId = getLocationIdFromURL() || '67d4708826e81b777f2d75d1'; // Default to Orlando
+    const locationId = getLocationIdFromURL() || '67d4708826e81b777f2d75d1'; // orlando default
     
     const modalContainer = document.getElementById('reviewModalContainer');
     modalContainer.innerHTML = `
@@ -70,11 +70,10 @@ function loadModal() {
     // Show modal
     document.getElementById('reviewModal').style.display = 'block';
     
-    // Set up event listeners
     document.querySelector(".close").addEventListener("click", closeModal);
     document.getElementById("reviewForm").addEventListener("submit", submitReview);
     
-    // Add image preview functionality
+    // image preview
     const imageInput = document.getElementById('reviewImage');
     if (imageInput) {
         imageInput.addEventListener('change', function(event) {
@@ -123,29 +122,27 @@ async function submitReview(event) {
     }
 
     try {
-        // Use FormData to handle both text data and file upload
         const formData = new FormData();
         formData.append('locationId', locationId);
         formData.append('serviceName', service);
-        formData.append('title', title || 'Review'); // Ensure title has default value if empty
+        formData.append('title', title); 
         formData.append('review', review);
         formData.append('starRating', stars);
         
-        // Only append the file if one was selected
         if (imageFile) {
             formData.append('reviewImage', imageFile);
         }
 
         const response = await fetch("/addreview", {
             method: "POST",
-            body: formData // Don't set Content-Type header when using FormData
+            body: formData 
         });
 
         const data = await response.json();
         if (response.ok) {
             alert(data.message);
-            closeModal(); // Close the modal after success
-            loadReviews(); // Reload the reviews to show the new one
+            closeModal(); 
+            loadReviews(); 
         } else {
             alert("Review failed: " + (data.message || "Unknown error"));
         }
@@ -157,7 +154,6 @@ async function submitReview(event) {
 
 // Helper function to get location ID from URL
 function getLocationIdFromURL() {
-    // Example implementation - adjust based on your URL structure
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get('locationId');
 }

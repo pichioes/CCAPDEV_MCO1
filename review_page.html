@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Store Review Page</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="reviews_orlando.css">
+    <link rel="stylesheet" href="review_page.css">
 </head>
 <body>
     <div id="navbar"></div>
@@ -23,9 +23,7 @@
     
     <div class="top-reviews">
         <h1>Top Reviews</h1>
-        <div class="top-reviews-container" id="top-reviews-container">
-            <!-- Top reviews will be loaded dynamically -->
-        </div>
+        <div class="top-reviews-container" id="top-reviews-container"></div>
     </div>
     
     <div class="other-reviews">
@@ -39,9 +37,7 @@
             </div>
         </div>
         
-        <div class="other-reviews-container" id="other-reviews-container">
-            <!-- Other reviews will be loaded dynamically -->
-        </div>
+        <div class="other-reviews-container" id="other-reviews-container"></div>
     </div>
     <div id="footer"></div>
 
@@ -54,11 +50,10 @@
     <script src="edit_review.js"></script>
     <script src="location_handler.js"></script>
     <script>
-        // Check if user is logged in
+        // logged in user checker
         let currentUser = null;
-        
        
-        // Function to fetch current user
+        // Function: fetch current user
         async function fetchCurrentUser() {
             try {
                 const response = await fetch('/profile');
@@ -74,210 +69,208 @@
             }
         }
 
-        // Function to create a top review card
+        // Function: make top review card
         function createTopReviewCard(review) {
-    const username = review.User_ID && review.User_ID.username ? review.User_ID.username : 'Anonymous';
-    const title = review.Title || 'Great Service!';
+            const username = review.User_ID && review.User_ID.username ? review.User_ID.username : 'Anonymous';
+            const title = review.Title || 'Great Service!';
 
-    // Display both image and video if available
-    const mediaHtml = `
-        ${review.Image_path ? `
-            <div class="review-image">
-                <img src="${review.Image_path}" alt="Review Image" style="max-width: 100%; max-height: 200px; margin-top: 10px;">
-            </div>
-        ` : ''}
+            // Display media
+            const mediaHtml = `
+                ${review.Image_path ? `
+                    <div class="review-image">
+                        <img src="${review.Image_path}" alt="Review Image" style="max-width: 100%; max-height: 200px; margin-top: 10px;">
+                    </div>
+                ` : ''}
 
-        ${review.Video_path ? `
-            <div class="review-video">
-                <video src="${review.Video_path}" controls style="max-width: 100%; max-height: 300px; margin-top: 10px;"></video>
-            </div>
-        ` : ''}
-    `;
+                ${review.Video_path ? `
+                    <div class="review-video">
+                        <video src="${review.Video_path}" controls style="max-width: 100%; max-height: 300px; margin-top: 10px;"></video>
+                    </div>
+                ` : ''}
+            `;
 
-    return `
-        <div class="review-card">
-            <h2>${title}</h2>
-            <p>"${review.Review}"</p>
-            
-            <!-- Display media -->
-            ${mediaHtml}
-            
-            <p>- ${username}</p>
-        </div>
-    `;
-}
-
-
-    async function addManagerComment(reviewId) {
-            const textarea = document.getElementById(`manager-comment-${reviewId}`);
-            const comment = textarea.value.trim();
-            if (!comment) {
-                alert("Please enter a comment.");
-                return;
+            return `
+                <div class="review-card">
+                    <h2>${title}</h2>
+                    <p>"${review.Review}"</p>
+                    
+                    <!-- Display media -->
+                    ${mediaHtml}
+                    
+                    <p>- ${username}</p>
+                </div>
+            `;
         }
 
-        try {
-            const response = await fetch(`/addmanagercomment/${reviewId}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ comment })
-            });
-
-            const result = await response.json();
-
-            if (response.ok) {
-                alert("Manager comment added.");
-                loadReviews(); // reload to update UI
-            } else {
-                alert(result.message || "Failed to add comment.");
+        // Functon: add manager comment
+        async function addManagerComment(reviewId) {
+                const textarea = document.getElementById(`manager-comment-${reviewId}`);
+                const comment = textarea.value.trim();
+                if (!comment) {
+                    alert("Please enter a comment.");
+                    return;
             }
-        } catch (err) {
-            console.error("Error adding comment:", err);
-            alert("Error occurred while adding the comment.");
-        }
-    }
 
-    async function deleteManagerComment(reviewId) {
-        if (!confirm("Are you sure you want to delete this manager comment?")) return;
+            try {
+                const response = await fetch(`/addmanagercomment/${reviewId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ comment })
+                });
 
-        try {
-            const response = await fetch(`/deletemanagercomment/${reviewId}`, {
-                method: 'DELETE'
-            });
+                const result = await response.json();
 
-            const result = await response.json();
-
-            if (response.ok) {
-                alert("Manager comment deleted.");
-                loadReviews(); // reload to reflect change
-            } else {
-                alert(result.message || "Failed to delete comment.");
+                if (response.ok) {
+                    alert("Manager comment added.");
+                    loadReviews();
+                } else {
+                    alert(result.message || "Failed to add comment.");
+                }
+                } catch (err) {
+                    console.error("Error adding comment:", err);
+                    alert("Error occurred while adding the comment.");
+                }
             }
-        } catch (err) {
-            console.error("Error deleting comment:", err);
-            alert("Error occurred while deleting the comment.");
+
+        // Function: delete manager comment
+        async function deleteManagerComment(reviewId) {
+            if (!confirm("Are you sure you want to delete this manager comment?")) return;
+
+            try {
+                const response = await fetch(`/deletemanagercomment/${reviewId}`, {
+                    method: 'DELETE'
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    alert("Manager comment deleted.");
+                    loadReviews(); 
+                } else {
+                    alert(result.message || "Failed to delete comment.");
+                }
+            } catch (err) {
+                console.error("Error deleting comment:", err);
+                alert("Error occurred while deleting the comment.");
+            }
         }
-    }
 
 
-        // Function to create a review card
+        // Function: create a review card
         function createReviewCard(review) {
-    const username = review.User_ID && review.User_ID.username ? review.User_ID.username : 'Anonymous';
-    const userId = review.User_ID && review.User_ID._id ? review.User_ID._id : '';
-    const isUserReview = currentUser && userId && userId === currentUser._id;
-    const serviceName = review.Service_ID && review.Service_ID.Service_Name ? review.Service_ID.Service_Name : 'General Service';
-    const stars = '⭐'.repeat(review.Star_rating || 0);
-    const title = review.Title || 'Review';
+            const username = review.User_ID && review.User_ID.username ? review.User_ID.username : 'Anonymous';
+            const userId = review.User_ID && review.User_ID._id ? review.User_ID._id : '';
+            const isUserReview = currentUser && userId && userId === currentUser._id;
+            const serviceName = review.Service_ID && review.Service_ID.Service_Name ? review.Service_ID.Service_Name : 'General Service';
+            const stars = '⭐'.repeat(review.Star_rating || 0);
+            const title = review.Title || 'Review';
 
-    const uploadTime = review.uploadTimestamp 
-        ? new Date(review.uploadTimestamp).toLocaleString() 
-        : (review.Date || '');
+            const uploadTime = review.uploadTimestamp 
+                ? new Date(review.uploadTimestamp).toLocaleString() 
+                : (review.Date || '');
 
-    const editedTime = review.edited && review.lastEdited
-        ? `<p style="font-size: x-small; color: grey;">(Edited: ${new Date(review.lastEdited).toLocaleString()})</p>`
-        : '';
+            const editedTime = review.edited && review.lastEdited
+                ? `<p style="font-size: x-small; color: grey;">(Edited: ${new Date(review.lastEdited).toLocaleString()})</p>`
+                : '';
 
-    const editedLabel = review.edited
-        ? '<span style="font-size:small; color:grey;">✏️ Edited</span>'
-        : '';
+            const editedLabel = review.edited
+                ? '<span style="font-size:small; color:grey;">✏️ Edited</span>'
+                : '';
 
-    // Display both image and video (if available)
-    const mediaHtml = `
-        ${review.Image_path ? `
-            <div class="review-image">
-                <img src="${review.Image_path}" alt="Review Image" style="max-width: 100%; max-height: 300px; margin-top: 10px;">
+            // display media
+            const mediaHtml = `
+                ${review.Image_path ? `
+                    <div class="review-image">
+                        <img src="${review.Image_path}" alt="Review Image" style="max-width: 100%; max-height: 300px; margin-top: 10px;">
+                    </div>
+                ` : ''}
+
+                ${review.Video_path ? `
+                    <div class="review-video">
+                        <video src="${review.Video_path}" controls style="max-width: 100%; max-height: 300px; margin-top: 10px;"></video>
+                    </div>
+                ` : ''}
+            `;
+
+            const managerCommentHtml = review.managerComment ? `
+                <div class="manager-comment">
+                    <h4>Manager Response:</h4>
+                    <p>${review.managerComment}</p>
+                    <p class="comment-date">Responded on: ${review.managerCommentDate || 'N/A'}</p>
+                    ${currentUser && currentUser.isManager ? `
+                        <button class="delete-comment-btn" onclick="deleteManagerComment('${review._id}')">Delete Comment</button>
+                    ` : ''}
+                </div>
+            ` : '';
+
+            const managerCommentForm = currentUser && currentUser.isManager && !review.managerComment ? `
+                <div class="manager-comment-form">
+                    <h4>Add Manager Response:</h4>
+                    <textarea id="manager-comment-${review._id}" rows="3" placeholder="Enter your response..."></textarea>
+                    <button onclick="addManagerComment('${review._id}')">Submit Response</button>
+                </div>
+            ` : '';
+
+            return `
+            <div class="other-review-card" data-review-id="${review._id || ''}">
+                <div class="review-header">
+                    <img src="${review.User_ID && review.User_ID.profilePicture ? review.User_ID.profilePicture : 'default-profile.png'}" alt="Profile Picture" class="profile-pic">
+                    <div class="review-info">
+                        <h3 class="user-profile-link" data-user-id="${userId}" style="cursor: pointer; color: inherit; text-decoration: none;">
+                        ${username} ${editedLabel}
+                        </h3>
+                        <p style="margin-top: 2px; font-size: x-small; color: grey;">Uploaded: ${uploadTime}</p>
+                        ${editedTime}
+                        <div class="review-stars">${stars}</div>
+                    </div>
+
+                    <div class="review-actions">
+                        <button class="like-btn" onclick="likeReview('${review._id || ''}')">👍 <span class="like-count">${review.likes || 0}</span></button>
+                        <button class="dislike-btn" onclick="dislikeReview('${review._id || ''}')">👎 <span class="dislike-count">${review.dislikes || 0}</span></button>
+                        <button onclick="showOptions('${review._id || ''}')">⋮</button>
+                    </div>
+                </div>
+
+                ${isUserReview ? `
+                    <div class="review-buttons">
+                        <button style="padding: 5px; width: 150px; font-weight: bolder; font-size:small;" onclick="loadEditModal('${review._id}')">Edit your Review!</button>
+                        <button style="padding: 5px; width: 150px; font-weight: bolder; font-size:small;" onclick="deleteReview('${review._id}')">Delete your review</button>
+                        <div id="editReviewModalContainer"></div>
+                    </div>
+                ` : ''}
+
+                ${currentUser && currentUser.isManager ? `
+                    <div class="review-buttons">
+                        <button style="padding: 5px; width: 150px; font-weight: bolder; font-size:small;" 
+                        onclick="deleteReview('${review._id}')">Delete Review</button>
+                    </div>
+                ` : ''}
+
+                <p style="margin: 0px;"><strong>${title}</strong></p>
+                <p style="margin-top: 2px; color: grey;">${serviceName}</p>
+                <div class="review-text-container">
+                    <p class="review-text" id="review-text-${review._id}">${review.Review}</p>
+                    <a class="see-more-link" id="see-more-${review._id}" onclick="toggleReview('${review._id}')">See more</a>
+                </div>
+
+                <!-- Display both image and video -->
+                ${mediaHtml}
+
+                ${managerCommentHtml}
+                ${managerCommentForm}
             </div>
-        ` : ''}
+            `;
+        }
 
-        ${review.Video_path ? `
-            <div class="review-video">
-                <video src="${review.Video_path}" controls style="max-width: 100%; max-height: 300px; margin-top: 10px;"></video>
-            </div>
-        ` : ''}
-    `;
+        function toggleReview(reviewId) {
+            const textElement = document.getElementById(`review-text-${reviewId}`);
+            const linkElement = document.getElementById(`see-more-${reviewId}`);
 
-    const managerCommentHtml = review.managerComment ? `
-        <div class="manager-comment">
-            <h4>Manager Response:</h4>
-            <p>${review.managerComment}</p>
-            <p class="comment-date">Responded on: ${review.managerCommentDate || 'N/A'}</p>
-            ${currentUser && currentUser.isManager ? `
-                <button class="delete-comment-btn" onclick="deleteManagerComment('${review._id}')">Delete Comment</button>
-            ` : ''}
-        </div>
-    ` : '';
-
-    const managerCommentForm = currentUser && currentUser.isManager && !review.managerComment ? `
-        <div class="manager-comment-form">
-            <h4>Add Manager Response:</h4>
-            <textarea id="manager-comment-${review._id}" rows="3" placeholder="Enter your response..."></textarea>
-            <button onclick="addManagerComment('${review._id}')">Submit Response</button>
-        </div>
-    ` : '';
-
-    return `
-    <div class="other-review-card" data-review-id="${review._id || ''}">
-        <div class="review-header">
-            <img src="${review.User_ID && review.User_ID.profilePicture ? review.User_ID.profilePicture : 'default-profile.png'}" alt="Profile Picture" class="profile-pic">
-            <div class="review-info">
-                <h3 class="user-profile-link" data-user-id="${userId}" style="cursor: pointer; color: inherit; text-decoration: none;">
-                ${username} ${editedLabel}
-                </h3>
-                <p style="margin-top: 2px; font-size: x-small; color: grey;">Uploaded: ${uploadTime}</p>
-                ${editedTime}
-                <div class="review-stars">${stars}</div>
-            </div>
-
-            <div class="review-actions">
-                <button class="like-btn" onclick="likeReview('${review._id || ''}')">👍 <span class="like-count">${review.likes || 0}</span></button>
-                <button class="dislike-btn" onclick="dislikeReview('${review._id || ''}')">👎 <span class="dislike-count">${review.dislikes || 0}</span></button>
-                <button onclick="showOptions('${review._id || ''}')">⋮</button>
-            </div>
-        </div>
-
-        ${isUserReview ? `
-            <div class="review-buttons">
-                <button style="padding: 5px; width: 150px; font-weight: bolder; font-size:small;" onclick="loadEditModal('${review._id}')">Edit your Review!</button>
-                <button style="padding: 5px; width: 150px; font-weight: bolder; font-size:small;" onclick="deleteReview('${review._id}')">Delete your review</button>
-                <div id="editReviewModalContainer"></div>
-            </div>
-        ` : ''}
-
-        ${currentUser && currentUser.isManager ? `
-            <div class="review-buttons">
-                <button style="padding: 5px; width: 150px; font-weight: bolder; font-size:small;" 
-                onclick="deleteReview('${review._id}')">Delete Review</button>
-            </div>
-        ` : ''}
-
-        <p style="margin: 0px;"><strong>${title}</strong></p>
-        <p style="margin-top: 2px; color: grey;">${serviceName}</p>
-        <div class="review-text-container">
-            <p class="review-text" id="review-text-${review._id}">${review.Review}</p>
-            <a class="see-more-link" id="see-more-${review._id}" onclick="toggleReview('${review._id}')">See more</a>
-        </div>
-
-        <!-- Display both image and video -->
-        ${mediaHtml}
-
-        ${managerCommentHtml}
-        ${managerCommentForm}
-    </div>
-    `;
-}
-
-
-function toggleReview(reviewId) {
-    const textElement = document.getElementById(`review-text-${reviewId}`);
-    const linkElement = document.getElementById(`see-more-${reviewId}`);
-
-    const expanded = textElement.classList.toggle('expanded');
-    linkElement.textContent = expanded ? 'See less' : 'See more';
-}
-    
-        // Function to submit a new review
+            const expanded = textElement.classList.toggle('expanded');
+            linkElement.textContent = expanded ? 'See less' : 'See more';
+        }
         
-        // Function to delete a review
+        // Function: delete a review
         async function deleteReview(reviewId) {
             if (confirm("Are you sure you want to delete this review?")) {
                 try {
@@ -300,7 +293,7 @@ function toggleReview(reviewId) {
             }
         }
         
-        // Function to like a review
+        // Function: like a review
         async function likeReview(reviewId) {
             if (!currentUser) {
                 alert("You must be logged in to like reviews.");
@@ -328,7 +321,7 @@ function toggleReview(reviewId) {
             }
         }
         
-        // Function to dislike a review
+        // Function: dislike a review
         async function dislikeReview(reviewId) {
             if (!currentUser) {
                 alert("You must be logged in to dislike reviews.");
@@ -354,7 +347,8 @@ function toggleReview(reviewId) {
                 console.error("Error disliking review:", error);
             }
         }   
-        // Function to search reviews
+
+        // Function: search reviews
         function searchReviews() {
             const searchTerm = document.getElementById('search-input').value.toLowerCase();
             const reviewCards = document.querySelectorAll('.other-review-card');
@@ -369,6 +363,7 @@ function toggleReview(reviewId) {
             });
         }
 
+        // listener
         document.addEventListener("DOMContentLoaded", async () => {
             const urlParams = new URLSearchParams(window.location.search);
             const locationId = urlParams.get("locationId");
@@ -386,13 +381,13 @@ function toggleReview(reviewId) {
 
                 const reviews = await response.json();
 
-                // Set store info using the first review's Location_ID
+                // set store info 
                 if (reviews.length > 0 && reviews[0].Location_ID) {
                     document.querySelector("h2").textContent = reviews[0].Location_ID.Store_Name || "Store";
                     document.querySelector(".store-text p").textContent = reviews[0].Location_ID.Address || "";
                 }
 
-                // Update average rating
+                // update average rating
                 const avgRating = (reviews.reduce((sum, r) => sum + (r.Star_rating || 0), 0) / reviews.length).toFixed(1);
                 document.getElementById("average-rating").innerHTML = `${avgRating} ⭐ (<span id="review-count">${reviews.length}</span> Reviews)`;
 
@@ -402,7 +397,7 @@ function toggleReview(reviewId) {
                 topContainer.innerHTML = "";
                 otherContainer.innerHTML = "";
 
-                // Sort reviews by star rating (highest first)
+                // sort reviews (highest to lowest)
                 reviews.sort((a, b) => (b.Star_rating || 0) - (a.Star_rating || 0));
 
                 reviews.forEach((review, index) => {
@@ -414,7 +409,7 @@ function toggleReview(reviewId) {
                             <p>- ${review.User_ID?.username || "Anonymous"}</p>
                         </div>
                     `;
-                    if (index < 5) { // Changed from 2 to 5 to show top 5 reviews
+                    if (index < 5) { 
                         topContainer.innerHTML += cardHtml;
                     } else {
                         otherContainer.innerHTML += cardHtml;
