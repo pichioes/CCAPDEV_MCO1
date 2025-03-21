@@ -20,6 +20,6 @@ function setupReviewActions(button) {
             dislikeCountElem.textContent = dislikeCount;
         };
 
-        container.dataset.initialized = "true"; // Mark as initialized
+        container.dataset.initialized = "true"; 
     }
 }
