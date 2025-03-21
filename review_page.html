@@ -198,7 +198,7 @@
 
     const managerCommentHtml = review.managerComment ? `
         <div class="manager-comment">
-            <h4>Manager Response (${review.managerCommentId || 'MC-XXXXX'}):</h4>
+            <h4>Manager Response:</h4>
             <p>${review.managerComment}</p>
             <p class="comment-date">Responded on: ${review.managerCommentDate || 'N/A'}</p>
             ${currentUser && currentUser.isManager ? `
