@@ -107,7 +107,7 @@ function displayReviews(reviews) {
     const sortedReviews = [...validReviews].sort((a, b) => (b.likes || 0) - (a.likes || 0));
     
     // Display top 2 reviews if available
-    const topReviews = sortedReviews.slice(0, Math.min(2, sortedReviews.length));
+    const topReviews = sortedReviews.slice(0, Math.min(5, sortedReviews.length));
     topReviews.forEach(review => {
         topContainer.innerHTML += createTopReviewCard(review);
     });

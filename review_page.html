@@ -373,7 +373,6 @@ function toggleReview(reviewId) {
             const urlParams = new URLSearchParams(window.location.search);
             const locationId = urlParams.get("locationId");
 
-
             if (!locationId) {
                 alert("No location ID provided.");
                 return;
@@ -403,6 +402,9 @@ function toggleReview(reviewId) {
                 topContainer.innerHTML = "";
                 otherContainer.innerHTML = "";
 
+                // Sort reviews by star rating (highest first)
+                reviews.sort((a, b) => (b.Star_rating || 0) - (a.Star_rating || 0));
+
                 reviews.forEach((review, index) => {
                     const cardHtml = `
                         <div class="review-card">
@@ -412,7 +414,7 @@ function toggleReview(reviewId) {
                             <p>- ${review.User_ID?.username || "Anonymous"}</p>
                         </div>
                     `;
-                    if (index < 2) {
+                    if (index < 5) { // Changed from 2 to 5 to show top 5 reviews
                         topContainer.innerHTML += cardHtml;
                     } else {
                         otherContainer.innerHTML += cardHtml;

@@ -39,8 +39,9 @@ h3 {
 }
 .top-reviews-container{
     display: flex;
-    justify-content: left;
-    gap: 50px;
+    flex-wrap: wrap; /* Allow reviews to wrap to next line */
+    justify-content: flex-start; /* Align items to the left */
+    gap: 20px; /* Smaller gap between cards */
 }
 .review-card {
     background-color: #fff;
