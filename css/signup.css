@@ -1,0 +1,103 @@
+/* SIGNUP CSS */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f4e9e4;
+    font-family: Montserrat, sans-serif;
+}
+.container {
+    background-color: #c9a1a1;
+    padding: 50px 100px 100px 100px;
+    display: flex;
+    flex-direction: column;
+    border-radius: 15px;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+.logo img {
+    width: 200px;
+    height: 142.84px;
+    border-radius: 10px;
+}
+h2 {
+    color: #fff;
+    font-weight: bold;
+}
+.input-group {
+    margin: 15px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
+}
+label {
+    display: block;
+    color: #fff;
+    text-align: left;
+    margin-bottom: 5px;
+}
+input, textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.button-group,
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    text-align: center;
+}
+.login-btn {
+    background-color: #f4e9e4;
+    margin-bottom: 5px;
+    width: 100%;
+}
+.signup-btn {
+    background-color: #b78c8c;
+    color: white;
+    width: 100%;
+    margin-bottom: 5px;
+}
+button:hover {
+    opacity: 0.8;
+}
+body, h2, label, input, button, textarea {
+    font-family: 'Montserrat', sans-serif;
+}
+.custom-file-label {
+    display: inline-block;
+    background-color: #b78c8c;
+    color: white;
+    font-family: 'Montserrat', sans-serif;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    transition: 0.3s;
+}
+
+.login-btn, .signup-btn, .guest-btn {
+    width: 200px;
+}
+
+/* END OF SIGNUP CSS */

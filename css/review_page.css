@@ -1,0 +1,259 @@
+body {
+    font-family: Montserrat, sans-serif;
+    background-color: #D19DA7;
+    color: #4a2c1f;
+    text-align: center;
+    padding-top: 80px;
+}
+h1 {
+    font-size: 2.5em;
+    color: #F6ECE9;
+}
+
+h3 {
+    margin: 0 1px 0 0;
+
+}
+
+.store-info {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 20px; 
+    margin: 20px auto;
+    width: 80%; 
+    display: flex; 
+    align-items: center;
+    gap: 30px; 
+    text-align: left;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
+}
+.store-text {
+    flex: 1; 
+}
+.top-reviews {
+    padding: 20px;
+    border-radius: 10px;
+    margin: 20px auto;
+    width: 80%;
+    text-align: left;
+}
+.top-reviews-container{
+    display: flex;
+    flex-wrap: wrap; 
+    justify-content: flex-start; 
+    gap: 20px; 
+}
+.review-card {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 15px;
+    width: 300px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.review-card img {
+    width: 100%;
+    border-radius: 10px;
+}
+.review-info {
+    padding: 10px;
+    text-align: left;
+}
+.review-info h2 {
+    font-size: 1.2em;
+    margin-bottom: 5px;
+}
+.review-buttons {
+    display: flex;
+    margin: 15px auto;
+}
+.other-reviews {
+    padding: 20px;
+    border-radius: 10px;
+    margin: 20px auto;
+    width: 80%;
+    text-align: left;
+}
+.other-reviews-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+}
+.other-review-card {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 25px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.review-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+}
+.profile-pic {
+    width: 80px;
+    height: 80px;
+    background-color: #c69fa5;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+.review-info {
+    flex-grow: 1;
+}
+.review-stars {
+    color: #FFD700;
+    font-size: 16px;
+    margin-top: 3px;
+}
+.review-actions {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    display: flex;
+    gap: 10px;
+}
+.review-buttons {
+    gap: 20px;
+}
+.search {
+    width: 200px; 
+    border-radius: 5%;
+    display: flex;
+}
+button {
+   background-color:#F6ECE9;
+   border:#F6ECE9;
+   border-radius: 10px; 
+}
+.manager-response {
+    background-color: #f3dbd7;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.review-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+.edit-review-btn, .delete-review-btn {
+    background-color: #c69fa5;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.edit-review-btn:hover {
+    text-decoration: underline;
+}
+
+.delete-review-btn:hover {
+    text-decoration: underline;
+    color: red;
+}
+
+.store-info img {
+    width: 300px;
+    height: auto; 
+    border-radius: 20px;
+    object-fit: cover; 
+}
+
+.manager-comment {
+    background-color: #fdeaf0;
+    border-left: 4px solid #D19DA7;
+    padding: 10px 15px;
+    margin-top: 15px;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    row-gap: 5px;
+}
+
+.manager-comment h4 {
+    color: #D19DA7;
+    margin-top: 0;
+    margin-bottom: 5px;
+}
+
+.manager-comment p {
+    margin: 5px 0;
+}
+
+.comment-date {
+    font-size: 0.8em;
+    color: #777;
+    text-align: right;
+}
+
+.manager-comment-form {
+    margin-top: 15px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.manager-comment-form h4 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #555;
+}
+
+.manager-comment-form textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical;
+    margin-bottom: 10px;
+}
+
+.manager-comment-form button, .delete-comment-btn {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.delete-comment-btn {
+    background-color: #e74c3c;
+    font-size: 0.8em;
+    padding: 5px 10px;
+    width: 200px;
+    margin-left: auto;
+}
+
+.manager-comment-form button:hover, .delete-comment-btn:hover {
+    opacity: 0.9;
+}
+
+.review-text {
+    max-height: 3.6em; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1; 
+    line-clamp: 1;
+    -webkit-box-orient: vertical;
+    transition: max-height 0.3s ease;
+}
+
+.review-text.expanded {
+    -webkit-line-clamp: unset;
+    line-clamp: unset;
+    max-height: none;
+}
+
+.see-more-link {
+    color: #777;
+    cursor: pointer;
+    font-size: small;
+    margin-top: 5px;
+    display: inline-block;
+}

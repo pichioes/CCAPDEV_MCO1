@@ -1,0 +1,103 @@
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: #f3e0dc;
+    color: #4a2c1f;
+    text-align: center;
+    position: relative;
+    margin: 0;
+    padding-top: 100px;
+}
+
+h1 {
+    font-size: 3em;
+    color: #5a3627;
+}
+
+a {
+    text-decoration: none; 
+    color: inherit; 
+}
+
+a:focus, a:active {
+    outline: none;
+}
+
+.search-bar-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.store-locator-container {
+    display: grid;
+    padding: 50px;
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 20px;
+    row-gap: 50px;
+    justify-content: center;
+    width: 80%;
+    margin: auto;
+}
+
+@media (min-width: 2000px) {
+    .store-locator-container {
+        grid-template-columns: repeat(5, 1fr);
+    }
+}
+
+.store-card {
+    background-color: #c9a1a1;
+    border-radius: 10px;
+    padding: 15px;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none; 
+    color: inherit;
+    transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out;
+    height: 100%;
+}
+
+.store-card:hover {
+    background-color: #b88c8c; 
+    cursor: pointer;
+    transform: scale(1.05); 
+}
+
+.store-card img {
+    width: 100%;
+    border-radius: 10px;
+}
+
+.store-info {
+    padding: 10px;
+    text-align: left;
+    width: 100%;
+    flex-grow: 1; 
+    display: flex;
+    flex-direction: column;
+}
+
+.store-info h2 {
+    font-size: 1.2em;
+    margin-bottom: 5px;
+}
+
+.rating {
+    font-weight: bold;
+    margin-top: auto;
+}
+
+button {
+    background-color: #F6ECE9;
+    border: #F6ECE9;
+    border-radius: 10%;
+}
+
+.search {
+    width: 200px;
+    border-radius: 5%;
+    display: flex;
+}
