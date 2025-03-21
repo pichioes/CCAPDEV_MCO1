@@ -89,11 +89,11 @@
 
     <!-- scripts -->
 
-    <script src="nav.js"></script>
-    <script src="footer.js"></script>
-    <script src="change_picture.js"></script>
-    <script src="edit_description.js"></script>
-    <script src="edit_review.js"></script>
+    <script src="js/nav.js"></script>
+    <script src="js/footer.js"></script>
+    <script src="js/change_picture.js"></script>
+    <script src="js/edit_description.js"></script>
+    <script src="js/edit_review.js"></script>
 
     <script>
         let isManager = false;
@@ -255,7 +255,7 @@
             }
         }
         
-        // Function to add manager comment
+        // Function: add manager comment
         async function addManagerComment(reviewId) {
             const comment = prompt("Enter your response to this review:");
             if (!comment) return;
@@ -282,7 +282,7 @@
             }
         }
         
-        // Function: manager comment
+        // Function: delete manager comment
         async function deleteManagerComment(reviewId) {
             if (confirm("Are you sure you want to delete your response?")) {
                 try {

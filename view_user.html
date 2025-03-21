@@ -31,7 +31,6 @@
         <h2 style="text-align: center; color: black;">User Reviews</h2>
         <button class="scroll-btn scroll-left" id="scrollLeft">&#10094;</button>
         <div id="userReviews">
-            <!-- User reviews will be loaded here -->
             <p id="loading-message">Loading reviews...</p>
         </div>
         <button class="scroll-btn scroll-right" id="scrollRight">&#10095;</button>
@@ -39,11 +38,12 @@
 
     <div id="footer"></div>
 
-    <script src="nav.js"></script>
-    <script src="footer.js"></script>
-    
+    <!-- scripts used -->
+
+    <script src="js/nav.js"></script>
+    <script src="js/footer.js"></script>
     <script>
-        // Function to get URL parameters
+        // Function: get URL parameters
         function getUrlParameter(name) {
             name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
             var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
@@ -59,10 +59,9 @@
             document.getElementById('loading-message').textContent = 'Cannot load reviews for this user.';
         }
         
-        // Function to load user data
+        // Function: load user data
         async function loadUserData() {
             try {
-                // This would be a new API endpoint you need to create in your backend
                 const response = await fetch(`/user/${userId}`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch user data');
@@ -74,7 +73,6 @@
                 document.getElementById('username').textContent = userData.username;
                 document.getElementById('userDescription').textContent = userData.description || 'No description available.';
                 
-                // Update profile picture if available
                 if (userData.profilePicture) {
                     document.getElementById('profilePic').src = userData.profilePicture;
                 }
@@ -86,10 +84,9 @@
             }
         }
         
-        // Function to load user reviews
+        // Function: load user reviews
         async function loadUserReviews() {
             try {
-                // This would be a new API endpoint you need to create in your backend
                 const response = await fetch(`/user-reviews/${userId}`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch user reviews');
@@ -97,15 +94,14 @@
                 
                 const reviews = await response.json();
                 const reviewsContainer = document.getElementById('userReviews');
-                
-                // Clear loading message
+            
                 reviewsContainer.innerHTML = '';
                 
                 // Update stats
                 document.getElementById('reviewCount').textContent = reviews.length;
                 
                 if (reviews.length > 0) {
-                    // Calculate average rating
+                    // Calculate average rating made by user
                     const totalRating = reviews.reduce((sum, review) => sum + (review.Star_rating || 0), 0);
                     const avgRating = (totalRating / reviews.length).toFixed(1);
                     document.getElementById('avgRating').textContent = avgRating;
@@ -115,11 +111,11 @@
                         reviewsContainer.appendChild(createReviewCard(review));
                     });
                     
-                    // Show/hide scroll buttons based on content
+                    // Show/hide scroll buttons (depends on content)
                     updateScrollButtonsVisibility();
                 } else {
                     reviewsContainer.innerHTML = '<p>This user has not posted any reviews yet.</p>';
-                    // Hide scroll buttons if no reviews
+                    // Hide scroll buttons if !reviews
                     document.querySelector('.scroll-left').style.display = 'none';
                     document.querySelector('.scroll-right').style.display = 'none';
                 }
@@ -127,13 +123,12 @@
             } catch (error) {
                 console.error('Error loading user reviews:', error);
                 document.getElementById('userReviews').innerHTML = '<p>Could not load reviews for this user.</p>';
-                // Hide scroll buttons on error
                 document.querySelector('.scroll-left').style.display = 'none';
                 document.querySelector('.scroll-right').style.display = 'none';
             }
         }
         
-        // Function to create a review card
+        // Function: creation of review card
         function createReviewCard(review) {
             const serviceName = review.Service_ID && review.Service_ID.Service_Name ? review.Service_ID.Service_Name : 'General Service';
             const stars = '★'.repeat(review.Star_rating || 0) + '☆'.repeat(5 - (review.Star_rating || 0));
@@ -185,7 +180,7 @@
             headerDiv.appendChild(dateElement);
             
             
-            // Assemble card
+            // Card assembly
             reviewElement.appendChild(headerDiv);
             reviewElement.appendChild(reviewText);
             if (imageElement) {
@@ -196,13 +191,12 @@
             return reviewElement;
         }
         
-        // Function to handle horizontal scrolling
+        // Function: handle horizontal review scrolling
         function setupScrollButtons() {
             const reviewsContainer = document.getElementById('userReviews');
             const scrollLeftBtn = document.getElementById('scrollLeft');
             const scrollRightBtn = document.getElementById('scrollRight');
             
-            // Scroll amount (width of one review card plus margins)
             const scrollAmount = 350;
             
             scrollLeftBtn.addEventListener('click', () => {
@@ -219,24 +213,23 @@
                 });
             });
             
-            // Update button visibility on scroll
             reviewsContainer.addEventListener('scroll', updateScrollButtonsVisibility);
         }
         
-        // Function to update scroll buttons visibility
+        // Function: update scroll buttons visibilty
         function updateScrollButtonsVisibility() {
             const reviewsContainer = document.getElementById('userReviews');
             const scrollLeftBtn = document.getElementById('scrollLeft');
             const scrollRightBtn = document.getElementById('scrollRight');
             
-            // Hide left button if at the beginning
+            // hide left btn at start
             if (reviewsContainer.scrollLeft <= 10) {
                 scrollLeftBtn.style.opacity = '0.3';
             } else {
                 scrollLeftBtn.style.opacity = '1';
             }
             
-            // Hide right button if at the end
+            // hide right btn at end
             const isAtEnd = reviewsContainer.scrollLeft + reviewsContainer.clientWidth >= 
                 reviewsContainer.scrollWidth - 10;
                 
@@ -246,7 +239,7 @@
                 scrollRightBtn.style.opacity = '1';
             }
             
-            // If content doesn't overflow, hide both buttons
+            // hide both buttons if no overflow
             if (reviewsContainer.scrollWidth <= reviewsContainer.clientWidth) {
                 scrollLeftBtn.style.display = 'none';
                 scrollRightBtn.style.display = 'none';
@@ -256,17 +249,14 @@
             }
         }
         
-        // Load data when page loads
         document.addEventListener('DOMContentLoaded', function() {
             if (userId) {
                 loadUserData();
                 loadUserReviews();
                 setupScrollButtons();
                 
-                // Initial check for scroll buttons
                 updateScrollButtonsVisibility();
-                
-                // Check again after window resize
+        
                 window.addEventListener('resize', updateScrollButtonsVisibility);
             }
         });
