@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="userpage.css">
     <style>
-        /* Additional styles for scroll buttons */
+        /* More scroll button CSS */
         .reviews-container {
             position: relative;
         }
@@ -43,7 +43,6 @@
             right: 0;
         }
         
-        /* Ensure review container has space for buttons */
         #userReviews {
             padding: 20px 50px;
         }
@@ -60,7 +59,7 @@
         <div class="user-stats">
             <div class="stat-item">
                 <div class="stat-value" id="reviewCount">0</div>
-                <div class="stat-label">Reviews</div>
+                <div class="stat-label" id="reviewLabel">Reviews</div>
             </div>
             <div class="stat-item">
                 <div class="stat-value" id="avgRating">0.0</div>
@@ -76,15 +75,14 @@
     </div>
 
     <div class="reviews-container">
-        <h2 style="text-align: center; color: black;">My Reviews</h2>
+        <h2 style="text-align: center; color: black;" id="reviewsSectionTitle">My Reviews</h2>
         <button id="scrollLeft" class="scroll-btn scroll-left">&#10094;</button>
         <button id="scrollRight" class="scroll-btn scroll-right">&#10095;</button>
         <div id="user-reviews">
-            <p>Loading your reviews...</p>
+            <p>Loading reviews...</p>
         </div>
     </div>
     
-    <!-- Changed to editReviewModalContainer for consistency with JS -->
     <div id="editReviewModalContainer"></div>
 
     <div id="footer"></div>
@@ -93,33 +91,57 @@
     <script src="footer.js"></script>
     <script src="change_picture.js"></script>
     <script src="edit_description.js"></script>
-    <!-- Removed incorrect script reference to review_page.html -->
     <script src="edit_review.js"></script>
 
     <script>
+        let isManager = false;
+        let locationId = null;
+        let currentUserId = null;
+
         document.addEventListener("DOMContentLoaded", async function () {
             try {
                 // Fetch user profile data
                 const profileResponse = await fetch("/profile");
                 if (!profileResponse.ok) {
                     alert("You must be logged in to view this page.");
-                    window.location.href = "login.html"; // Redirect to login page
+                    window.location.href = "login.html";
                     return;
                 }
 
                 const user = await profileResponse.json();
+                currentUserId = user._id;
+                isManager = user.isManager;
+                locationId = user.locationId;
                 
-                // Update profile information
                 document.querySelector("h2").textContent = user.username;
                 document.querySelector(".description").textContent = user.description || "No description provided.";
                 
-                // Set profile picture if available
                 if (user.profilePicture) {
                     document.getElementById("profilePic").src = user.profilePicture;
                 }
                 
-                // Fetch user's reviews
-                await loadUserReviews();
+                // Update UI for manager
+                if (isManager) {
+                    document.getElementById("reviewsSectionTitle").textContent = "Location Reviews";
+                    document.getElementById("reviewLabel").textContent = "Total Reviews";
+                    
+                    // Get location name
+                    if (locationId) {
+                        try {
+                            const locationResponse = await fetch(`/getLocation/${locationId}`);
+                            if (locationResponse.ok) {
+                                const locationData = await locationResponse.json();
+                                document.getElementById("reviewsSectionTitle").textContent = 
+                                    `Reviews for ${locationData.Location_Name}`;
+                            }
+                        } catch (error) {
+                            console.error("Error fetching location:", error);
+                        }
+                    }
+                }
+                
+                // Load appropriate reviews based on user type
+                await loadReviews();
                 
             } catch (error) {
                 console.error("Error fetching profile:", error);
@@ -127,9 +149,18 @@
             }
         });
 
-        async function loadUserReviews() {
+        async function loadReviews() {
             try {
-                const reviewsResponse = await fetch(`/user-reviews/${await getUserId()}`);
+                let reviewsResponse;
+                
+                if (isManager && locationId) {
+                    // For managers, get reviews by location
+                    reviewsResponse = await fetch(`/getReviewsByLocation/${locationId}`);
+                } else {
+                    // For regular users, get their own reviews
+                    reviewsResponse = await fetch(`/user-reviews/${currentUserId}`);
+                }
+                
                 if (!reviewsResponse.ok) {
                     throw new Error("Failed to fetch reviews");
                 }
@@ -143,15 +174,18 @@
                 // Update stats
                 document.getElementById('reviewCount').textContent = reviews.length;
                 const totalRating = reviews.reduce((sum, review) => sum + (review.Star_rating || 0), 0);
-                    const avgRating = reviews.length > 0 ? (totalRating / reviews.length).toFixed(1) : "0.0";
-                    document.getElementById('avgRating').textContent = avgRating;
+                const avgRating = reviews.length > 0 ? (totalRating / reviews.length).toFixed(1) : "0.0";
+                document.getElementById('avgRating').textContent = avgRating;
                 
                 // Change the ID to match the CSS selector
                 reviewsContainer.id = "userReviews";
                 
-                
                 if (reviews.length === 0) {
-                    reviewsContainer.innerHTML = "<p>You haven't posted any reviews yet.</p>";
+                    if (isManager) {
+                        reviewsContainer.innerHTML = "<p>No reviews for this location yet.</p>";
+                    } else {
+                        reviewsContainer.innerHTML = "<p>You haven't posted any reviews yet.</p>";
+                    }
                     return;
                 }
                 
@@ -159,6 +193,7 @@
                 reviews.forEach(review => {
                     const serviceName = review.Service_ID ? review.Service_ID.Service_Name : "Unknown Service";
                     const stars = "★".repeat(review.Star_rating) + "☆".repeat(5 - review.Star_rating);
+                    const username = review.User_ID ? review.User_ID.username : "Anonymous";
                     
                     const reviewElement = document.createElement("div");
                     reviewElement.className = "review-card";
@@ -166,21 +201,51 @@
                     reviewElement.onclick = () => {
                         window.location.href = `review_page.html?locationId=${review.Location_ID}`;
                     };
-                    reviewElement.innerHTML = `
-                        <div class="review-header">
-                            <p class="service-name"><strong>${serviceName}</strong></p>
-                            <div class="stars">${stars}</div>
-                            <h5>${review.Title || "Review"}</h5>
-                        </div>
-                        <p class="review-text">${review.Review}</p>
-                        ${review.Image_path ? `<img src="${review.Image_path}" alt="Review Image" class="review-image">` : ''}
-                        <p class="review-date">${review.Date}</p>
-                        <div class="review-actions">
-                            <button class="edit-review-btn" onclick="event.stopPropagation(); editReview('${review._id}')">Edit</button>
-                            <button class="delete-review-btn" onclick="event.stopPropagation(); deleteReview('${review._id}')">Delete</button>
-                        </div>
-                    `;
-
+                    
+                    // Different layouts for manager vs regular user
+                    if (isManager) {
+                        reviewElement.innerHTML = `
+                            <div class="review-header">
+                                <p class="service-name"><strong>${serviceName}</strong></p>
+                                <div class="stars">${stars}</div>
+                                <h5>${review.Title || "Review"}</h5>
+                                <p class="review-author">by ${username}</p>
+                            </div>
+                            <p class="review-text">${review.Review}</p>
+                            ${review.Image_path ? `<img src="${review.Image_path}" alt="Review Image" class="review-image">` : ''}
+                            <p class="review-date">${review.Date}</p>
+                            <div class="review-actions">
+                                ${review.managerComment ? 
+                                `<div class="manager-comment">
+                                    <p><strong>Manager Response:</strong> ${review.managerComment}</p>
+                                    <p class="comment-date">${review.managerCommentDate}</p>
+                                    <button class="delete-comment-btn" onclick="event.stopPropagation(); deleteManagerComment('${review._id}')">Delete Response</button>
+                                </div>` : 
+                                `<button class="add-comment-btn" onclick="event.stopPropagation(); addManagerComment('${review._id}')">Add Response</button>`}
+                                <button class="delete-review-btn" onclick="event.stopPropagation(); deleteReview('${review._id}')">Delete Review</button>
+                            </div>
+                        `;
+                    } else {
+                        reviewElement.innerHTML = `
+                            <div class="review-header">
+                                <p class="service-name"><strong>${serviceName}</strong></p>
+                                <div class="stars">${stars}</div>
+                                <h5>${review.Title || "Review"}</h5>
+                            </div>
+                            <p class="review-text">${review.Review}</p>
+                            ${review.Image_path ? `<img src="${review.Image_path}" alt="Review Image" class="review-image">` : ''}
+                            <p class="review-date">${review.Date}</p>
+                            <div class="review-actions">
+                                <button class="edit-review-btn" onclick="event.stopPropagation(); editReview('${review._id}')">Edit</button>
+                                <button class="delete-review-btn" onclick="event.stopPropagation(); deleteReview('${review._id}')">Delete</button>
+                            </div>
+                            ${review.managerComment ? 
+                            `<div class="manager-comment">
+                                <p><strong>Manager Response:</strong> ${review.managerComment}</p>
+                                <p class="comment-date">${review.managerCommentDate}</p>
+                            </div>` : ''}
+                        `;
+                    }
                     
                     reviewsContainer.appendChild(reviewElement);
                 });
@@ -189,26 +254,75 @@
                 
             } catch (error) {
                 console.error("Error loading reviews:", error);
-                document.getElementById("user-reviews").innerHTML = "<p>Error loading your reviews. Please try again later.</p>";
+                document.getElementById("user-reviews").innerHTML = "<p>Error loading reviews. Please try again later.</p>";
             }
         }
         
-        // Helper function to get the current user's ID
-        async function getUserId() {
-            const response = await fetch("/profile");
-            const data = await response.json();
-            return data._id;
+        // Function to add manager comment
+        async function addManagerComment(reviewId) {
+            const comment = prompt("Enter your response to this review:");
+            if (!comment) return;
+            
+            try {
+                const response = await fetch(`/addmanagercomment/${reviewId}`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ comment })
+                });
+                
+                if (response.ok) {
+                    alert("Response added successfully!");
+                    // Reload reviews
+                    loadReviews();
+                } else {
+                    const error = await response.json();
+                    alert(error.message || "Failed to add response");
+                }
+            } catch (error) {
+                console.error("Error adding manager comment:", error);
+                alert("Error adding response");
+            }
         }
         
-        // Function to edit a review
-        async function editReview(reviewId) {
-            await loadEditModal(reviewId);
+        // Function to delete manager comment
+        async function deleteManagerComment(reviewId) {
+            if (confirm("Are you sure you want to delete your response?")) {
+                try {
+                    const response = await fetch(`/deletemanagercomment/${reviewId}`, {
+                        method: "DELETE"
+                    });
+                    
+                    if (response.ok) {
+                        alert("Response deleted successfully!");
+                        // Reload reviews
+                        loadReviews();
+                    } else {
+                        const error = await response.json();
+                        alert(error.message || "Failed to delete response");
+                    }
+                } catch (error) {
+                    console.error("Error deleting manager comment:", error);
+                    alert("Error deleting response");
+                }
+            }
         }
-
+        
+        // Function to edit a review (only for regular users)
+        async function editReview(reviewId) {
+            if (!isManager) {
+                await loadEditModal(reviewId);
+            }
+        }
         
         // Function to delete a review
         async function deleteReview(reviewId) {
-            if (confirm("Are you sure you want to delete this review?")) {
+            const confirmMessage = isManager ? 
+                "Are you sure you want to delete this customer review?" : 
+                "Are you sure you want to delete this review?";
+                
+            if (confirm(confirmMessage)) {
                 try {
                     const response = await fetch(`/deletereview/${reviewId}`, {
                         method: "DELETE"
@@ -217,7 +331,7 @@
                     if (response.ok) {
                         alert("Review deleted successfully!");
                         // Reload reviews
-                        loadUserReviews();
+                        loadReviews();
                     } else {
                         const error = await response.json();
                         alert(error.message || "Failed to delete review");
@@ -254,6 +368,8 @@
             
             // Update button visibility on scroll
             reviewsContainer.addEventListener('scroll', updateScrollButtonsVisibility);
+            // Initial check
+            updateScrollButtonsVisibility();
         }
         
         // Function to update scroll buttons visibility

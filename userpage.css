@@ -150,8 +150,15 @@ button {
 }
 .review-actions {
     display: flex;
+    flex-direction: column;
     gap: 10px;
     margin-top: 15px;
+}
+
+.review-actions button{
+    width: 175px;
+    height: 39px;
+    font-size: 14px;
 }
 .edit-review-btn {
     background-color: #c9a1a1;
