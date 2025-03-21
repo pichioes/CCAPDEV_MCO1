@@ -20,6 +20,9 @@ const PORT = 3000;
 // Middleware
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public'))); // for CSS and frontend files
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb", extended: true }));
+
 
 app.use(session({
   secret: 'very super secret',
@@ -154,13 +157,14 @@ const storage = multer.diskStorage({
 const upload = multer({ 
     storage: storage,
     limits: {
-        fileSize: 5 * 1024 * 1024 // 5MB limit
+        fileSize: 50 * 1024 * 1024  // 5MB limit per file
     },
     fileFilter: (req, file, cb) => {
-        if (file.mimetype.startsWith('image/')) {
-            cb(null, true);
+        // Allow both images and videos
+        if (file.mimetype.startsWith('image/') || file.mimetype.startsWith('video/')) {
+            cb(null, true);  // Accept the file
         } else {
-            cb(new Error('Not an image! Please upload only images.'), false);
+            cb(new Error('Invalid file type! Only images and videos are allowed.'), false);
         }
     }
 });
@@ -478,7 +482,7 @@ app.get('/getReviewsByLocation/:locationId', async (req, res) => {
 });
 
 // Updated to handle file upload and title
-app.post("/addreview", upload.single('reviewMedia'), async (req, res) => {
+app.post("/addreview", upload.single('reviewImage'), async (req, res) => {
     console.log("POST /addreview route triggered with body:", req.body);
     if (!req.session.userId) {
         return res.status(401).json({ message: "You must be logged in to post a review." });

@@ -76,20 +76,37 @@
 
         // Function to create a top review card
         function createTopReviewCard(review) {
-            const username = review.User_ID && review.User_ID.username ? review.User_ID.username : 'Anonymous';
-            const title = review.Title || 'Great Service!';
-            const imageHtml = review.Image_path ? 
-                `<div class="review-image"><img src="${review.Image_path}" alt="Review Image" style="max-width: 100%; max-height: 200px; margin-top: 10px;"></div>` : '';
+    const username = review.User_ID && review.User_ID.username ? review.User_ID.username : 'Anonymous';
+    const title = review.Title || 'Great Service!';
+
+    // Display both image and video if available
+    const mediaHtml = `
+        ${review.Image_path ? `
+            <div class="review-image">
+                <img src="${review.Image_path}" alt="Review Image" style="max-width: 100%; max-height: 200px; margin-top: 10px;">
+            </div>
+        ` : ''}
+
+        ${review.Video_path ? `
+            <div class="review-video">
+                <video src="${review.Video_path}" controls style="max-width: 100%; max-height: 300px; margin-top: 10px;"></video>
+            </div>
+        ` : ''}
+    `;
+
+    return `
+        <div class="review-card">
+            <h2>${title}</h2>
+            <p>"${review.Review}"</p>
             
-            return `
-                <div class="review-card">
-                    <h2>${title}</h2>
-                    <p>"${review.Review}"</p>
-                    ${imageHtml}
-                    <p>- ${username}</p>
-                </div>
-            `;
-        }
+            <!-- Display media -->
+            ${mediaHtml}
+            
+            <p>- ${username}</p>
+        </div>
+    `;
+}
+
 
     async function addManagerComment(reviewId) {
             const textarea = document.getElementById(`manager-comment-${reviewId}`);
@@ -145,99 +162,110 @@
 
         // Function to create a review card
         function createReviewCard(review) {
-            const username = review.User_ID && review.User_ID.username ? review.User_ID.username : 'Anonymous';
-            const userId = review.User_ID && review.User_ID._id ? review.User_ID._id : '';
-            const isUserReview = currentUser && userId && userId === currentUser._id;
-            const serviceName = review.Service_ID && review.Service_ID.Service_Name ? review.Service_ID.Service_Name : 'General Service';
-            const stars = '⭐'.repeat(review.Star_rating || 0);
-            const title = review.Title || 'Review';
+    const username = review.User_ID && review.User_ID.username ? review.User_ID.username : 'Anonymous';
+    const userId = review.User_ID && review.User_ID._id ? review.User_ID._id : '';
+    const isUserReview = currentUser && userId && userId === currentUser._id;
+    const serviceName = review.Service_ID && review.Service_ID.Service_Name ? review.Service_ID.Service_Name : 'General Service';
+    const stars = '⭐'.repeat(review.Star_rating || 0);
+    const title = review.Title || 'Review';
 
-            //const isManagerOfLocation = currentUser && currentUser.isManager && 
-            //    currentUser.locationId && review.Location_ID && 
-            //    currentUser.locationId === review.Location_ID._id;
-            const uploadTime = review.uploadTimestamp 
-                ? new Date(review.uploadTimestamp).toLocaleString() 
-                : (review.Date || '');
+    const uploadTime = review.uploadTimestamp 
+        ? new Date(review.uploadTimestamp).toLocaleString() 
+        : (review.Date || '');
 
-            const editedTime = review.edited && review.lastEdited
-                ? `<p style="font-size: x-small; color: grey;">(Edited: ${new Date(review.lastEdited).toLocaleString()})</p>`
-                : '';
+    const editedTime = review.edited && review.lastEdited
+        ? `<p style="font-size: x-small; color: grey;">(Edited: ${new Date(review.lastEdited).toLocaleString()})</p>`
+        : '';
 
-            const editedLabel = review.edited
-                ? '<span style="font-size:small; color:grey;">✏️ Edited</span>'
-                : '';
+    const editedLabel = review.edited
+        ? '<span style="font-size:small; color:grey;">✏️ Edited</span>'
+        : '';
 
-            const imageHtml = review.Image_path
-                ? `<div class="review-image"><img src="${review.Image_path}" alt="Review Image" style="max-width: 100%; max-height: 200px; margin-top: 10px;"></div>`
-                : '';
-
-            const managerCommentHtml = review.managerComment ? `
-                <div class="manager-comment">
-                    <h4>Manager Response (${review.managerCommentId || 'MC-XXXXX'}):</h4>
-                    <p>${review.managerComment}</p>
-                    <p class="comment-date">Responded on: ${review.managerCommentDate || 'N/A'}</p>
-                    ${currentUser && currentUser.isManager ? `
-                        <button class="delete-comment-btn" onclick="deleteManagerComment('${review._id}')">Delete Comment</button>
-                    ` : ''}
-                </div>
-            ` : '';
-
-            const managerCommentForm = currentUser && currentUser.isManager && !review.managerComment ? `
-                <div class="manager-comment-form">
-                    <h4>Add Manager Response:</h4>
-                    <textarea id="manager-comment-${review._id}" rows="3" placeholder="Enter your response..."></textarea>
-                    <button onclick="addManagerComment('${review._id}')">Submit Response</button>
-                </div>
-            ` : '';
-
-            return `
-        <div class="other-review-card" data-review-id="${review._id || ''}">
-            <div class="review-header">
-                <img src="${review.User_ID && review.User_ID.profilePicture ? review.User_ID.profilePicture : 'default-profile.png'}" alt="Profile Picture" class="profile-pic">
-                <div class="review-info">
-                    <h3 class="user-profile-link" data-user-id="${userId}" style="cursor: pointer; color: inherit; text-decoration: none;">
-                    ${username} ${editedLabel}
-                    </h3>
-                    <p style="margin-top: 2px; font-size: x-small; color: grey;">Uploaded: ${uploadTime}</p>
-                    ${editedTime}
-                    <div class="review-stars">${stars}</div>
-                </div>
-
-                <div class="review-actions">
-                    <button class="like-btn" onclick="likeReview('${review._id || ''}')">👍 <span class="like-count">${review.likes || 0}</span></button>
-                    <button class="dislike-btn" onclick="dislikeReview('${review._id || ''}')">👎 <span class="dislike-count">${review.dislikes || 0}</span></button>
-                    <button onclick="showOptions('${review._id || ''}')">⋮</button>
-                </div>
+    // Display both image and video (if available)
+    const mediaHtml = `
+        ${review.Image_path ? `
+            <div class="review-image">
+                <img src="${review.Image_path}" alt="Review Image" style="max-width: 100%; max-height: 300px; margin-top: 10px;">
             </div>
+        ` : ''}
 
-            ${isUserReview ? `
-                <div class="review-buttons">
-                    <button style="padding: 5px; width: 150px; font-weight: bolder; font-size:small;" onclick="loadEditModal('${review._id}')">Edit your Review!</button>
-                    <button style="padding: 5px; width: 150px; font-weight: bolder; font-size:small;" onclick="deleteReview('${review._id}')">Delete your review</button>
-                    <div id="editReviewModalContainer"></div>
-                </div>
-            ` : ''}
+        ${review.Video_path ? `
+            <div class="review-video">
+                <video src="${review.Video_path}" controls style="max-width: 100%; max-height: 300px; margin-top: 10px;"></video>
+            </div>
+        ` : ''}
+    `;
+
+    const managerCommentHtml = review.managerComment ? `
+        <div class="manager-comment">
+            <h4>Manager Response (${review.managerCommentId || 'MC-XXXXX'}):</h4>
+            <p>${review.managerComment}</p>
+            <p class="comment-date">Responded on: ${review.managerCommentDate || 'N/A'}</p>
             ${currentUser && currentUser.isManager ? `
-                 <div class="review-buttons">
-                    <button style="padding: 5px; width: 150px; font-weight: bolder; font-size:small;" 
-                    onclick="deleteReview('${review._id}')">Delete Review</button>
-                </div>
+                <button class="delete-comment-btn" onclick="deleteManagerComment('${review._id}')">Delete Comment</button>
             ` : ''}
-
-
-            <p style="margin: 0px;"><strong>${title}</strong></p>
-            <p style="margin-top: 2px; color: grey;">${serviceName}</p>
-            <div class="review-text-container">
-                <p class="review-text" id="review-text-${review._id}">${review.Review}</p>
-                <a class="see-more-link" id="see-more-${review._id}" onclick="toggleReview('${review._id}')">See more</a>
-            </div>
-            ${imageHtml}
-
-            ${managerCommentHtml}
-            ${managerCommentForm}
         </div>
+    ` : '';
+
+    const managerCommentForm = currentUser && currentUser.isManager && !review.managerComment ? `
+        <div class="manager-comment-form">
+            <h4>Add Manager Response:</h4>
+            <textarea id="manager-comment-${review._id}" rows="3" placeholder="Enter your response..."></textarea>
+            <button onclick="addManagerComment('${review._id}')">Submit Response</button>
+        </div>
+    ` : '';
+
+    return `
+    <div class="other-review-card" data-review-id="${review._id || ''}">
+        <div class="review-header">
+            <img src="${review.User_ID && review.User_ID.profilePicture ? review.User_ID.profilePicture : 'default-profile.png'}" alt="Profile Picture" class="profile-pic">
+            <div class="review-info">
+                <h3 class="user-profile-link" data-user-id="${userId}" style="cursor: pointer; color: inherit; text-decoration: none;">
+                ${username} ${editedLabel}
+                </h3>
+                <p style="margin-top: 2px; font-size: x-small; color: grey;">Uploaded: ${uploadTime}</p>
+                ${editedTime}
+                <div class="review-stars">${stars}</div>
+            </div>
+
+            <div class="review-actions">
+                <button class="like-btn" onclick="likeReview('${review._id || ''}')">👍 <span class="like-count">${review.likes || 0}</span></button>
+                <button class="dislike-btn" onclick="dislikeReview('${review._id || ''}')">👎 <span class="dislike-count">${review.dislikes || 0}</span></button>
+                <button onclick="showOptions('${review._id || ''}')">⋮</button>
+            </div>
+        </div>
+
+        ${isUserReview ? `
+            <div class="review-buttons">
+                <button style="padding: 5px; width: 150px; font-weight: bolder; font-size:small;" onclick="loadEditModal('${review._id}')">Edit your Review!</button>
+                <button style="padding: 5px; width: 150px; font-weight: bolder; font-size:small;" onclick="deleteReview('${review._id}')">Delete your review</button>
+                <div id="editReviewModalContainer"></div>
+            </div>
+        ` : ''}
+
+        ${currentUser && currentUser.isManager ? `
+            <div class="review-buttons">
+                <button style="padding: 5px; width: 150px; font-weight: bolder; font-size:small;" 
+                onclick="deleteReview('${review._id}')">Delete Review</button>
+            </div>
+        ` : ''}
+
+        <p style="margin: 0px;"><strong>${title}</strong></p>
+        <p style="margin-top: 2px; color: grey;">${serviceName}</p>
+        <div class="review-text-container">
+            <p class="review-text" id="review-text-${review._id}">${review.Review}</p>
+            <a class="see-more-link" id="see-more-${review._id}" onclick="toggleReview('${review._id}')">See more</a>
+        </div>
+
+        <!-- Display both image and video -->
+        ${mediaHtml}
+
+        ${managerCommentHtml}
+        ${managerCommentForm}
+    </div>
     `;
 }
+
 
 function toggleReview(reviewId) {
     const textElement = document.getElementById(`review-text-${reviewId}`);
