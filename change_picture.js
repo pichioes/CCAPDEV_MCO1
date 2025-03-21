@@ -2,7 +2,7 @@ function loadModal() {
     fetch('change_picture.html')
         .then(response => response.text())
         .then(html => {
-            document.getElementById('reviewModalContainer').innerHTML = html;
+            document.getElementById('editReviewModalContainer').innerHTML = html;
 
             setTimeout(() => {
                 document.getElementById('reviewModal').style.display = 'block';

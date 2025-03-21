@@ -164,15 +164,18 @@ button {
 }
 
 .manager-comment {
-    background-color: #f0f7ff;
-    border-left: 4px solid #3498db;
+    background-color: #fdeaf0;
+    border-left: 4px solid #D19DA7;
     padding: 10px 15px;
     margin-top: 15px;
     border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    row-gap: 5px;
 }
 
 .manager-comment h4 {
-    color: #3498db;
+    color: #D19DA7;
     margin-top: 0;
     margin-bottom: 5px;
 }
@@ -222,7 +225,8 @@ button {
     background-color: #e74c3c;
     font-size: 0.8em;
     padding: 5px 10px;
-    float: right;
+    width: 200px;
+    margin-left: auto;
 }
 
 .manager-comment-form button:hover, .delete-comment-btn:hover {
