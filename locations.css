@@ -14,12 +14,12 @@ h1 {
 }
 
 a {
-    text-decoration: none; /* Removes underline */
-    color: inherit; /* Keeps link color the same as surrounding text */
+    text-decoration: none; 
+    color: inherit; 
 }
 
 a:focus, a:active {
-    outline: none; /* Prevents focus outline */
+    outline: none;
 }
 
 .search-bar-container {
@@ -32,33 +32,12 @@ a:focus, a:active {
 .store-locator-container {
     display: grid;
     padding: 50px;
-    grid-template-columns: repeat(3, 1fr); /* Fixed 3 columns by default */
+    grid-template-columns: repeat(3, 1fr); 
     gap: 20px;
     row-gap: 50px;
     justify-content: center;
     width: 80%;
     margin: auto;
-}
-
-/* Mobile - single column */
-@media (max-width: 768px) {
-    .store-locator-container {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* Tablet - two columns */
-@media (min-width: 769px) and (max-width: 1024px) {
-    .store-locator-container {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-/* Large screens - increase columns when zoomed out */
-@media (min-width: 1600px) {
-    .store-locator-container {
-        grid-template-columns: repeat(4, 1fr);
-    }
 }
 
 @media (min-width: 2000px) {
@@ -75,16 +54,16 @@ a:focus, a:active {
     display: flex;
     flex-direction: column;
     align-items: center;
-    text-decoration: none; /* Removes link underline */
-    color: inherit; /* Keeps the text color */
+    text-decoration: none; 
+    color: inherit;
     transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out;
-    height: 100%; /* Ensures uniform card height */
+    height: 100%;
 }
 
 .store-card:hover {
-    background-color: #b88c8c; /* Slight color change on hover */
+    background-color: #b88c8c; 
     cursor: pointer;
-    transform: scale(1.05); /* Increases size on hover */
+    transform: scale(1.05); 
 }
 
 .store-card img {
@@ -96,7 +75,7 @@ a:focus, a:active {
     padding: 10px;
     text-align: left;
     width: 100%;
-    flex-grow: 1; /* Allows content to fill available space */
+    flex-grow: 1; 
     display: flex;
     flex-direction: column;
 }
@@ -108,7 +87,7 @@ a:focus, a:active {
 
 .rating {
     font-weight: bold;
-    margin-top: auto; /* Pushes rating to the bottom */
+    margin-top: auto;
 }
 
 button {

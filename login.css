@@ -25,26 +25,27 @@ h2 {
     color: #fff;
     font-weight: bold;
 }
+
 .input-group {
     margin: 15px 0;
     font-family: Montserrat, sans-serif;
     display: flex;
-    align-items: left; /* Aligns checkbox and text */
-    gap: 8px; /* Adds spacing between the checkbox and label */
+    align-items: left; 
+    gap: 8px; 
     flex-direction: column;
 }
 
 .input-group label {
-    margin-bottom: 0px; /* Reduces space between label and input */
+    margin-bottom: 0px; 
 }
 
 .input-group input {
-    margin-top: 0; /* Removes extra spacing above the input */
+    margin-top: 0; 
 }
 
 .input-group input[type="checkbox"] {
-    width: auto; /* Ensures the checkbox does not stretch */
-    margin: 0; /* Removes unwanted spacing */
+    width: auto; 
+    margin: 0; 
 }
 label {
     display: block;

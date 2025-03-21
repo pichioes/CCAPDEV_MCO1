@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="login.css">
 </head>
 <body>
-    <!-- Cookie Consent Banner -->
+    <!-- Cookie consent banner :) -->
     <div id="cookie-banner" style="display:none; position: fixed; bottom: 20px; left: 20px; right: 20px; background: #fff0f0; color: #5a4b4b; padding: 15px 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.15); font-family: 'Montserrat', sans-serif; z-index: 1000; max-width: 400px; margin: auto;">
         This website uses cookies to enhance your experience.
         <button onclick="acceptCookies()" style="margin-left: 10px; background-color: #b78c8c; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer;">
@@ -58,7 +58,7 @@
 
     <script>
         document.getElementById("loginForm").addEventListener("submit", async function(event) {
-            event.preventDefault(); // Prevent default form submission
+            event.preventDefault(); 
 
             const username = document.getElementById("username").value;
             const password = document.getElementById("password").value;
@@ -74,7 +74,7 @@
             
             if (response.ok) {
                 alert(data.message);
-                window.location.href = "landingpage.html"; // Redirect on success
+                window.location.href = "landingpage.html";
             } else {
                 alert("Login failed: " + data.message);
             }

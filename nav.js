@@ -1,6 +1,5 @@
-// script.js
+// nav.js
 document.addEventListener('DOMContentLoaded', function() {
-    // Target element where navbar will be inserted
     const navbarContainer = document.getElementById('navbar');
     
     if (navbarContainer) {
@@ -16,7 +15,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Insert the navbar HTML
                 navbarContainer.innerHTML = html;
                 
-                // Add profile redirect functionality
                 const profileLink = document.querySelector('.profile-menu a');
                 if (profileLink) {
                     profileLink.addEventListener('click', async function(event) {
@@ -33,14 +31,11 @@ document.addEventListener('DOMContentLoaded', function() {
                                 // User is logged in, proceed to profile page
                                 window.location.href = 'userpage.html';
                             } else {
-                                // Handle other errors
                                 console.error('Error checking login status:', response.statusText);
-                                // Default to userpage in case of unexpected errors
                                 window.location.href = 'userpage.html';
                             }
                         } catch (error) {
                             console.error('Error checking login status:', error);
-                            // Default to userpage in case of network errors
                             window.location.href = 'userpage.html';
                         }
                     });

@@ -92,7 +92,7 @@
                 const totalRating = reviews.reduce((sum, review) => sum + (review.Star_rating || 0), 0);
                 const avgRating = (totalRating / reviews.length).toFixed(1);
                 
-                // Update the rating text (preserving the description)
+                // Update the rating 
                 const currentText = ratingElement.textContent;
                 const description = currentText.split('|')[1] || ' Waxing services';
                 ratingElement.textContent = `⭐ ${avgRating} |${description}`;
