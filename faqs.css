@@ -1,7 +1,6 @@
 /* FAQS CSS */
 body {
     background-color: #f3e0dc;
-    /* #c9a1a1 */
     font-family: Montserrat, sans-serif;
     row-gap: 50px;
     position: relative;
@@ -23,7 +22,6 @@ h1 {
 }
 .faq-item {
     background-color: #c9a1a1;
-    /* #f4e9e4 */
     margin-bottom: 10px;
     border-radius: 10px;
     overflow: hidden;

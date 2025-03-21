@@ -11,7 +11,6 @@ async function loadED() {
                 document.querySelector(".close-button").addEventListener("click", closeModal);
                 document.getElementById("modalOverlay").addEventListener("click", closeModal);
 
-                // Attach event listener AFTER modal is loaded
                 document.getElementById("submitReviewButton").addEventListener("click", changeDescription);
             }, 0);
         })
@@ -25,7 +24,7 @@ async function closeED() {
 }
 
 async function changeDescription(event) {
-    event.preventDefault(); // Prevent default action
+    event.preventDefault();
 
     const description = document.getElementById("reviewText").value;
     if (!description) {
@@ -43,8 +42,8 @@ async function changeDescription(event) {
         const data = await response.json();
         if (response.ok) {
             alert(data.message);
-            closeModal(); // Close the modal after success
-            window.location.reload(); // Redirect to user page
+            closeModal(); 
+            window.location.reload(); 
         } else {
             alert("Update failed: " + (data.message || "Unknown error"));
         }

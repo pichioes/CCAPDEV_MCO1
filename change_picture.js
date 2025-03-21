@@ -32,7 +32,6 @@ async function submitProfilePicture(event) {
     }
 
     try {
-        // Option 1: Use FormData to send the file directly
         const formData = new FormData();
         formData.append('profilePicture', file);
 
@@ -41,23 +40,9 @@ async function submitProfilePicture(event) {
             body: formData
         });
 
-        // Option 2: Send as base64 if you prefer that method
-        // let reader = new FileReader();
-        // reader.onload = async function(e) {
-        //     const imageData = e.target.result;
-        //     const response = await fetch('/update-profile-picture-base64', {
-        //         method: 'POST',
-        //         headers: {
-        //             'Content-Type': 'application/json'
-        //         },
-        //         body: JSON.stringify({ imageData })
-        //     });
-        // };
-        // reader.readAsDataURL(file);
-
         if (response.ok) {
             const data = await response.json();
-            // Update the profile picture on the page
+            // Update prof pic
             document.querySelector(".profile-img").src = data.profilePicture;
             alert("Profile picture updated successfully!");
             closeModal();
@@ -71,15 +56,12 @@ async function submitProfilePicture(event) {
     }
 }
 
-// Now let's modify the profile loading script to also load the profile picture
-// Add this to your existing DOMContentLoaded event listener in the HTML file:
-
 document.addEventListener("DOMContentLoaded", async function () {
     try {
         const response = await fetch("/profile");
         if (!response.ok) {
             alert("You must be logged in to view this page.");
-            window.location.href = "login.html"; // Redirect to login page
+            window.location.href = "login.html";
             return;
         }
 

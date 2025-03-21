@@ -1,6 +1,5 @@
 // footer.js
 document.addEventListener('DOMContentLoaded', function() {
-    // Target element where footer will be inserted
     const footerContainer = document.getElementById('footer');
 
     if (footerContainer) {
@@ -13,7 +12,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 return response.text();
             })
             .then(html => {
-                // Insert the footer HTML
                 footerContainer.innerHTML = html;
             })
             .catch(error => {

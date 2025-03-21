@@ -1,41 +1,34 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Check if user is logged in
     checkUserStatus();
     
-    // Function to check user login status and modify UI accordingly
+    // Function: check user login status
     async function checkUserStatus() {
         try {
             const response = await fetch('/profile');
             
             if (response.status === 401) {
-                // User is not logged in (guest)
                 handleGuestUser();
             } else if (response.ok) {
-                // User is logged in, no action needed
-                console.log('User is logged in, showing all content');
+                console.log('User is logged in');
             } else {
-                // Handle unexpected errors by assuming guest
                 console.error('Error checking login status:', response.statusText);
                 handleGuestUser();
             }
         } catch (error) {
-            // Handle network errors by assuming guest
             console.error('Error checking login status:', error);
             handleGuestUser();
         }
     }
     
-    // Modify UI for guest users
-    function handleGuestUser() {
-        console.log('Guest user detected, limiting access');
-        
-        // Hide "Other Reviews" section
+    // Function: UI for guest users
+    function handleGuestUser() {        
+        // hide other reviews
         const otherReviewsSection = document.querySelector('.other-reviews');
         if (otherReviewsSection) {
             otherReviewsSection.style.display = 'none';
         }
         
-        // Add login prompt after top reviews section
+        // login prompt banner
         const topReviewsContainer = document.querySelector('.top-reviews');
         if (topReviewsContainer) {
             const loginPrompt = document.createElement('div');
@@ -49,17 +42,6 @@ document.addEventListener('DOMContentLoaded', function() {
             `;
             topReviewsContainer.after(loginPrompt);
         }
-        
-        // Modify "Post a Review" button to redirect to login page
-        const reviewButtons = document.querySelectorAll('.review-buttons button');
-        reviewButtons.forEach(button => {
-            if (button.textContent.includes('Post a Review')) {
-                button.removeAttribute('onclick');
-                button.addEventListener('click', function() {
-                    window.location.href = 'login.html';
-                });
-            }
-        });
     }
     
     // Add event listener to profile links in the navbar
@@ -89,5 +71,5 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         }
-    }, 300); // Wait for navbar to load
+    }, 300);
 });
