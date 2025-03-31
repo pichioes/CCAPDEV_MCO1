@@ -107,14 +107,14 @@ app.get('/dashboard', (req, res) => {
     if (req.session.user) {
       res.send(`Welcome ${req.session.user}! <a href="/logout">Logout</a>`);
     } else {
-      res.redirect('/login.html');
+      res.redirect('/index.html');
     }
 });
 
 // logout
 app.get('/logout', (req, res) => {
     req.session.destroy(() => {
-      res.redirect('/login.html');
+      res.redirect('/index.html');
     });
 });
   
@@ -249,7 +249,7 @@ app.get('/', (req, res) => {
     if (req.session.userId) {
         return res.redirect('/landingpage.html');
     } else {
-        return res.sendFile(path.join(__dirname, 'login.html'));
+        return res.sendFile(path.join(__dirname, 'index.html'));
     }
 });
 

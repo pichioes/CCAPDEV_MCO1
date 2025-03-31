@@ -105,7 +105,7 @@
                 const profileResponse = await fetch("/profile");
                 if (!profileResponse.ok) {
                     alert("You must be logged in to view this page.");
-                    window.location.href = "login.html";
+                    window.location.href = "index.html";
                     return;
                 }
 
@@ -402,7 +402,7 @@
 
                 if (response.ok) {
                     alert("Logged out successfully!");
-                    window.location.href = "login.html";
+                    window.location.href = "index.html";
                 } else {
                     alert("Logout failed.");
                 }

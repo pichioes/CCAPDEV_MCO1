@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             
                             if (response.status === 401) {
                                 // User is not logged in, redirect to login page
-                                window.location.href = 'login.html';
+                                window.location.href = 'index.html';
                             } else if (response.ok) {
                                 // User is logged in, proceed to profile page
                                 window.location.href = 'userpage.html';

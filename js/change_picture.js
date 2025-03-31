@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         const response = await fetch("/profile");
         if (!response.ok) {
             alert("You must be logged in to view this page.");
-            window.location.href = "login.html";
+            window.location.href = "index.html";
             return;
         }
 
