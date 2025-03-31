@@ -73,14 +73,11 @@ app.post('/login', async (req, res) => {
         let isMatch = false;
         
         if (isManager) {
-            // First try bcrypt comparison (for already hashed passwords)
             if (user.Password.startsWith('$2b$')) {
                 isMatch = await bcrypt.compare(password, user.Password);
             } else {
-                // Legacy plaintext comparison
                 isMatch = user.Password === password;
                 
-                // If matched, hash and update the password for next time
                 if (isMatch) {
                     const hashedPassword = await bcrypt.hash(password, 10);
                     await Manager.updateOne(
