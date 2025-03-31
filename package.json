@@ -4,8 +4,8 @@
   "description": "CCAPDEV MCO",
   "main": "app.mjs",
   "scripts": {
-    "start": "node app.mjs",
-    "devStart": "nodemon app.mjs"
+    "start": "nodemon app.mjs"
+    
   },
   "repository": {
     "type": "git",
