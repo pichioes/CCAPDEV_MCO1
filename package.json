@@ -4,7 +4,7 @@
   "description": "CCAPDEV MCO",
   "main": "app.mjs",
   "scripts": {
-    "start": "node app.js",
+    "start": "node app.mjs",
     "devStart": "nodemon app.mjs"
   },
   "repository": {
