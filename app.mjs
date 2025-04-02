@@ -24,17 +24,15 @@ app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
 
-// Session Handling for 3 weeks
 app.use(session({
-    secret: process.env.SESSION_SECRET || 'very-super-secret',
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-      httpOnly: true,
-      maxAge: 1000 * 60 * 60 * 24 * 21, // 21 days (3 weeks)
-      secure: process.env.NODE_ENV === 'production' // Use secure cookies in production
-    }
-  }));
+  secret: 'very super secret',
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    httpOnly: true,
+    maxAge: null 
+  }
+}));
 
 
 // MongoDB connection
@@ -43,6 +41,12 @@ dotenv.config();
 app.use(express.json());
 app.use(cookieParser());
 
+app.use(session({
+    secret: "your-secret-key",
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false }
+}));
 
 
 app.use(express.static(__dirname));
@@ -94,7 +98,11 @@ app.post('/login', async (req, res) => {
         req.session.userId = user;
         req.session.isManager = isManager;
 
-        req.session.cookie.maxAge = 1000 * 60 * 60 * 24 * 21; // 21 days
+        if (remember) {
+            req.session.cookie.maxAge = 1000 * 60 * 60 * 24 * 21; // 21 days
+        } else {
+            req.session.cookie.expires = false;
+        }
 
         res.json({ 
             message: "Login successful!",
@@ -251,7 +259,7 @@ const locationSchema = new mongoose.Schema({
 const Location = mongoose.model("locations", locationSchema);
 
 app.get('/', (req, res) => {
-    if (req.session && req.session.userId) {
+    if (req.session.userId) {
         return res.redirect('/landingpage.html');
     } else {
         return res.sendFile(path.join(__dirname, 'index.html'));
