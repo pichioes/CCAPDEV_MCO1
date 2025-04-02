@@ -24,15 +24,7 @@ app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
 
-app.use(session({
-  secret: 'very super secret',
-  resave: false,
-  saveUninitialized: true,
-  cookie: {
-    httpOnly: true,
-    maxAge: null 
-  }
-}));
+
 
 
 // MongoDB connection
@@ -45,7 +37,7 @@ app.use(session({
     secret: "your-secret-key",
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: false }
+    cookie: { secure: false, httpOnly: true }
 }));
 
 
@@ -117,10 +109,15 @@ app.post('/login', async (req, res) => {
 
 
 app.get('/dashboard', (req, res) => {
-    if (req.session.user) {
-      res.send(`Welcome ${req.session.user}! <a href="/logout">Logout</a>`);
+    if (req.session && req.session.userId) {
+        // If you want to use the username, access it properly
+        const username = req.session.isManager ? 
+            req.session.userId.Username : 
+            req.session.userId.username;
+            
+        res.send(`Welcome ${username}! <a href="/logout">Logout</a>`);
     } else {
-      res.redirect('/index.html');
+        res.redirect('/index.html');
     }
 });
 
@@ -259,7 +256,7 @@ const locationSchema = new mongoose.Schema({
 const Location = mongoose.model("locations", locationSchema);
 
 app.get('/', (req, res) => {
-    if (req.session.userId) {
+    if (req.session && req.session.userId) {
         return res.redirect('/landingpage.html');
     } else {
         return res.sendFile(path.join(__dirname, 'index.html'));
