@@ -4,32 +4,167 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About - CCAPDEV MCO1</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+    <style>
+        /* FAQS CSS */
+        body {
+            background-color: #f3e0dc;
+            font-family: Montserrat, sans-serif;
+            row-gap: 50px;
+            position: relative;
+            margin: 0px;
+            padding-top: 80px;
+        }
+        h1 {
+            color: #5a3627;
+            font-size: 3em;
+            margin: 50px;
+            justify-content: center;
+            display: flex;
+        }
+        .faq-container {
+            flex-grow: 1;
+            width: 60%;
+            margin: auto;
+            margin-bottom: 50px;
+        }
+        .faq-item {
+            background-color: #c9a1a1;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .faq-question span {
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .faq-item.active .faq-question span {
+            transform: rotate(180deg);
+        }
+
+        .faq-question {
+            padding: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+        }
+        .faq-answer {
+            padding: 15px;
+            display: none;
+            color: white;
+        }
+        .faq-item.active .faq-answer {
+            display: block;
+        }
+
+        .footer-placeholder{
+            width: 1000px;
+            max-width: none;
+            margin-top: auto;
+        }
+
+        /* Additional styles for existing content */
+        h2 {
+            color: #5a3627;
+            margin: 30px 50px 15px;
+        }
+        
+        p {
+            margin: 15px 50px;
+            line-height: 1.5;
+        }
+        
+        ul {
+            margin: 15px 70px;
+            line-height: 1.6;
+        }
+        
+        a {
+            color: #5a3627;
+            text-decoration: none;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+        /* END OF FAQS */
+    </style>
 </head>
 <body>
     <h1>About This Web Application</h1>
-    <p>This web application, named <strong>CCAPDEV MCO1</strong>, was developed using various NPM packages and third-party libraries to ensure a seamless and efficient user experience. Below is a list of all the packages used:</p>
     
-    <h2>Dependencies</h2>
-    <ul>
-        <li><strong>bcrypt</strong>: Password hashing library</li>
-        <li><strong>cookie</strong>: Cookie management utility</li>
-        <li><strong>cookie-parser</strong>: Middleware for parsing cookies</li>
-        <li><strong>dotenv</strong>: Environment variable management</li>
-        <li><strong>express</strong>: Web framework for Node.js</li>
-        <li><strong>express-session</strong>: Session management middleware</li>
-        <li><strong>mongoose</strong>: MongoDB object modeling tool</li>
-        <li><strong>multer</strong>: Middleware for handling file uploads</li>
-        <li><strong>parser</strong>: General-purpose data parser</li>
-    </ul>
+    <div class="faq-container">
+        <div class="faq-item">
+            <div class="faq-question">
+                Project Description
+                <span>▼</span>
+            </div>
+            <div class="faq-answer">
+                <p>This web application, named <strong>CCAPDEV MCO1</strong>, was developed using various NPM packages and third-party libraries to ensure a seamless and efficient user experience.</p>
+            </div>
+        </div>
+        
+        <div class="faq-item">
+            <div class="faq-question">
+                Dependencies
+                <span>▼</span>
+            </div>
+            <div class="faq-answer">
+                <ul>
+                    <li><strong>bcrypt</strong>: Password hashing library</li>
+                    <li><strong>cookie</strong>: Cookie management utility</li>
+                    <li><strong>cookie-parser</strong>: Middleware for parsing cookies</li>
+                    <li><strong>dotenv</strong>: Environment variable management</li>
+                    <li><strong>express</strong>: Web framework for Node.js</li>
+                    <li><strong>express-session</strong>: Session management middleware</li>
+                    <li><strong>mongoose</strong>: MongoDB object modeling tool</li>
+                    <li><strong>multer</strong>: Middleware for handling file uploads</li>
+                    <li><strong>parser</strong>: General-purpose data parser</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="faq-item">
+            <div class="faq-question">
+                DevDependencies
+                <span>▼</span>
+            </div>
+            <div class="faq-answer">
+                <ul>
+                    <li><strong>nodemon</strong>: Development tool for automatically restarting the server</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="faq-item">
+            <div class="faq-question">
+                Project Information
+                <span>▼</span>
+            </div>
+            <div class="faq-answer">
+                <p>Version: 1.0.0</p>
+                <p>Description: CCAPDEV MCO</p>
+                <p>Source Code: <a href="https://github.com/pichioes/CCAPDEV_MCO1" target="_blank">GitHub Repository</a></p>
+            </div>
+        </div>
+    </div>
     
-    <h2>DevDependencies</h2>
-    <ul>
-        <li><strong>nodemon</strong>: Development tool for automatically restarting the server</li>
-    </ul>
-    
-    <h2>Project Information</h2>
-    <p>Version: 1.0.0</p>
-    <p>Description: CCAPDEV MCO</p>
-    <p>Source Code: <a href="https://github.com/pichioes/CCAPDEV_MCO1" target="_blank">GitHub Repository</a></p>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const faqItems = document.querySelectorAll('.faq-item');
+            
+            faqItems.forEach(item => {
+                const question = item.querySelector('.faq-question');
+                
+                question.addEventListener('click', () => {
+                    item.classList.toggle('active');
+                });
+            });
+        });
+    </script>
 </body>
 </html>
