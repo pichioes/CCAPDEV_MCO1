@@ -8,10 +8,17 @@ Harder (kebin111)
 
 Hello po sir!
 
-To gain access to the database, we would have to add you to the MongoDB project. Please contact Mansueto (in Canvas or Gmail: maria_alyssa_mansueto@dlsu.edu.ph) for access. 
-Please also input "mongodb+srv://kevin:YTZFmqdTmUGV8noO@mcocluster.cjayw.mongodb.net/appdb" as the connection details in MongoDB compass.
+This project was made in fulfillment for CCAPDEV. It is a review website for a waxing company named LayBare.
 
-After gaining access to the DB, please run cmd from the directory of the MCO folder then input "npm run devStart".
-After this, you may enter "localhost:3000" in your browser to access the website.
+In order to gain access to the website, please go to this link: https://ccapdev-mco1-group4.onrender.com
 
-github link: https://github.com/pichioes/CCAPDEV_MCO1
+Upon entering the website, you may create an account through sign up, or use an account that we already have:
+Username: Mari
+Password: hehe
+
+When checking the remember me functionality after logging in and closing the site, please enter the 
+link https://ccapdev-mco1-group4.onrender.com/userpage.html to check that the "remember me" user is still logged in.
+
+Our GitHub link: https://github.com/pichioes/CCAPDEV_MCO1
+
+Thank you po!
